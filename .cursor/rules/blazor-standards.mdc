@@ -1,0 +1,45 @@
+---
+description: Padrões do PWA Blazor WebAssembly (frontend)
+globs: src/SaborMercado.Web/**
+alwaysApply: false
+---
+
+# Frontend Blazor PWA — Padrões
+
+Referência completa: `docs/standards/frontend-standards.md`.
+
+## Offline-first (inegociável)
+
+- Shopping e Catalog funcionam sem rede; persistência imediata em IndexedDB
+  (entidades) e localStorage (apenas preferências leves).
+- Chamadas HTTP só em Recognition/Rewards/sync, sempre com tratamento de
+  falha que mantém o fluxo local (ex.: OCR falhou → formulário manual
+  pré-preenchido, código `OCR_UNAVAILABLE`).
+
+## Mensagens de status
+
+- Implementar somente códigos do catálogo `docs/domain/status-messages.md`.
+- Avaliador puro em `Domain/` (testável); textos em recursos i18n.
+
+```razor
+@* ❌ BAD: texto hardcoded e lógica no componente *@
+@if (total > budget) { <p>Orçamento estourado!</p> }
+
+@* ✅ GOOD: avaliador puro + recurso localizado *@
+@if (Alert is not null) { <StatusBanner Code="@Alert.Code" Args="@Alert.Args" /> }
+```
+
+## Convenções
+
+- Estrutura por feature: `Features/{Shopping|Catalog|Recognition|Rewards}/`.
+- JS interop somente em `Interop/` com wrapper C# tipado; proibido JS inline.
+- Câmera: `InputFile` com `capture="environment"`; comprimir no cliente
+  (~1024px JPEG) antes do upload.
+- Dinheiro: `decimal` + cultura `pt-BR` (`R$ 8,99`); nunca `double`.
+- Code-behind (`.razor.cs`) quando a lógica passar de ~30 linhas.
+- Mobile-first: alvos de toque grandes, uso com uma mão.
+
+## Testes
+
+- Avaliador de mensagens: xUnit (cobertura prioritária).
+- Componentes com lógica: bUnit.

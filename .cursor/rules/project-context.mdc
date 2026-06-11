@@ -1,0 +1,35 @@
+---
+description: Contexto e princípios obrigatórios do Sabor Mercado
+alwaysApply: true
+---
+
+# Sabor Mercado — Contexto do Projeto
+
+PWA gratuito e offline-first de controle de compras de mercado: carrinho por
+foto (OCR via Gemini), meta de orçamento com alertas determinísticos e modelo
+share-to-unlock (compartilhar dados anonimizados desbloqueia premium).
+
+## Fontes de verdade (consultar antes de implementar)
+
+- Princípios inegociáveis: `.specify/memory/constitution.md`
+- Visão de negócio e fluxos F1–F5: `docs/business/vision.md`
+- Modelo de domínio e fronteiras de módulo: `docs/domain/domain-model.md`
+- Mensagens de status (catálogo fechado): `docs/domain/status-messages.md`
+- Arquitetura e limites da VM 1GB: `docs/architecture/`
+- Padrões de código/API/dados: `docs/standards/`
+
+## Regras invioláveis
+
+1. Fluxo principal (carrinho, orçamento, alertas, CRUD de produtos) roda 100%
+   no cliente, offline, gratuito. Backend nunca é pré-requisito.
+2. Toda operação com IA tem caminho manual equivalente (fallback obrigatório).
+3. Alertas/projeções são determinísticos — proibido gerar via LLM em runtime
+   e proibido criar mensagem fora do catálogo de `status-messages.md`.
+4. Stack: ASP.NET Core Minimal APIs + Blazor WASM PWA + EF Core/PostgreSQL.
+   Mudança de stack exige ADR em `docs/architecture/adr/`.
+5. Backend deve caber no orçamento de memória de
+   `docs/architecture/mvp-infrastructure.md` (API ≤ 350 MB RSS).
+6. Features novas seguem o fluxo SDD: `/speckit-specify` → `/speckit-plan` →
+   `/speckit-tasks` → `/speckit-implement`.
+7. Código e identificadores em inglês; UI e docs de negócio em PT-BR;
+   dinheiro sempre `decimal` formatado em `pt-BR`.

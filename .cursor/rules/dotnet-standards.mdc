@@ -1,0 +1,50 @@
+---
+description: Padrões C#/.NET do backend (módulos e API)
+globs: src/SaborMercado.Api/**,src/SaborMercado.Modules.*/**,src/SaborMercado.Shared/**,tests/**
+alwaysApply: false
+---
+
+# Backend .NET — Padrões
+
+Referência completa: `docs/standards/backend-standards.md`,
+`docs/standards/api-standards.md`, `docs/standards/data-standards.md`.
+
+## Fronteiras de módulo (ADR-0003)
+
+- Um módulo NUNCA referencia outro módulo; integração só via
+  `SaborMercado.Shared` (contratos) ou eventos in-process.
+- Um `DbContext` e um schema PostgreSQL por módulo (`identity`, `rewards`,
+  `shared_catalog`, `recognition`). Sem FK entre schemas.
+- Endpoints retornam DTOs de `Contracts/`; entidades de domínio não vazam.
+
+## Código
+
+```csharp
+// ❌ BAD
+public double Price { get; set; }
+_logger.LogInformation($"User {userId} added item");
+
+// ✅ GOOD
+public decimal Price { get; set; }
+_logger.LogInformation("User {UserId} added item", userId);
+```
+
+- `decimal` para dinheiro; `DateTimeOffset` UTC; `DateOnly` para datas civis.
+- PKs: `Guid.CreateVersion7()`.
+- Leitura EF: `AsNoTracking()` + paginação obrigatória (`Take` ≤ 100).
+- Erros HTTP: sempre `ProblemDetails` com `code` estável catalogado em
+  `Contracts/ErrorCodes.cs`.
+- Ledger de créditos é append-only: proibido UPDATE/DELETE.
+
+## Memória (VM 1GB — limite rígido)
+
+- `IMemoryCache` sempre com `Size` por entrada e `SizeLimit` global.
+- Upload de imagem por streaming, máx. 4 MB; sem processamento de imagem no
+  servidor.
+- Sem `ToList()` de tabelas inteiras; sem caches estáticos não limitados.
+
+## Testes
+
+- xUnit; regras de negócio com nome rastreável à spec
+  (`BudgetAlert_Crosses75Percent_EmitsBudgetWarn75`).
+- Integração de endpoints com `WebApplicationFactory` + Testcontainers.

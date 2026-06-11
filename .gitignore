@@ -1,0 +1,22 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+artifacts/
+TestResults/
+*.binlog
+
+# Publish
+publish/
+*.pubxml
+
+# Secrets / ambiente
+.env
+appsettings.*.local.json
+*.pfx
+
+# SO / editores
+.DS_Store
+Thumbs.db

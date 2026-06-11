@@ -1,0 +1,28 @@
+---
+description: Padrões para escrever specs e documentação (SDD)
+globs: docs/**,specs/**,.specify/**
+alwaysApply: false
+---
+
+# Documentação e Specs — Padrões
+
+Referência completa: `docs/standards/documentation-standards.md`.
+
+## Hierarquia (conflito = bug de documentação)
+
+constitution → `docs/` (canônico) → `specs/` (por feature) → código.
+
+## Regras
+
+- Specs REFERENCIAM docs canônicos via link relativo; nunca copiam regras
+  (fonte única de verdade). Ex.: alertas → `docs/domain/status-messages.md`.
+- Spec = o quê (comportamento, critérios de aceite verificáveis);
+  Plan = como (projetos, classes, migrations).
+- PT-BR para negócio; identificadores de código em inglês; dinheiro em
+  exemplos no formato brasileiro (`R$ 8,99`).
+- Diagramas sempre em Mermaid (nunca imagem binária).
+- Novo endpoint → atualizar tabela em `docs/standards/api-standards.md`.
+- Nova mensagem de status → atualizar catálogo ANTES de implementar.
+- Decisão arquitetural → ADR em `docs/architecture/adr/` (formato no README
+  da pasta) + linha no índice.
+- Novo doc → entrada no índice do `README.md` da raiz.
