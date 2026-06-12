@@ -23,8 +23,11 @@ jobs:
 
       - name: Pack artifact
         run: |
-          tar -czf sabormercado-publish.tar.gz -C publish api web
-          tar -czf sabormercado-scripts.tar.gz scripts/deploy-sabormercado-vm.sh scripts/nginx-rpjtechgroup.conf
+          mkdir -p publish/sabormercado-publish/api publish/sabormercado-publish/wwwroot
+          cp -a publish/api/. publish/sabormercado-publish/api/
+          cp -a publish/web/wwwroot/. publish/sabormercado-publish/wwwroot/
+          tar -czf sabormercado-publish.tar.gz -C publish sabormercado-publish
+          tar -czf sabormercado-scripts.tar.gz scripts/deploy-sabormercado-vm.sh scripts/nginx-rpjtechgroup.conf scripts/patch-iptables-http.sh
 
       - name: Copy to VM
         uses: appleboy/scp-action@v0.1.7
