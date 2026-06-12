@@ -11,7 +11,6 @@ public sealed class UiPreferencesState
     public async Task InitializeAsync(IPreferencesStore preferences)
     {
         ShowIconLabels = await preferences.GetShowIconLabelsAsync();
-        Changed?.Invoke();
     }
 
     public async Task SetShowIconLabelsAsync(IPreferencesStore preferences, bool showLabels)
@@ -22,7 +21,7 @@ public sealed class UiPreferencesState
         }
 
         ShowIconLabels = showLabels;
-        await preferences.SetShowIconLabelsAsync(showLabels);
         Changed?.Invoke();
+        await preferences.SetShowIconLabelsAsync(showLabels);
     }
 }

@@ -5,7 +5,10 @@
 
 <div class="app-shell @(UiPrefs.ShowIconLabels ? "app-shell--labels" : "app-shell--icons-only")">
     <header class="app-topbar" aria-label="Barra superior">
-        <IconLabelToggle />
+        <IconButton Icon="@(UiPrefs.ShowIconLabels ? AppIcons.IconsOnly : AppIcons.IconsWithText)"
+                    Label="@(UiPrefs.ShowIconLabels ? "Mostrar só ícones" : "Mostrar ícones com texto")"
+                    CssClass="btn btn-outline btn-icon app-topbar-toggle"
+                    OnClick="ToggleIconLabelsAsync" />
     </header>
 
     <ToastHost />
@@ -22,6 +25,12 @@
     {
         await UiPrefs.InitializeAsync(Preferences);
         UiPrefs.Changed += OnUiPrefsChanged;
+    }
+
+    private async Task ToggleIconLabelsAsync()
+    {
+        await UiPrefs.SetShowIconLabelsAsync(Preferences, !UiPrefs.ShowIconLabels);
+        StateHasChanged();
     }
 
     private void OnUiPrefsChanged() => InvokeAsync(StateHasChanged);
