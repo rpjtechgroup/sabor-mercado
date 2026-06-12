@@ -149,8 +149,23 @@ fi
 sudo nginx -t
 sudo systemctl reload nginx
 
-sleep 5
-curl -fsS "http://127.0.0.1:${API_PORT}/healthz" >/dev/null
+echo "==> Wait for API (healthz)"
+API_READY=0
+for attempt in $(seq 1 30); do
+  if curl -fsS "http://127.0.0.1:${API_PORT}/healthz" >/dev/null 2>&1; then
+    echo "API healthy (attempt ${attempt})"
+    API_READY=1
+    break
+  fi
+  sleep 2
+done
+if [ "$API_READY" -ne 1 ]; then
+  echo "ERROR: API did not respond on 127.0.0.1:${API_PORT}/healthz" >&2
+  sudo systemctl status sabormercado-api --no-pager || true
+  sudo journalctl -u sabormercado-api -n 80 --no-pager || true
+  exit 1
+fi
+
 curl -fsSI "http://127.0.0.1/mercado/" | head -n 1
 echo "DEPLOY_OK ${PUBLIC_BASE}/"
 echo "APP_ROOT=${APP_ROOT}"
