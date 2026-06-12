@@ -33,4 +33,9 @@ public interface IPreferencesStore
         Guid pseudonymId);
 
     Task ClearAuthAsync();
+
+    /// <summary>Quando true, botões e navegação exibem ícone + texto; quando false, só ícones.</summary>
+    Task<bool> GetShowIconLabelsAsync();
+
+    Task SetShowIconLabelsAsync(bool value);
 }

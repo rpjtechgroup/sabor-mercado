@@ -12,6 +12,7 @@ public sealed class LocalStoragePreferencesStore(LocalStorageInterop localStorag
     private const string AccessTokenExpiresKey = "saborMercado.preferences.accessTokenExpires";
     private const string AccountEmailKey = "saborMercado.preferences.accountEmail";
     private const string PseudonymIdKey = "saborMercado.preferences.pseudonymId";
+    private const string ShowIconLabelsKey = "saborMercado.preferences.showIconLabels";
 
     public async Task<decimal?> GetBudgetDefaultAsync()
     {
@@ -93,4 +94,13 @@ public sealed class LocalStoragePreferencesStore(LocalStorageInterop localStorag
         await localStorage.RemoveItemAsync(AccountEmailKey);
         await localStorage.RemoveItemAsync(PseudonymIdKey);
     }
+
+    public async Task<bool> GetShowIconLabelsAsync()
+    {
+        var raw = await localStorage.GetItemAsync(ShowIconLabelsKey);
+        return string.Equals(raw, "1", StringComparison.Ordinal);
+    }
+
+    public async Task SetShowIconLabelsAsync(bool value) =>
+        await localStorage.SetItemAsync(ShowIconLabelsKey, value ? "1" : "0");
 }

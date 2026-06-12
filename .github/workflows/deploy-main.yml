@@ -3,6 +3,7 @@ name: Deploy to VM
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,19 +16,8 @@ jobs:
         with:
           dotnet-version: "8.0.x"
 
-      - name: Publish API
-        run: dotnet publish src/SaborMercado.Api/SaborMercado.Api.csproj -c Release -o publish/api
-
-      - name: Publish PWA
-        run: dotnet publish src/SaborMercado.Web/SaborMercado.Web.csproj -c Release -o publish/web
-
-      - name: Pack artifact
-        run: |
-          mkdir -p publish/sabormercado-publish/api publish/sabormercado-publish/wwwroot
-          cp -a publish/api/. publish/sabormercado-publish/api/
-          cp -a publish/web/wwwroot/. publish/sabormercado-publish/wwwroot/
-          tar -czf sabormercado-publish.tar.gz -C publish sabormercado-publish
-          tar -czf sabormercado-scripts.tar.gz scripts/deploy-sabormercado-vm.sh scripts/nginx-rpjtechgroup.conf scripts/patch-iptables-http.sh
+      - name: Pack publish artifact
+        run: bash scripts/pack-publish.sh
 
       - name: Copy to VM
         uses: appleboy/scp-action@v0.1.7
@@ -48,4 +38,7 @@ jobs:
             set -e
             cd /home/ubuntu/deploy
             tar -xzf sabormercado-scripts.tar.gz
-            PUBLIC_BASE=https://rpjtechgroup.ddns.net/mercado bash scripts/deploy-sabormercado-vm.sh
+            set -a
+            source sabormercado.secrets
+            set +a
+            PUBLIC_BASE=https://rpjtechgroup.ddns.net/mercado bash scripts/deploy-sabormercado-vm.sh sabormercado-publish.tar.gz

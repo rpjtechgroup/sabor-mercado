@@ -68,4 +68,14 @@ public sealed class InMemoryPreferencesStore : IPreferencesStore
         PseudonymId = null;
         return Task.CompletedTask;
     }
+
+    public bool ShowIconLabels { get; set; }
+
+    public Task<bool> GetShowIconLabelsAsync() => Task.FromResult(ShowIconLabels);
+
+    public Task SetShowIconLabelsAsync(bool value)
+    {
+        ShowIconLabels = value;
+        return Task.CompletedTask;
+    }
 }

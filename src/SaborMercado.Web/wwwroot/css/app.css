@@ -166,6 +166,51 @@ button {
     font-size: 1.85rem;
 }
 
+.icon-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.app-shell--icons-only .icon-label {
+    display: none;
+}
+
+.app-shell--labels .btn-icon,
+.app-shell--labels .icon-link {
+    gap: 0.45rem;
+}
+
+.app-shell--labels .page-icon-title,
+.app-shell--labels .section-icon-title {
+    gap: 0.5rem;
+}
+
+.app-shell--labels .page-icon-title .icon-label {
+    font-size: 1.35rem;
+}
+
+.app-shell--labels .section-icon-title .icon-label {
+    font-size: 1.1rem;
+}
+
+.app-shell--labels .icon-inline-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.app-shell--labels .icon-inline-link .icon-glyph {
+    font-size: 1rem;
+}
+
+.app-shell--labels .history-tab {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
 .btn-icon,
 .icon-link {
     min-width: 3rem;

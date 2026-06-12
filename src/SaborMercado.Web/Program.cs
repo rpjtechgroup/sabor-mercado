@@ -78,6 +78,7 @@ builder.Services.AddScoped<ICatalogStore, IndexedDbCatalogStore>();
 builder.Services.AddScoped<IStoreStore, IndexedDbStoreStore>();
 
 builder.Services.AddScoped<IPreferencesStore, LocalStoragePreferencesStore>();
+builder.Services.AddScoped<UiPreferencesState>();
 builder.Services.AddScoped<IPendingShareStore, IndexedDbPendingShareStore>();
 
 
