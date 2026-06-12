@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <!-- Textos do catálogo fechado docs/domain/status-messages.md (pt-BR default). -->
+  <data name="BUDGET_SET" xml:space="preserve">
+    <value>Meta definida: {B}. Boa compra!</value>
+  </data>
+  <data name="BUDGET_HALF" xml:space="preserve">
+    <value>Você usou metade do orçamento. Restam {R}.</value>
+  </data>
+  <data name="BUDGET_WARN_75" xml:space="preserve">
+    <value>Atenção: 75% do orçamento utilizado. Restam {R}.</value>
+  </data>
+  <data name="BUDGET_HIGH_90" xml:space="preserve">
+    <value>Quase no limite: 90% do orçamento utilizado. Restam {R}.</value>
+  </data>
+  <data name="BUDGET_REACHED" xml:space="preserve">
+    <value>Você atingiu sua meta de {B}.</value>
+  </data>
+  <data name="BUDGET_EXCEEDED" xml:space="preserve">
+    <value>Seu orçamento foi ultrapassado em {excess}.</value>
+  </data>
+  <data name="PACE_PROJECTION_OVER" xml:space="preserve">
+    <value>Se continuar nesse ritmo, sua compra deve terminar em aproximadamente {E}.</value>
+  </data>
+  <data name="PACE_PROJECTION_OK" xml:space="preserve">
+    <value>No ritmo atual, você deve fechar a compra em {E}, dentro da meta.</value>
+  </data>
+  <data name="ITEM_ADDED_OCR" xml:space="preserve">
+    <value>✅ {product} adicionado. Total: {T}.</value>
+  </data>
+  <data name="ITEM_ADDED_OCR_REVIEW" xml:space="preserve">
+    <value>Adicionei {product}, confira os dados. Total: {T}.</value>
+  </data>
+  <data name="OCR_UNAVAILABLE" xml:space="preserve">
+    <value>Não consegui ler a etiqueta agora. Preencha os dados manualmente.</value>
+  </data>
+  <data name="SESSION_FINISHED" xml:space="preserve">
+    <value>Compra finalizada: {n} itens, total {T}.</value>
+  </data>
+  <data name="SESSION_FINISHED_UNDER" xml:space="preserve">
+    <value>Compra finalizada: {n} itens, total {T}, economia de {saving}.</value>
+  </data>
+  <data name="SESSION_FINISHED_OVER" xml:space="preserve">
+    <value>Compra finalizada: {n} itens, total {T}, {excess} acima da meta.</value>
+  </data>
+</root>

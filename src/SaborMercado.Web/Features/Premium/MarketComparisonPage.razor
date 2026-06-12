@@ -1,0 +1,73 @@
+@page "/comparar-mercados/{ProductId:guid}"
+@inject AccountService Account
+@inject MarketComparisonClient Comparison
+
+<PageTitle>Sabor Mercado — Comparar mercados</PageTitle>
+
+<div class="premium-page">
+    <h1>Comparação entre mercados</h1>
+
+    @if (!_loaded)
+    {
+        <p class="muted">Carregando…</p>
+    }
+    else if (!Account.HasUnlock(PremiumFeatureCodes.MarketComparison))
+    {
+        <p class="muted">Desbloqueie em <a href="conta">Minha conta</a> (20 créditos).</p>
+    }
+    else if (_comparison is null)
+    {
+        <p class="muted">Produto não encontrado no catálogo colaborativo.</p>
+    }
+    else
+    {
+        <p class="muted">@_comparison.ProductName</p>
+        @if (_comparison.Markets.Count == 0)
+        {
+            <p class="muted">Sem observações em mercados diferentes.</p>
+        }
+        else
+        {
+            @foreach (var market in _comparison.Markets)
+            {
+                <div class="card price-row">
+                    <strong>@market.MarketName</strong>
+                    @if (!string.IsNullOrWhiteSpace(market.City))
+                    {
+                        <span class="muted"> · @market.City</span>
+                    }
+                    <p>@MoneyFormat.Format(market.Price) <span class="muted">· @market.ObservedOn.ToString("dd/MM/yyyy")</span></p>
+                </div>
+            }
+        }
+    }
+
+    <p class="muted"><a href="catalogo-colaborativo">‹ Catálogo colaborativo</a></p>
+</div>
+
+@code {
+    [Parameter]
+    public Guid ProductId { get; set; }
+
+    private bool _loaded;
+    private Contracts.SharedCatalog.MarketPriceComparisonResponse? _comparison;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Account.InitializeAsync();
+        if (Account.HasUnlock(PremiumFeatureCodes.MarketComparison))
+        {
+            try
+            {
+                _comparison = await Comparison.GetAsync(ProductId);
+            }
+            catch (CollaborativeCatalogException ex)
+            {
+                _error = ex.Message;
+            }
+        }
+
+        _loaded = true;
+    }
+}

@@ -1,0 +1,221 @@
+@page "/foto"
+@implements IDisposable
+@inject ShoppingService Shopping
+@inject RecognitionService Recognition
+@inject ImageCompressInterop ImageCompress
+@inject NavigationManager Navigation
+@inject IPreferencesStore Preferences
+
+<PageTitle>Sabor Mercado — Foto</PageTitle>
+
+<div class="photo-capture">
+    <header class="session-header">
+        <h1>Modo Foto</h1>
+        <p class="muted">Aponte para a etiqueta da prateleira ou do produto.</p>
+    </header>
+
+    @if (Shopping.CurrentSession is null)
+    {
+        <div class="card">
+            <p>Inicie uma compra antes de usar o modo foto.</p>
+            <button type="button" class="btn btn-primary btn-block" @onclick="GoShopping">Ir para compra</button>
+        </div>
+    }
+    else if (_showManualForm)
+    {
+        <CartItemForm Model="@_formModel"
+                      IsEdit="false"
+                      OnSave="SaveManualAsync"
+                      OnCancel="CloseManualForm" />
+    }
+    else if (!_hasGeminiKey)
+    {
+        <div class="card">
+            <p>Para ler etiquetas por foto, configure sua chave gratuita do Gemini neste aparelho.</p>
+            <a class="btn btn-primary btn-block" href="configuracoes">Configurar chave Gemini</a>
+            <button type="button" class="btn btn-secondary btn-block" @onclick="OpenManualForm">
+                Digitar manualmente
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="card photo-actions">
+            <label class="btn btn-primary btn-block photo-input-label">
+                📸 Fotografar etiqueta
+                <InputFile OnChange="OnPhotoSelectedAsync"
+                           accept="image/*"
+                           capture="environment"
+                           class="photo-input-hidden" />
+            </label>
+
+            <button type="button" class="btn btn-secondary btn-block" @onclick="OpenManualForm">
+                Digitar manualmente
+            </button>
+
+            @if (_busy)
+            {
+                <p class="muted" role="status">Lendo etiqueta…</p>
+            }
+
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <p class="error-text" role="alert">@_error</p>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private bool _busy;
+    private bool _showManualForm;
+    private string? _error;
+    private CartItemFormModel _formModel = new();
+    private decimal _lastConfidence = 1m;
+    private bool _cameFromOcr;
+    private bool _hasGeminiKey;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Shopping.StateChanged += OnStateChanged;
+        await RefreshGeminiKeyAsync();
+    }
+
+    private async Task RefreshGeminiKeyAsync()
+    {
+        var key = await Preferences.GetGeminiApiKeyAsync();
+        _hasGeminiKey = !string.IsNullOrWhiteSpace(key);
+    }
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    private void GoShopping() => Navigation.NavigateTo("/");
+
+    private void OpenManualForm()
+    {
+        _formModel = new CartItemFormModel();
+        _cameFromOcr = false;
+        _lastConfidence = 1m;
+        _showManualForm = true;
+        _error = null;
+    }
+
+    private void CloseManualForm()
+    {
+        _showManualForm = false;
+        _error = null;
+    }
+
+    private async Task OnPhotoSelectedAsync(InputFileChangeEventArgs args)
+    {
+        if (Shopping.CurrentSession is null || _busy)
+        {
+            return;
+        }
+
+        var file = args.File;
+        if (file is null)
+        {
+            return;
+        }
+
+        _busy = true;
+        _error = null;
+        StateHasChanged();
+
+        try
+        {
+            await using var stream = file.OpenReadStream(maxAllowedSize: 8 * 1024 * 1024);
+            using var memory = new MemoryStream();
+            await stream.CopyToAsync(memory);
+            var compressed = await ImageCompress.CompressAsync(memory.ToArray());
+
+            var apiResult = await Recognition.RecognizeAsync(compressed);
+            if (apiResult.IsMissingApiKey)
+            {
+                _hasGeminiKey = false;
+                _error = "Configure sua chave Gemini em Configurações.";
+                return;
+            }
+
+            if (!apiResult.IsSuccess || apiResult.Result is null)
+            {
+                Shopping.EmitOcrUnavailable();
+                _formModel = apiResult.PartialResult is not null
+                    ? RecognitionResultMapper.ToFormModel(apiResult.PartialResult)
+                    : new CartItemFormModel();
+                _lastConfidence = apiResult.PartialResult?.Confidence ?? 0m;
+                _cameFromOcr = true;
+                _showManualForm = true;
+                return;
+            }
+
+            _formModel = RecognitionResultMapper.ToFormModel(apiResult.Result);
+            _lastConfidence = apiResult.Result.Confidence;
+            _cameFromOcr = true;
+
+            if (apiResult.Result.Confidence >= 0.8m &&
+                _formModel.UnitPrice is { } price &&
+                !string.IsNullOrWhiteSpace(_formModel.Name))
+            {
+                await Shopping.AddItemFromOcrAsync(
+                    _formModel.ToSnapshot(),
+                    price,
+                    _formModel.Quantity,
+                    apiResult.Result.Confidence);
+                Navigation.NavigateTo("/");
+                return;
+            }
+
+            _showManualForm = true;
+        }
+        catch (Exception)
+        {
+            Shopping.EmitOcrUnavailable();
+            _formModel = new CartItemFormModel();
+            _cameFromOcr = true;
+            _showManualForm = true;
+        }
+        finally
+        {
+            _busy = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SaveManualAsync()
+    {
+        if (_formModel.UnitPrice is not { } price)
+        {
+            _error = "Informe o preço unitário.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(_formModel.Name))
+        {
+            _error = "Informe o nome do produto.";
+            return;
+        }
+
+        if (_cameFromOcr)
+        {
+            await Shopping.AddItemFromOcrAsync(
+                _formModel.ToSnapshot(),
+                price,
+                _formModel.Quantity,
+                _lastConfidence);
+        }
+        else
+        {
+            await Shopping.AddItemAsync(
+                _formModel.ToSnapshot(),
+                price,
+                _formModel.Quantity,
+                CartItemSource.Manual);
+        }
+
+        Navigation.NavigateTo("/");
+    }
+
+    public void Dispose() => Shopping.StateChanged -= OnStateChanged;
+}

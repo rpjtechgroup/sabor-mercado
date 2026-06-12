@@ -25,8 +25,8 @@ Referência completa: `docs/standards/frontend-standards.md`.
 @* ❌ BAD: texto hardcoded e lógica no componente *@
 @if (total > budget) { <p>Orçamento estourado!</p> }
 
-@* ✅ GOOD: avaliador puro + recurso localizado *@
-@if (Alert is not null) { <StatusBanner Code="@Alert.Code" Args="@Alert.Args" /> }
+@* ✅ GOOD: avaliador puro + recurso localizado via toast global *@
+@* ShoppingToastNotifier observa ShoppingService.LastMessage e chama ToastService.Show(localizer.Localize(message)) *@
 ```
 
 ## Convenções

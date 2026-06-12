@@ -1,0 +1,61 @@
+@* Entrada de dinheiro com vírgula decimal (pt-BR) — frontend-standards §4. *@
+<input class="input @CssClass"
+       type="text"
+       inputmode="decimal"
+       autocomplete="off"
+       id="@Id"
+       placeholder="@Placeholder"
+       value="@_text"
+       @oninput="OnInputAsync"
+       @onblur="OnBlur" />
+
+@code {
+    private string _text = string.Empty;
+    private bool _editing;
+
+    [Parameter]
+    public decimal? Value { get; set; }
+
+    [Parameter]
+    public EventCallback<decimal?> ValueChanged { get; set; }
+
+    [Parameter]
+    public string Placeholder { get; set; } = "0,00";
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string? CssClass { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!_editing)
+        {
+            _text = Value is { } value ? MoneyFormat.FormatPlain(value) : string.Empty;
+        }
+    }
+
+    private async Task OnInputAsync(ChangeEventArgs e)
+    {
+        _editing = true;
+        _text = e.Value?.ToString() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(_text))
+        {
+            await ValueChanged.InvokeAsync(null);
+            return;
+        }
+
+        if (MoneyFormat.TryParse(_text, out var parsed) && parsed >= 0m)
+        {
+            await ValueChanged.InvokeAsync(parsed);
+        }
+    }
+
+    private void OnBlur()
+    {
+        _editing = false;
+        _text = Value is { } value ? MoneyFormat.FormatPlain(value) : string.Empty;
+    }
+}

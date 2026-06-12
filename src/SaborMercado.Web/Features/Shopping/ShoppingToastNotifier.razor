@@ -1,0 +1,45 @@
+@implements IDisposable
+@inject ShoppingService Shopping
+@inject ToastService Toasts
+@inject StatusMessageLocalizer Localizer
+
+@code {
+    private int _lastMessageVersion;
+    private bool _storageToastShown;
+    private bool _lastStorageUnavailable;
+
+    protected override void OnInitialized()
+    {
+        Shopping.StateChanged += OnShoppingChanged;
+        SyncToasts();
+    }
+
+    private void OnShoppingChanged() => InvokeAsync(SyncToasts);
+
+    private void SyncToasts()
+    {
+        if (Shopping.LastMessage is { } message && Shopping.MessageVersion != _lastMessageVersion)
+        {
+            _lastMessageVersion = Shopping.MessageVersion;
+            var text = Localizer.Localize(message);
+            var severity = StatusMessageSeverity.FromCode(message.Code);
+            Toasts.Show(text, severity, () => Shopping.DismissMessage());
+        }
+
+        if (!Shopping.StorageUnavailable)
+        {
+            _storageToastShown = false;
+        }
+        else if (!_lastStorageUnavailable && !_storageToastShown)
+        {
+            _storageToastShown = true;
+            Toasts.Show(
+                "Não consegui gravar no armazenamento do navegador; a compra continua só em memória.",
+                ToastSeverity.Warning);
+        }
+
+        _lastStorageUnavailable = Shopping.StorageUnavailable;
+    }
+
+    public void Dispose() => Shopping.StateChanged -= OnShoppingChanged;
+}

@@ -41,6 +41,38 @@ funcionalidades premium (**share-to-unlock**).
 | [`docs/standards/data-standards.md`](docs/standards/data-standards.md) | PostgreSQL/EF Core e IndexedDB |
 | [`docs/standards/documentation-standards.md`](docs/standards/documentation-standards.md) | Como escrever specs e docs (SDD) |
 
+## Como rodar
+
+Pré-requisito: SDK .NET 8 (LTS).
+
+```powershell
+dotnet build SaborMercado.sln
+dotnet test SaborMercado.sln
+
+# PWA (fluxo principal + OCR com chave do usuário)
+dotnet run --project src/SaborMercado.Web        # http://localhost:5052
+```
+
+No app: **Ajustes** → informe sua chave gratuita do
+[Google AI Studio](https://aistudio.google.com/apikey). A chave fica só no
+**localStorage** deste aparelho. Sem chave, use o cadastro manual.
+
+API backend (`SaborMercado.Api`) é opcional — features futuras (share-to-unlock).
+
+Estrutura da solution:
+
+```
+SaborMercado.sln
+src/SaborMercado.Web/                 # Blazor WASM PWA (Shopping, Catalog, Recognition UI)
+src/SaborMercado.Api/                 # Host ASP.NET Core
+src/SaborMercado.Modules.Recognition/ # Proxy Gemini + normalização + logs
+src/SaborMercado.Shared/              # Contratos HTTP (RecognitionResultDto)
+tests/SaborMercado.Web.Tests/         # xUnit + bUnit
+tests/SaborMercado.Api.Tests/         # Integração do endpoint OCR
+```
+
+Specs: `specs/001-offline-shopping-core` (carrinho offline), `specs/002-smart-photo-ocr` (foto/OCR).
+
 ## Desenvolvimento — Spec-Driven Development
 
 O projeto usa o [GitHub Spec Kit](https://github.com/github/spec-kit).

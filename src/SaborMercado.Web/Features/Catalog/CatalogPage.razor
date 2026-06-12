@@ -1,0 +1,130 @@
+@page "/catalogo"
+@using SaborMercado.Web.Domain.Catalog
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Catálogo</PageTitle>
+
+<h1>Meus produtos</h1>
+
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else
+{
+    @if (_form is not null)
+    {
+        <ProductForm Model="@_form" OnSave="CreateAsync" OnCancel="@(() => _form = null)" />
+    }
+    else
+    {
+        <button type="button" class="btn btn-primary btn-block" @onclick="OpenForm">＋ Novo produto</button>
+
+        <div class="field catalog-search">
+            <input class="input" placeholder="Buscar produto…" aria-label="Buscar produto"
+                   value="@_search" @oninput="OnSearch" />
+        </div>
+
+        @if (FilteredProducts.Count == 0)
+        {
+            <div class="empty-state">
+                <span class="empty-icon" aria-hidden="true">📦</span>
+                @(string.IsNullOrWhiteSpace(_search)
+                    ? "Nenhum produto cadastrado ainda."
+                    : "Nenhum produto encontrado para a busca.")
+            </div>
+        }
+        else
+        {
+            <section aria-label="Lista de produtos">
+                @foreach (var product in FilteredProducts)
+                {
+                    <a class="card product-row" href="catalogo/@product.Id">
+                        <span class="product-row-info">
+                            <strong>@product.Name</strong>
+                            <span class="muted">@ProductDetails(product)</span>
+                        </span>
+                        <span class="product-row-price muted">
+                            @FormatLastPrice(product.Id)
+                        </span>
+                        <span class="product-row-arrow" aria-hidden="true">›</span>
+                    </a>
+                }
+            </section>
+        }
+    }
+}
+
+@code {
+    private bool _loaded;
+    private string _search = string.Empty;
+    private ProductFormModel? _form;
+    private IReadOnlyDictionary<Guid, decimal> _lastPrices = new Dictionary<Guid, decimal>();
+
+    [Inject]
+    public CatalogService Catalog { get; set; } = default!;
+
+    [Inject]
+    public NavigationManager Navigation { get; set; } = default!;
+
+    private IReadOnlyList<Product> FilteredProducts =>
+        string.IsNullOrWhiteSpace(_search)
+            ? Catalog.Products
+            : Catalog.Products
+                .Where(p => p.Name.Contains(_search.Trim(), StringComparison.CurrentCultureIgnoreCase) ||
+                            (p.Brand?.Contains(_search.Trim(), StringComparison.CurrentCultureIgnoreCase) ?? false))
+                .ToList();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Catalog.StateChanged += OnStateChanged;
+        await Catalog.InitializeAsync();
+        _lastPrices = await Catalog.GetLastPricesByProductIdAsync();
+        _loaded = true;
+    }
+
+    private string FormatLastPrice(Guid productId) =>
+        _lastPrices.TryGetValue(productId, out var price) ? MoneyFormat.Format(price) : "sem preço";
+
+    private static string ProductDetails(Product product)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(product.Brand))
+        {
+            parts.Add(product.Brand);
+        }
+
+        if (product.QuantityValue is { } value)
+        {
+            parts.Add($"{value.ToString("0.##", MoneyFormat.Culture)}{product.QuantityUnit?.Label()}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(product.Category))
+        {
+            parts.Add(product.Category);
+        }
+
+        return string.Join(" · ", parts);
+    }
+
+    private void OpenForm() => _form = new ProductFormModel();
+
+    private void OnSearch(ChangeEventArgs e) => _search = e.Value?.ToString() ?? string.Empty;
+
+    private async Task CreateAsync(ProductFormModel model)
+    {
+        var product = new Product { Name = model.Name };
+        model.ApplyTo(product);
+        var created = await Catalog.CreateProductAsync(product);
+        _form = null;
+        Navigation.NavigateTo($"catalogo/{created.Id}");
+    }
+
+    private void OnStateChanged() => InvokeAsync(async () =>
+    {
+        _lastPrices = await Catalog.GetLastPricesByProductIdAsync();
+        StateHasChanged();
+    });
+
+    public void Dispose() => Catalog.StateChanged -= OnStateChanged;
+}

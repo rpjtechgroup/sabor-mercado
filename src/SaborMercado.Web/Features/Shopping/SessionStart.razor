@@ -1,0 +1,78 @@
+@* Início de sessão (F3): compra mensal ou esporádica *@
+<div class="card">
+    <h1>Nova compra</h1>
+
+    <div class="field">
+        <span class="field-label">Tipo de compra</span>
+        <div class="session-kind-toggle" role="radiogroup" aria-label="Tipo de compra">
+            <button type="button"
+                    class="btn @(_kind == SessionKind.Monthly ? "btn-primary" : "btn-outline")"
+                    role="radio"
+                    aria-checked="@(_kind == SessionKind.Monthly)"
+                    @onclick="() => SetKind(SessionKind.Monthly)">
+                📅 Compra mensal
+            </button>
+            <button type="button"
+                    class="btn @(_kind == SessionKind.Sporadic ? "btn-primary" : "btn-outline")"
+                    role="radio"
+                    aria-checked="@(_kind == SessionKind.Sporadic)"
+                    @onclick="() => SetKind(SessionKind.Sporadic)">
+                🛒 Compra esporádica
+            </button>
+        </div>
+    </div>
+
+    @if (_kind == SessionKind.Monthly)
+    {
+        <p class="muted">
+            O carrinho será pré-preenchido com sua lista mensal e os últimos preços conhecidos.
+            Orçamento e alertas de meta não se aplicam.
+        </p>
+        <a class="btn btn-outline btn-block" href="compra-mensal">✏️ Editar lista mensal</a>
+    }
+    else
+    {
+        <p class="muted">Defina uma meta para receber alertas durante a compra. Os dois campos são opcionais.</p>
+
+        <div class="field">
+            <label for="budget">Quanto pretende gastar?</label>
+            <MoneyInput Id="budget" @bind-Value="_budget" Placeholder="ex.: 300,00" />
+        </div>
+    }
+
+    <div class="field">
+        <label for="market">Mercado</label>
+        <input id="market" class="input" @bind="_marketName" placeholder="ex.: Mercado do bairro" />
+    </div>
+
+    <button type="button" class="btn btn-primary btn-block" @onclick="StartAsync">
+        @(_kind == SessionKind.Monthly ? "📅 Iniciar compra mensal" : "🛒 Começar compra")
+    </button>
+</div>
+
+@code {
+    private SessionKind _kind = SessionKind.Sporadic;
+    private decimal? _budget;
+    private string? _marketName;
+    private bool _suggestionApplied;
+
+    [Parameter]
+    public decimal? SuggestedBudget { get; set; }
+
+    [Parameter]
+    public EventCallback<SessionStartRequest> OnStart { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (!_suggestionApplied && SuggestedBudget is { } suggested && _kind == SessionKind.Sporadic)
+        {
+            _budget = suggested;
+            _suggestionApplied = true;
+        }
+    }
+
+    private void SetKind(SessionKind kind) => _kind = kind;
+
+    private Task StartAsync() =>
+        OnStart.InvokeAsync(new SessionStartRequest(_kind, _kind == SessionKind.Sporadic ? _budget : null, _marketName));
+}

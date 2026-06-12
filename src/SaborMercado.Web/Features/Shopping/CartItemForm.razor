@@ -1,0 +1,122 @@
+@using SaborMercado.Web.Domain.Catalog
+@using SaborMercado.Web.Features.Catalog
+@* Formulário manual de item — caminho manual obrigatório (Constitution II). *@
+<div class="card">
+    <h2>@(IsEdit ? "Editar item" : "Adicionar item")</h2>
+
+    <div class="field">
+        <label for="item-name">Produto *</label>
+        <ProductAutocomplete InputId="item-name"
+                             Name="@Model.Name"
+                             NameChanged="OnNameChangedAsync"
+                             OnProductSelected="ApplyProductAsync" />
+    </div>
+
+    <div class="field">
+        <label for="item-brand">Marca</label>
+        <input id="item-brand" class="input" @bind="Model.Brand" placeholder="opcional" />
+    </div>
+
+    <div class="field-row">
+        <div class="field">
+            <label for="item-qty-value">Peso/volume</label>
+            <input id="item-qty-value" class="input" type="number" step="any" min="0" @bind="Model.QuantityValue" placeholder="ex.: 900" />
+        </div>
+        <div class="field">
+            <label for="item-qty-unit">Unidade</label>
+            <select id="item-qty-unit" class="input" @bind="Model.QuantityUnit">
+                <option value="">—</option>
+                @foreach (var unit in Enum.GetValues<QuantityUnit>())
+                {
+                    <option value="@unit">@unit.Label()</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="field-row">
+        <div class="field">
+            <label for="item-price">Preço unitário (R$) *</label>
+            <MoneyInput Id="item-price" @bind-Value="Model.UnitPrice" Placeholder="ex.: 8,99" />
+        </div>
+        <div class="field">
+            <label for="item-quantity">Quantidade *</label>
+            <input id="item-quantity" class="input" type="number" min="1" @bind="Model.Quantity" />
+        </div>
+    </div>
+
+    @if (_error is not null)
+    {
+        <p class="text-over" role="alert">@_error</p>
+    }
+
+    <div class="field-row">
+        <button type="button" class="btn btn-outline btn-block" @onclick="CancelAsync">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-block" @onclick="SaveAsync">Salvar</button>
+    </div>
+</div>
+
+@code {
+    private string? _error;
+
+    [Inject]
+    public CatalogService Catalog { get; set; } = default!;
+
+    [Parameter]
+    public CartItemFormModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<CartItemFormModel> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private Task OnNameChangedAsync(string name)
+    {
+        Model.Name = name;
+        return Task.CompletedTask;
+    }
+
+    private async Task ApplyProductAsync(Product product)
+    {
+        Model.Name = product.Name;
+        Model.Brand = product.Brand;
+        Model.QuantityValue = product.QuantityValue;
+        Model.QuantityUnit = product.QuantityUnit;
+
+        var lastPrice = await Catalog.GetLastKnownPriceAsync(product.Id);
+        if (lastPrice is not null)
+        {
+            Model.UnitPrice = lastPrice.Price;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Model.Name))
+        {
+            _error = "Informe o nome do produto.";
+            return;
+        }
+
+        if (Model.UnitPrice is null or < 0m)
+        {
+            _error = "Informe um preço válido (use vírgula para centavos).";
+            return;
+        }
+
+        if (Model.Quantity < 1)
+        {
+            _error = "Quantidade deve ser pelo menos 1.";
+            return;
+        }
+
+        _error = null;
+        await OnSave.InvokeAsync(Model);
+    }
+
+    private Task CancelAsync() => OnCancel.InvokeAsync();
+}

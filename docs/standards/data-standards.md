@@ -32,9 +32,10 @@
 - **IndexedDB** (via abstração em `Storage/`): stores `shoppingSessions`,
   `cartItems`, `products`, `priceRecords`, `pendingShares` (fila de
   contribuições aguardando rede).
-- **localStorage**: somente preferências (`budgetDefault`, tema, flags de
-  onboarding). Proibido dado de domínio em localStorage (limite de 5MB e
-  serialização síncrona).
+- **localStorage**: somente preferências (`budgetDefault`, `geminiApiKey`,
+  tema, flags de onboarding). Proibido dado de domínio em localStorage (limite
+  de 5MB e serialização síncrona). A chave Gemini é credencial do usuário —
+  nunca sincronizada nem enviada ao backend.
 - Todo objeto persistido carrega `schemaVersion`; migrações de schema do
   cliente são funções puras versionadas em `Storage/Migrations/` e rodam na
   inicialização.

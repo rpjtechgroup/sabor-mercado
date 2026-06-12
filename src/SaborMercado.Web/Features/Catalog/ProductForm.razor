@@ -1,0 +1,93 @@
+@* Formulário de produto do catálogo pessoal (F5). *@
+<div class="card">
+    <h2>@(IsEdit ? "Editar produto" : "Novo produto")</h2>
+
+    <div class="field">
+        <label for="product-name">Nome *</label>
+        <input id="product-name" class="input" @bind="Model.Name" placeholder="ex.: Óleo de Soja" />
+    </div>
+
+    <div class="field">
+        <label for="product-brand">Marca</label>
+        <input id="product-brand" class="input" @bind="Model.Brand" placeholder="ex.: Liza" />
+    </div>
+
+    <div class="field-row">
+        <div class="field">
+            <label for="product-qty-value">Peso/volume</label>
+            <input id="product-qty-value" class="input" type="number" step="any" min="0" @bind="Model.QuantityValue" placeholder="ex.: 900" />
+        </div>
+        <div class="field">
+            <label for="product-qty-unit">Unidade</label>
+            <select id="product-qty-unit" class="input" @bind="Model.QuantityUnit">
+                <option value="">—</option>
+                @foreach (var unit in Enum.GetValues<QuantityUnit>())
+                {
+                    <option value="@unit">@unit.Label()</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="field-row">
+        <div class="field">
+            <label for="product-ean">EAN (código de barras)</label>
+            <input id="product-ean" class="input" inputmode="numeric" @bind="Model.Ean" placeholder="opcional" />
+        </div>
+        <div class="field">
+            <label for="product-category">Categoria</label>
+            <input id="product-category" class="input" @bind="Model.Category" placeholder="ex.: Mercearia" />
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="product-notes">Observações</label>
+        <textarea id="product-notes" class="input" rows="2" @bind="Model.Notes"></textarea>
+    </div>
+
+    @if (_error is not null)
+    {
+        <p class="text-over" role="alert">@_error</p>
+    }
+
+    <div class="field-row">
+        <button type="button" class="btn btn-outline btn-block" @onclick="CancelAsync">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-block" @onclick="SaveAsync">Salvar</button>
+    </div>
+</div>
+
+@code {
+    private string? _error;
+
+    [Parameter]
+    public ProductFormModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<ProductFormModel> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    private async Task SaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Model.Name))
+        {
+            _error = "Informe o nome do produto.";
+            return;
+        }
+
+        if (Model.QuantityValue is <= 0m)
+        {
+            _error = "Peso/volume deve ser maior que zero.";
+            return;
+        }
+
+        _error = null;
+        await OnSave.InvokeAsync(Model);
+    }
+
+    private Task CancelAsync() => OnCancel.InvokeAsync();
+}

@@ -1,0 +1,56 @@
+@* Barra de orçamento com as faixas de cor do catálogo (F3/F4). *@
+@if (Budget is { } budget && budget > 0m)
+{
+    <div class="budget-card">
+        <div class="budget-track"
+             role="progressbar"
+             aria-valuemin="0"
+             aria-valuemax="100"
+             aria-valuenow="@((int)Math.Min(Percent, 100m))"
+             aria-label="Uso do orçamento">
+            <div class="budget-fill @RangeCode" style="width: @FillWidth%;"></div>
+        </div>
+        <div class="budget-legend">
+            <span class="budget-legend-item">
+                <span class="muted">Gasto</span>
+                <strong>@MoneyFormat.Format(Total)</strong>
+            </span>
+            <span class="budget-percent @TextClass">@PercentText</span>
+            <span class="budget-legend-item budget-legend-right">
+                <span class="muted">Restante</span>
+                <strong class="@(Remaining < 0m ? TextClass : null)">@MoneyFormat.Format(Remaining)</strong>
+            </span>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public decimal Total { get; set; }
+
+    [Parameter]
+    public decimal? Budget { get; set; }
+
+    private decimal Percent =>
+        Budget is { } budget && budget > 0m ? Total / budget * 100m : 0m;
+
+    private decimal Remaining => (Budget ?? 0m) - Total;
+
+    private BudgetRange Range => BudgetRanges.FromPercent(Percent);
+
+    private string RangeCode => Range.ToCssCode();
+
+    private string TextClass => Range switch
+    {
+        BudgetRange.Ok => "text-ok",
+        BudgetRange.Warn => "text-warn",
+        BudgetRange.High => "text-high",
+        _ => "text-over",
+    };
+
+    private string FillWidth =>
+        Math.Min(Percent, 100m).ToString("0.##", System.Globalization.CultureInfo.InvariantCulture);
+
+    private string PercentText =>
+        $"{Percent.ToString("N0", MoneyFormat.Culture)}% da meta";
+}

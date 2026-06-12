@@ -4,5 +4,9 @@ alwaysApply: true
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan
+shell commands, and other important information, read the current plan:
+`specs/005-monthly-comparator/plan.md`
+
+Active feature: 005-monthly-comparator (comparador estilo planilha, matriz por mercado,
+último preço no catálogo, padrão de compra mensal com pré-preenchimento do carrinho).
 <!-- SPECKIT END -->

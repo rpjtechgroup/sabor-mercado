@@ -1,0 +1,145 @@
+@page "/catalogo/{ProductId:guid}"
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Produto</PageTitle>
+
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else if (Product is null)
+{
+    <div class="empty-state">
+        <span class="empty-icon" aria-hidden="true">🤷</span>
+        Produto não encontrado.
+        <p><a href="catalogo">Voltar ao catálogo</a></p>
+    </div>
+}
+else if (_editForm is not null)
+{
+    <ProductForm Model="@_editForm" IsEdit="true" OnSave="SaveEditAsync" OnCancel="@(() => _editForm = null)" />
+}
+else
+{
+    <a class="muted" href="catalogo">‹ Catálogo</a>
+    <h1>@Product.Name</h1>
+    <p class="muted">@DetailsLine</p>
+
+    @if (!string.IsNullOrWhiteSpace(Product.Notes))
+    {
+        <p class="muted">@Product.Notes</p>
+    }
+
+    @if (Shopping.CurrentSession is not null)
+    {
+        <div class="card add-to-cart-card">
+            <div class="totals-row">
+                <span>Adicionar à compra atual</span>
+                <strong>@(_lastPrice is { } last ? MoneyFormat.Format(last.Price) : "sem preço")</strong>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" @onclick="AddToCartAsync" disabled="@(_lastPrice is null)">
+                🛒 Adicionar à compra
+            </button>
+            @if (_lastPrice is null)
+            {
+                <p class="muted">Registre um preço para poder adicionar direto ao carrinho.</p>
+            }
+            @if (_addedToCart)
+            {
+                <p class="text-ok" role="status">Adicionado ao carrinho.</p>
+            }
+        </div>
+    }
+
+    @if (Account.IsLoggedIn && _lastPrice is { } sharePrice)
+    {
+        <div class="card share-card">
+            <h2>Compartilhar preço</h2>
+            <p class="muted">
+                Envio opcional e anonimizado para o catálogo colaborativo.
+                Você ganha créditos quando a observação for aceita.
+            </p>
+            <div class="field">
+                <label for="share-market">Mercado</label>
+                <input id="share-market" class="input" @bind="_shareMarket" placeholder="nome do mercado" />
+            </div>
+            @if (!string.IsNullOrEmpty(_shareMessage))
+            {
+                <p class="success-text" role="status">@_shareMessage</p>
+            }
+            @if (!string.IsNullOrEmpty(_shareError))
+            {
+                <p class="text-danger" role="alert">@_shareError</p>
+            }
+            <button type="button"
+                    class="btn btn-secondary btn-block"
+                    disabled="@(_sharing || string.IsNullOrWhiteSpace(_shareMarket))"
+                    @onclick="SharePriceAsync">
+                Compartilhar @MoneyFormat.Format(sharePrice.Price) anonimamente
+            </button>
+        </div>
+    }
+    else if (!Account.IsLoggedIn)
+    {
+        <p class="muted">
+            <a href="conta">Entre na sua conta</a> para compartilhar preços e ganhar créditos.
+        </p>
+    }
+
+    <h2>Histórico de preços</h2>
+
+    <div class="card">
+        <div class="field-row">
+            <div class="field">
+                <label for="new-price">Preço (R$)</label>
+                <MoneyInput Id="new-price" @bind-Value="_newPrice" Placeholder="ex.: 8,99" />
+            </div>
+            <div class="field">
+                <label for="new-price-market">Mercado</label>
+                <input id="new-price-market" class="input" @bind="_newPriceMarket" placeholder="opcional" />
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-block" @onclick="AddPriceAsync" disabled="@(_newPrice is null)">
+            Registrar preço
+        </button>
+    </div>
+
+    @if (_history.Count == 0)
+    {
+        <p class="muted">Nenhum preço registrado ainda.</p>
+    }
+    else
+    {
+        <section aria-label="Histórico de preços">
+            @foreach (var record in _history)
+            {
+                <div class="card price-row">
+                    <span>
+                        <strong>@MoneyFormat.Format(record.Price)</strong>
+                        @if (record.MarketName is not null)
+                        {
+                            <span class="muted"> · @record.MarketName</span>
+                        }
+                    </span>
+                    <span class="muted">@record.ObservedAt.ToLocalTime().ToString("dd/MM/yyyy", MoneyFormat.Culture)</span>
+                </div>
+            }
+        </section>
+    }
+
+    <div class="session-actions">
+        <button type="button" class="btn btn-outline btn-block" @onclick="OpenEdit">Editar produto</button>
+        @if (_confirmingDelete)
+        {
+            <button type="button" class="btn btn-danger btn-block" @onclick="DeleteAsync">
+                Confirmar exclusão (apaga o histórico de preços)
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-danger btn-block" @onclick="@(() => _confirmingDelete = true)">
+                Excluir produto
+            </button>
+        }
+    </div>
+}

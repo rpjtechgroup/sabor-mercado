@@ -1,0 +1,35 @@
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.settings-section h2 {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin: 1rem 0;
+}
+
+.form-field label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.input {
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 2px solid var(--border, #e5e7eb);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+}
+
+.success-text {
+    color: var(--primary, #2e7d32);
+    margin: 0;
+}

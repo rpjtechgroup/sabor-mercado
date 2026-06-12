@@ -1,42 +1,33 @@
-# ADR-0005 — OCR via Gemini free tier com proxy no servidor
+# ADR-0005 — OCR via Gemini (chave do usuário no cliente)
 
-**Status:** Aceito — 2026-06-11
+**Status:** Aceito — emendado 2026-06-11 (revoga proxy obrigatório no servidor)
 
 ## Contexto
 
-O Modo Foto Inteligente (F1) exige extração estruturada de etiquetas de
-preço. O requisito de negócio é usar os modelos gratuitos do Google, com
-fallback manual obrigatório quando a comunicação falhar (Constitution II).
+O Modo Foto Inteligente (F1) usa modelos gratuitos do Google. A decisão inicial
+previa proxy no servidor com `GEMINI_API_KEY` centralizada. O produto evoluiu
+para que **cada usuário use sua própria chave** no free tier, sem custo de
+infra para OCR e sem depender do backend.
 
 ## Decisão
 
-1. **Modelo:** família Gemini Flash no free tier, com saída estruturada
-   (`responseSchema` JSON). Nome do modelo é configuração, não código.
-2. **Proxy obrigatório no servidor:** o PWA nunca chama o Gemini; o módulo
-   Recognition recebe a imagem, aplica rate-limit (por usuário e global) e
-   repassa. A API key vive apenas no servidor.
-3. **Compressão no cliente:** a imagem é redimensionada (~1024px JPEG) no
-   dispositivo antes do upload — preserva o orçamento de memória e banda da VM.
-4. **Orçamento de quota:** o rate-limit global é dimensionado abaixo da quota
-   diária do free tier; quota esgotada responde `503 OCR_UNAVAILABLE` sem
-   chamar o Gemini.
-5. **Fallback manual:** sempre disponível e acionado automaticamente em falha,
-   pré-preenchido com extração parcial quando houver.
-
-Detalhes operacionais em `docs/architecture/ocr-integration.md`.
+1. **Chave por usuário** em `localStorage` (`saborMercado.preferences.geminiApiKey`).
+2. **Chamada direta** do PWA ao `generativelanguage.googleapis.com` com a chave
+   do usuário (`GeminiShelfLabelClient`).
+3. **Normalização** no cliente (`RecognitionNormalizer` no projeto Web).
+4. **Backend Recognition** mantido como código legado/opcional, não usado pelo
+   fluxo principal do PWA.
+5. **Fallback manual** obrigatório quando não há chave ou a chamada falha.
 
 ## Consequências
 
-- (+) Custo zero de IA no MVP; chave protegida; abuso controlado.
-- (+) Trocar de modelo (ou de provedor) é mudança de configuração/adapter.
-- (−) Quota gratuita limita o volume diário de OCR — mitigado pelo fallback
-  manual e, na escala, por tier pago (decisão futura com dados de uso).
+- (+) OCR funciona sem servidor; quota é do usuário no Google.
+- (+) Alinhado ao offline-first e gratuito por padrão.
+- (−) Chave exposta no dispositivo do usuário (aceitável — é credencial dele).
+- (−) Usuário precisa criar chave no Google AI Studio (UX em `/configuracoes`).
 
 ## Alternativas consideradas
 
-- **Chamada direta do cliente ao Gemini:** exporia a API key; inviável.
-- **OCR local no dispositivo (Tesseract WASM):** sem custo de quota, porém
-  qualidade insuficiente para etiquetas heterogêneas e payload WASM pesado.
-  Pode virar fallback adicional no futuro (novo ADR).
-- **Google Cloud Vision API:** melhor OCR puro, mas exige billing ativo; o
-  requisito é o free tier dos modelos Google.
+- **Proxy no servidor com env var:** descartado — custo e quota centralizados.
+- **Enviar chave do cliente ao backend:** descartado — chave trafegaria pelo
+  nosso servidor sem necessidade.

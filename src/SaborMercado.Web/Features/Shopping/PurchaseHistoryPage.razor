@@ -1,0 +1,147 @@
+@page "/historico"
+@page "/historico/{SessionId:guid}"
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Comparador</PageTitle>
+
+<h1>Comparador de compras</h1>
+<p class="muted">Últimos 3 meses · escolha o melhor mercado por produto</p>
+
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else if (SessionId is { } detailId)
+{
+    <a class="muted history-back" href="historico">‹ Voltar</a>
+
+    @if (_sessionRows.Count == 0)
+    {
+        <p class="muted">Compra não encontrada ou fora do período de 3 meses.</p>
+    }
+    else
+    {
+        @if (_sessionSummary is { } summary)
+        {
+            <div class="card">
+                <strong>@summary.PurchaseDate.ToString("dd/MM/yyyy")</strong>
+                <span class="muted"> · @(summary.MarketName ?? "Mercado não informado")</span>
+                <p>Total: <strong>@MoneyFormat.Format(summary.Total)</strong> · @summary.ItemCount item(ns)</p>
+            </div>
+        }
+        <PurchaseHistoryGrid Rows="@_sessionRows" />
+    }
+}
+else
+{
+    <div class="history-tabs" role="tablist">
+        <button type="button"
+                class="history-tab @(_tab == HistoryTab.Comparator ? "active" : null)"
+                role="tab"
+                aria-selected="@(_tab == HistoryTab.Comparator)"
+                @onclick="() => SelectTab(HistoryTab.Comparator)">
+            Comparador
+        </button>
+        <button type="button"
+                class="history-tab @(_tab == HistoryTab.History ? "active" : null)"
+                role="tab"
+                aria-selected="@(_tab == HistoryTab.History)"
+                @onclick="() => SelectTab(HistoryTab.History)">
+            Histórico
+        </button>
+        <button type="button"
+                class="history-tab @(_tab == HistoryTab.BySession ? "active" : null)"
+                role="tab"
+                aria-selected="@(_tab == HistoryTab.BySession)"
+                @onclick="() => SelectTab(HistoryTab.BySession)">
+            Por compra
+        </button>
+    </div>
+
+    @switch (_tab)
+    {
+        case HistoryTab.Comparator:
+            <MarketComparisonMatrix Rows="@_matrixRows" MarketColumns="@_marketColumns" />
+            break;
+        case HistoryTab.History:
+            <PurchaseHistoryGrid Rows="@_consolidatedRows" ShowDate="true" />
+            break;
+        case HistoryTab.BySession:
+            @if (_sessions.Count == 0)
+            {
+                <div class="empty-state">
+                    <span class="empty-icon" aria-hidden="true">🧾</span>
+                    Nenhuma compra finalizada nos últimos 3 meses.
+                    <p><a href="">Iniciar uma compra</a></p>
+                </div>
+            }
+            else
+            {
+                <section aria-label="Compras recentes">
+                    @foreach (var session in _sessions)
+                    {
+                        <a class="card history-session-row" href="historico/@session.SessionId">
+                            <div>
+                                <strong>@session.PurchaseDate.ToString("dd/MM/yyyy")</strong>
+                                <span class="muted"> · @(session.MarketName ?? "Mercado não informado")</span>
+                            </div>
+                            <div class="history-session-meta">
+                                <span>@session.ItemCount item(ns)</span>
+                                <strong>@MoneyFormat.Format(session.Total)</strong>
+                            </div>
+                        </a>
+                    }
+                </section>
+            }
+            break;
+    }
+}
+
+@code {
+    private enum HistoryTab { Comparator, History, BySession }
+
+    private bool _loaded;
+    private HistoryTab _tab = HistoryTab.Comparator;
+    private List<FinishedSessionSummary> _sessions = [];
+    private List<PurchaseLineRow> _sessionRows = [];
+    private List<PurchaseLineRow> _consolidatedRows = [];
+    private List<MarketMatrixRow> _matrixRows = [];
+    private List<string> _marketColumns = [];
+    private FinishedSessionSummary? _sessionSummary;
+
+    [Parameter]
+    public Guid? SessionId { get; set; }
+
+    [Inject]
+    public PurchaseHistoryService History { get; set; } = default!;
+
+    [Inject]
+    public MarketPriceMatrixService Matrix { get; set; } = default!;
+
+    protected override async Task OnParametersSetAsync() => await LoadAsync();
+
+    private async Task LoadAsync()
+    {
+        _sessions = (await History.GetRecentSessionsAsync()).ToList();
+        _consolidatedRows = (await History.GetConsolidatedGridAsync()).ToList();
+        _matrixRows = (await Matrix.GetMatrixAsync()).ToList();
+        _marketColumns = MarketPriceMatrixService.GetMarketColumns(_matrixRows).ToList();
+
+        if (SessionId is { } id)
+        {
+            _sessionSummary = _sessions.FirstOrDefault(s => s.SessionId == id);
+            _sessionRows = (await History.GetSessionGridAsync(id)).ToList();
+        }
+        else
+        {
+            _sessionRows = [];
+            _sessionSummary = null;
+        }
+
+        _loaded = true;
+    }
+
+    private void SelectTab(HistoryTab tab) => _tab = tab;
+
+    public void Dispose() { }
+}

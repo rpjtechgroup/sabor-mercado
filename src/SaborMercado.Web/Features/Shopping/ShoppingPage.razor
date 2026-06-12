@@ -1,0 +1,109 @@
+@page "/"
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Compra</PageTitle>
+
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else if (Shopping.CurrentSession is null)
+{
+    @if (_showSummary && Shopping.LastFinishedSession is { } finished)
+    {
+        <div class="card session-summary">
+            <h1>Compra finalizada 🎉</h1>
+            @if (finished.MarketName is not null)
+            {
+                <p class="muted">@finished.MarketName</p>
+            }
+            <button type="button" class="btn btn-primary btn-block" @onclick="StartNew">Nova compra</button>
+            <a class="btn btn-outline btn-block history-link" href="historico">📋 Ver histórico desta compra</a>
+        </div>
+    }
+    else
+    {
+        <SessionStart SuggestedBudget="@Shopping.SuggestedBudget" OnStart="StartSessionAsync" />
+        <a class="btn btn-outline btn-block history-link" href="compra-mensal">📅 Editar lista mensal</a>
+        <a class="btn btn-outline btn-block history-link" href="historico">📋 Histórico de compras</a>
+    }
+}
+else
+{
+    <header class="session-header">
+        <h1>@(Shopping.CurrentSession.MarketName ?? "Compra em andamento")</h1>
+    </header>
+
+    @if (Shopping.CurrentSession.Kind == SessionKind.Sporadic)
+    {
+        <BudgetBar Total="@Shopping.Total" Budget="@Shopping.CurrentSession.BudgetAmount" />
+    }
+
+    @if (Shopping.CurrentSession.Kind == SessionKind.Monthly || Shopping.CurrentSession.BudgetAmount is null)
+    {
+        <div class="card totals-row">
+            <span class="muted">Total do carrinho</span>
+            <span class="totals-value">@MoneyFormat.Format(Shopping.Total)</span>
+        </div>
+    }
+
+    @if (_itemForm is not null)
+    {
+        <CartItemForm Model="@_itemForm"
+                      IsEdit="@(_editingItemId is not null)"
+                      OnSave="SaveItemAsync"
+                      OnCancel="CloseItemForm" />
+    }
+    else
+    {
+        <a class="btn btn-primary btn-block" href="foto">📸 Foto da etiqueta</a>
+        <button type="button" class="btn btn-secondary btn-block" @onclick="OpenAddForm">＋ Digitar manualmente</button>
+    }
+
+    @if (Shopping.Items.Count == 0 && _itemForm is null)
+    {
+        <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">🧺</span>
+            Carrinho vazio. Adicione o primeiro item para acompanhar o gasto.
+        </div>
+    }
+    else
+    {
+        <section class="cart-list" aria-label="Itens do carrinho">
+            @foreach (var item in Shopping.Items)
+            {
+                <CartItemRow @key="item.Id"
+                             Item="@item"
+                             OnIncrement="@(delta => IncrementAsync(item.Id, delta))"
+                             OnSetQuantity="@(quantity => SetQuantityAsync(item.Id, quantity))"
+                             OnEdit="@(() => OpenEditForm(item))"
+                             OnRemove="@(() => RemoveAsync(item.Id))" />
+            }
+        </section>
+    }
+
+    @if (_canExportCsv && Shopping.Items.Count > 0)
+    {
+        <button type="button" class="btn btn-secondary btn-block" @onclick="ExportCsvAsync">
+            📄 Exportar carrinho (CSV)
+        </button>
+    }
+
+    <div class="session-actions">
+        <button type="button" class="btn btn-primary btn-block" @onclick="FinishAsync">
+            ✅ Encerrar compra
+        </button>
+        @if (_confirmingAbandon)
+        {
+            <button type="button" class="btn btn-danger btn-block" @onclick="AbandonAsync">
+                Confirmar abandono (itens serão descartados)
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-outline btn-block" @onclick="AskAbandon">
+                Abandonar compra
+            </button>
+        }
+    </div>
+}

@@ -19,8 +19,10 @@ A leitura por foto usa os modelos gratuitos do Google (Gemini). A IA é um
 acelerador, não uma dependência: toda operação assistida por IA DEVE ter um
 caminho manual equivalente. Se a chamada falhar (quota, rede, erro), o app
 abre o formulário manual pré-preenchido com o que foi possível extrair, sem
-perder o contexto do usuário. Chaves de API nunca vão para o cliente; o
-backend faz proxy e rate-limiting.
+perder o contexto do usuário. A chave da API Gemini é **opcional**, fornecida
+pelo próprio usuário, armazenada somente em localStorage no dispositivo e usada
+para chamar o Google diretamente do PWA — nunca é enviada ao nosso backend.
+Sem chave, o modo foto cai no cadastro manual.
 
 ### III. Mensagens de Status Determinísticas
 Alertas de orçamento, projeções de gasto e avisos ("seu orçamento foi

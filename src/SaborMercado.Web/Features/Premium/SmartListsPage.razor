@@ -1,0 +1,51 @@
+@page "/listas-inteligentes"
+@inject AccountService Account
+@inject SmartListService SmartLists
+
+<PageTitle>Sabor Mercado — Listas inteligentes</PageTitle>
+
+<div class="premium-page">
+    <h1>Listas inteligentes</h1>
+    <p class="muted">Sugestões com base nas suas compras finalizadas (dados locais).</p>
+
+    @if (!_loaded)
+    {
+        <p class="muted">Carregando…</p>
+    }
+    else if (!Account.HasUnlock(PremiumFeatureCodes.SmartLists))
+    {
+        <p class="muted">Desbloqueie em <a href="conta">Minha conta</a> (30 créditos).</p>
+    }
+    else if (_items.Count == 0)
+    {
+        <p class="muted">Finalize compras para gerar sugestões.</p>
+    }
+    else
+    {
+        @foreach (var item in _items)
+        {
+            <div class="card price-row">
+                <strong>@item.ProductName</strong>
+                <span class="muted">@item.TimesBought× comprado</span>
+            </div>
+        }
+    }
+
+    <p class="muted"><a href="conta">‹ Minha conta</a></p>
+</div>
+
+@code {
+    private bool _loaded;
+    private IReadOnlyList<SmartListItem> _items = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Account.InitializeAsync();
+        if (Account.HasUnlock(PremiumFeatureCodes.SmartLists))
+        {
+            _items = await SmartLists.GetSuggestionsAsync();
+        }
+
+        _loaded = true;
+    }
+}

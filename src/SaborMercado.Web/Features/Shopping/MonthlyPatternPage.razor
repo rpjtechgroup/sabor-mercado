@@ -1,0 +1,137 @@
+@page "/compra-mensal"
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Lista mensal</PageTitle>
+
+<h1>Lista de compra mensal</h1>
+<p class="muted">Produtos que entram automaticamente no carrinho ao iniciar uma compra mensal.</p>
+
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else
+{
+    @if (_lines.Count == 0)
+    {
+        <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">📅</span>
+            Nenhum produto na lista mensal. Adicione itens do catálogo abaixo.
+        </div>
+    }
+    else
+    {
+        <section class="pattern-list" aria-label="Produtos da lista mensal">
+            @foreach (var line in _lines)
+            {
+                <div class="card pattern-row" @key="line.Product.Id">
+                    <div class="pattern-row-info">
+                        <strong>@line.Product.Name</strong>
+                        <span class="muted">@FormatDetails(line)</span>
+                    </div>
+                    <div class="pattern-row-meta">
+                        <span class="pattern-price">
+                            @(line.LastPrice is { } price ? MoneyFormat.Format(price) : "sem preço")
+                        </span>
+                        <label class="pattern-qty">
+                            Qtd
+                            <input type="number"
+                                   class="input input-compact"
+                                   min="1"
+                                   value="@line.DefaultQuantity"
+                                   @onchange="e => UpdateQtyAsync(line.Product.Id, e)" />
+                        </label>
+                        <button type="button"
+                                class="btn btn-outline btn-compact"
+                                aria-label="Remover @line.Product.Name"
+                                @onclick="() => RemoveAsync(line.Product.Id)">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            }
+        </section>
+    }
+
+    <div class="card">
+        <h2>Adicionar produto</h2>
+        <ProductAutocomplete Name="@_searchName"
+                             NameChanged="OnSearchNameChanged"
+                             OnProductSelected="AddProductAsync"
+                             Placeholder="Buscar no catálogo…" />
+    </div>
+
+    <a class="btn btn-outline btn-block" href="">‹ Voltar à compra</a>
+}
+
+@code {
+    private bool _loaded;
+    private string _searchName = string.Empty;
+    private IReadOnlyList<PatternLineView> _lines = [];
+
+    [Inject]
+    public ShoppingPatternService Patterns { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Patterns.StateChanged += OnStateChanged;
+        await RefreshAsync();
+        _loaded = true;
+    }
+
+    private async Task RefreshAsync() => _lines = await Patterns.GetLinesAsync();
+
+    private static string FormatDetails(PatternLineView line)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(line.Product.Brand))
+        {
+            parts.Add(line.Product.Brand);
+        }
+
+        if (line.Product.QuantityValue is { } value)
+        {
+            parts.Add($"{value.ToString("0.##", MoneyFormat.Culture)}{line.Product.QuantityUnit?.Label()}");
+        }
+
+        return string.Join(" · ", parts);
+    }
+
+    private Task OnSearchNameChanged(string name)
+    {
+        _searchName = name;
+        return Task.CompletedTask;
+    }
+
+    private async Task AddProductAsync(Product product)
+    {
+        await Patterns.AddProductAsync(product.Id);
+        _searchName = string.Empty;
+        await RefreshAsync();
+    }
+
+    private async Task RemoveAsync(Guid productId)
+    {
+        await Patterns.RemoveProductAsync(productId);
+        await RefreshAsync();
+    }
+
+    private async Task UpdateQtyAsync(Guid productId, ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out var qty) || qty < 1)
+        {
+            return;
+        }
+
+        await Patterns.UpdateQuantityAsync(productId, qty);
+        await RefreshAsync();
+    }
+
+    private void OnStateChanged() => InvokeAsync(async () =>
+    {
+        await RefreshAsync();
+        StateHasChanged();
+    });
+
+    public void Dispose() => Patterns.StateChanged -= OnStateChanged;
+}

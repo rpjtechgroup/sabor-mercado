@@ -23,6 +23,7 @@ share-to-unlock (compartilhar dados anonimizados desbloqueia premium).
 1. Fluxo principal (carrinho, orçamento, alertas, CRUD de produtos) roda 100%
    no cliente, offline, gratuito. Backend nunca é pré-requisito.
 2. Toda operação com IA tem caminho manual equivalente (fallback obrigatório).
+   OCR usa chave Gemini do usuário em localStorage; chamada direta ao Google.
 3. Alertas/projeções são determinísticos — proibido gerar via LLM em runtime
    e proibido criar mensagem fora do catálogo de `status-messages.md`.
 4. Stack: ASP.NET Core Minimal APIs + Blazor WASM PWA + EF Core/PostgreSQL.

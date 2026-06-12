@@ -1,0 +1,112 @@
+@using SaborMercado.Web.Domain.Catalog
+@implements IDisposable
+
+<div class="product-autocomplete">
+    <input id="@InputId"
+           class="input"
+           autocomplete="off"
+           placeholder="@Placeholder"
+           value="@Name"
+           @oninput="OnInputAsync"
+           @onfocus="ShowSuggestions"
+           aria-autocomplete="list"
+           aria-controls="@ListboxId"
+           aria-expanded="@_showList" />
+
+    @if (_showList && _suggestions.Count > 0)
+    {
+        <ul id="@ListboxId" class="autocomplete-list" role="listbox">
+            @foreach (var product in _suggestions)
+            {
+                <li role="option">
+                    <button type="button" class="autocomplete-item" @onclick="() => SelectAsync(product)">
+                        <strong>@product.Name</strong>
+                        @if (!string.IsNullOrWhiteSpace(product.Brand))
+                        {
+                            <span class="muted"> · @product.Brand</span>
+                        }
+                        @if (_lastPrices.TryGetValue(product.Id, out var lastPrice))
+                        {
+                            <span class="muted"> · @MoneyFormat.Format(lastPrice)</span>
+                        }
+                    </button>
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@code {
+    private readonly List<Product> _suggestions = [];
+    private readonly Dictionary<Guid, decimal> _lastPrices = [];
+    private bool _showList;
+
+    [Parameter]
+    public string InputId { get; set; } = "product-autocomplete";
+
+    [Parameter]
+    public string Placeholder { get; set; } = "ex.: Óleo de Soja Liza";
+
+    [Parameter]
+    public string Name { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> NameChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<Product> OnProductSelected { get; set; }
+
+    [Inject]
+    public CatalogService Catalog { get; set; } = default!;
+
+    private string ListboxId => $"{InputId}-list";
+
+    protected override async Task OnInitializedAsync()
+    {
+        Catalog.StateChanged += OnCatalogChanged;
+        await Catalog.InitializeAsync();
+    }
+
+    private async Task OnInputAsync(ChangeEventArgs e)
+    {
+        Name = e.Value?.ToString() ?? string.Empty;
+        await NameChanged.InvokeAsync(Name);
+        await RefreshSuggestionsAsync();
+        _showList = true;
+    }
+
+    private async Task RefreshSuggestionsAsync()
+    {
+        _suggestions.Clear();
+        _lastPrices.Clear();
+        _suggestions.AddRange(await Catalog.SearchProductsAsync(Name));
+
+        foreach (var product in _suggestions)
+        {
+            var last = await Catalog.GetLastKnownPriceAsync(product.Id);
+            if (last is not null)
+            {
+                _lastPrices[product.Id] = last.Price;
+            }
+        }
+    }
+
+    private void ShowSuggestions()
+    {
+        _showList = true;
+        _ = RefreshSuggestionsAsync();
+    }
+
+    private async Task SelectAsync(Product product)
+    {
+        Name = product.Name;
+        await NameChanged.InvokeAsync(Name);
+        await OnProductSelected.InvokeAsync(product);
+        _showList = false;
+        _suggestions.Clear();
+    }
+
+    private void OnCatalogChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Catalog.StateChanged -= OnCatalogChanged;
+}

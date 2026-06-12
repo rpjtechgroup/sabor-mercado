@@ -1,0 +1,241 @@
+@page "/conta"
+@implements IDisposable
+@inject AccountService Account
+@inject NavigationManager Navigation
+
+<PageTitle>Sabor Mercado — Minha conta</PageTitle>
+
+<div class="account-page">
+    <header class="session-header">
+        <h1>Minha conta</h1>
+        <p class="muted">
+            Compartilhe preços anonimizados para ganhar créditos e desbloquear recursos premium.
+            O fluxo principal continua gratuito e offline.
+        </p>
+    </header>
+
+    @if (!_loaded)
+    {
+        <p class="muted">Carregando…</p>
+    }
+    else if (!Account.IsLoggedIn)
+    {
+        <section class="card settings-section" aria-labelledby="auth-heading">
+            <h2 id="auth-heading">@(_registerMode ? "Criar conta" : "Entrar")</h2>
+            <p class="muted">
+                Conta leve (e-mail e senha). Seus dados de compra permanecem no dispositivo.
+            </p>
+
+            <div class="form-field">
+                <label for="account-email">E-mail</label>
+                <input id="account-email" class="input" type="email" autocomplete="username" @bind="_email" />
+            </div>
+            <div class="form-field">
+                <label for="account-password">Senha</label>
+                <input id="account-password" class="input" type="password" autocomplete="@(_registerMode ? "new-password" : "current-password")" @bind="_password" />
+            </div>
+
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <p class="text-danger" role="alert">@_error</p>
+            }
+
+            <button type="button" class="btn btn-primary btn-block" disabled="@_busy" @onclick="SubmitAuthAsync">
+                @(_registerMode ? "Criar conta" : "Entrar")
+            </button>
+            <button type="button" class="btn btn-outline btn-block" @onclick="ToggleMode">
+                @(_registerMode ? "Já tenho conta" : "Criar conta gratuita")
+            </button>
+        </section>
+    }
+    else
+    {
+        <section class="card settings-section" aria-labelledby="credits-heading">
+            <h2 id="credits-heading">Créditos</h2>
+            <p class="totals-value">@Account.CreditBalance crédito@(Account.CreditBalance == 1 ? string.Empty : "s")</p>
+            <p class="muted">Logado como @Account.Email</p>
+            @if (Account.PendingShareCount > 0)
+            {
+                <p class="muted" role="status">@Account.PendingShareCount compartilhamento(s) aguardando envio.</p>
+                <button type="button" class="btn btn-secondary btn-block" @onclick="FlushPendingAsync">Tentar enviar agora</button>
+            }
+            @if (Account.HasUnlock(PremiumFeatureCodes.CollaborativePriceHistory))
+            {
+                <a class="btn btn-secondary btn-block" href="catalogo-colaborativo">Ver catálogo colaborativo</a>
+            }
+            @if (Account.HasUnlock(PremiumFeatureCodes.AdvancedStats))
+            {
+                <a class="btn btn-secondary btn-block" href="estatisticas">Estatísticas avançadas</a>
+            }
+            @if (Account.HasUnlock(PremiumFeatureCodes.SmartLists))
+            {
+                <a class="btn btn-secondary btn-block" href="listas-inteligentes">Listas inteligentes</a>
+            }
+            <button type="button" class="btn btn-outline btn-block" @onclick="LogoutAsync">Sair</button>
+        </section>
+
+        <section class="card settings-section" aria-labelledby="unlocks-heading">
+            <h2 id="unlocks-heading">Desbloqueios premium</h2>
+            @foreach (var offer in UnlockOffers.All)
+            {
+                var active = Account.HasUnlock(offer.Code);
+                <div class="unlock-row">
+                    <div>
+                        <strong>@offer.Label</strong>
+                        <p class="muted">@offer.Cost créditos · @offer.DurationLabel</p>
+                    </div>
+                    @if (active)
+                    {
+                        <span class="text-ok">Ativo</span>
+                    }
+                    else
+                    {
+                        <button type="button"
+                                class="btn btn-secondary"
+                                disabled="@_busy"
+                                @onclick="() => UnlockAsync(offer.Code)">
+                            Desbloquear
+                        </button>
+                    }
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(_unlockMessage))
+            {
+                <p class="success-text" role="status">@_unlockMessage</p>
+            }
+            @if (!string.IsNullOrEmpty(_error))
+            {
+                <p class="text-danger" role="alert">@_error</p>
+            }
+        </section>
+
+        <section class="card settings-section" aria-labelledby="danger-heading">
+            <h2 id="danger-heading">Zona de perigo</h2>
+            <p class="muted">Exclui sua conta. Compartilhamentos já anonimizados permanecem no catálogo colaborativo.</p>
+            @if (_confirmingDelete)
+            {
+                <button type="button" class="btn btn-danger btn-block" disabled="@_busy" @onclick="DeleteAccountAsync">
+                    Confirmar exclusão da conta
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-danger btn-block" @onclick="@(() => _confirmingDelete = true)">
+                    Excluir conta
+                </button>
+            }
+        </section>
+    }
+
+    <p class="muted"><a href="configuracoes">‹ Voltar aos ajustes</a></p>
+</div>
+
+@code {
+    private bool _loaded;
+    private bool _registerMode;
+    private bool _busy;
+    private bool _confirmingDelete;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private string? _error;
+    private string? _unlockMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Account.StateChanged += OnStateChanged;
+        await Account.InitializeAsync();
+        _loaded = true;
+    }
+
+    private void ToggleMode()
+    {
+        _registerMode = !_registerMode;
+        _error = null;
+    }
+
+    private async Task SubmitAuthAsync()
+    {
+        _busy = true;
+        _error = null;
+        try
+        {
+            if (_registerMode)
+            {
+                await Account.RegisterAsync(_email.Trim(), _password);
+            }
+            else
+            {
+                await Account.LoginAsync(_email.Trim(), _password);
+            }
+
+            _password = string.Empty;
+        }
+        catch (AccountException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task UnlockAsync(string featureCode)
+    {
+        _busy = true;
+        _error = null;
+        _unlockMessage = null;
+        try
+        {
+            await Account.UnlockAsync(featureCode);
+            _unlockMessage = "Funcionalidade desbloqueada.";
+        }
+        catch (AccountException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task FlushPendingAsync()
+    {
+        _busy = true;
+        await Account.FlushPendingSharesAsync();
+        _busy = false;
+    }
+
+    private async Task LogoutAsync()
+    {
+        await Account.LogoutAsync();
+        _unlockMessage = null;
+        _error = null;
+        _confirmingDelete = false;
+    }
+
+    private async Task DeleteAccountAsync()
+    {
+        _busy = true;
+        _error = null;
+        try
+        {
+            await Account.DeleteAccountAsync();
+            _confirmingDelete = false;
+        }
+        catch (AccountException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Account.StateChanged -= OnStateChanged;
+}

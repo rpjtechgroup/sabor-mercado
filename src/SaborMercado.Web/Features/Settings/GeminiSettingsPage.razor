@@ -1,0 +1,96 @@
+@page "/configuracoes"
+@inject IPreferencesStore Preferences
+@inject NavigationManager Navigation
+
+<PageTitle>Sabor Mercado — Configurações</PageTitle>
+
+<div class="settings-page">
+    <header class="session-header">
+        <h1>Configurações</h1>
+    </header>
+
+    <section class="card settings-section" aria-labelledby="monthly-heading">
+        <h2 id="monthly-heading">Compra mensal</h2>
+        <p class="muted">
+            Cadastre os produtos que entram automaticamente no carrinho ao iniciar uma compra mensal.
+        </p>
+        <a class="btn btn-secondary btn-block" href="compra-mensal">Editar lista mensal</a>
+    </section>
+
+    <section class="card settings-section" aria-labelledby="account-heading">
+        <h2 id="account-heading">Conta e créditos</h2>
+        <p class="muted">
+            Crie uma conta para compartilhar preços anonimizados, acumular créditos
+            e desbloquear exportação CSV e outros recursos premium.
+        </p>
+        <a class="btn btn-secondary btn-block" href="conta">Minha conta</a>
+    </section>
+
+    <section class="card settings-section" aria-labelledby="gemini-heading">
+        <h2 id="gemini-heading">Leitura por foto (Gemini)</h2>
+        <p class="muted">
+            Para usar o modo foto, informe sua chave da API Gemini (free tier).
+            A chave fica <strong>somente neste dispositivo</strong> (localStorage)
+            e não é enviada ao nosso servidor.
+        </p>
+        <p class="muted">
+            Obtenha uma chave gratuita em
+            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">
+                Google AI Studio
+            </a>.
+        </p>
+
+        <div class="form-field">
+            <label for="gemini-key">Chave da API Gemini</label>
+            <input id="gemini-key"
+                   class="input"
+                   type="password"
+                   autocomplete="off"
+                   @bind="_apiKey"
+                   placeholder="AIza…" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(_message))
+        {
+            <p class="success-text" role="status">@_message</p>
+        }
+
+        <button type="button" class="btn btn-primary btn-block" @onclick="SaveAsync">Salvar chave</button>
+
+        @if (_hasStoredKey)
+        {
+            <button type="button" class="btn btn-outline btn-block" @onclick="RemoveAsync">Remover chave salva</button>
+        }
+    </section>
+</div>
+
+@code {
+    private string _apiKey = string.Empty;
+    private bool _hasStoredKey;
+    private string? _message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var stored = await Preferences.GetGeminiApiKeyAsync();
+        _hasStoredKey = !string.IsNullOrWhiteSpace(stored);
+        if (_hasStoredKey)
+        {
+            _apiKey = stored!;
+        }
+    }
+
+    private async Task SaveAsync()
+    {
+        await Preferences.SetGeminiApiKeyAsync(string.IsNullOrWhiteSpace(_apiKey) ? null : _apiKey);
+        _hasStoredKey = !string.IsNullOrWhiteSpace(_apiKey);
+        _message = "Chave salva neste dispositivo.";
+    }
+
+    private async Task RemoveAsync()
+    {
+        await Preferences.SetGeminiApiKeyAsync(null);
+        _apiKey = string.Empty;
+        _hasStoredKey = false;
+        _message = "Chave removida.";
+    }
+}

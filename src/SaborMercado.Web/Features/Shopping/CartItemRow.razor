@@ -1,0 +1,115 @@
+@* Item do carrinho com ações rápidas +1 / +5 / Digitar quantidade (F2). *@
+<div class="card cart-item">
+    <button type="button" class="cart-item-header" @onclick="ToggleExpanded">
+        <span class="cart-item-info">
+            <strong>@Item.ProductSnapshot.Name</strong>
+            @if (DetailsLine is not null)
+            {
+                <span class="muted">@DetailsLine</span>
+            }
+        </span>
+        <span class="cart-item-subtotal">
+            <strong>@MoneyFormat.Format(Item.Subtotal)</strong>
+            <span class="muted">@Item.Quantity × @MoneyFormat.Format(Item.UnitPrice)</span>
+        </span>
+    </button>
+
+    @if (_expanded)
+    {
+        <div class="cart-item-actions">
+            <button type="button" class="btn-qty" @onclick="() => IncrementAsync(1)">+1</button>
+            <button type="button" class="btn-qty" @onclick="() => IncrementAsync(5)">+5</button>
+            <button type="button" class="btn-qty" @onclick="ToggleTyping">Digitar</button>
+            <span class="cart-item-actions-spacer"></span>
+            <button type="button" class="btn btn-sm btn-outline" @onclick="EditAsync">Editar</button>
+            @if (_confirmingRemove)
+            {
+                <button type="button" class="btn btn-sm btn-danger" @onclick="RemoveAsync">Confirmar?</button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-sm btn-danger" @onclick="AskRemove">Remover</button>
+            }
+        </div>
+
+        @if (_typing)
+        {
+            <div class="cart-item-typing">
+                <input class="input" type="number" min="1" @bind="_typedQuantity" aria-label="Nova quantidade" />
+                <button type="button" class="btn btn-primary btn-sm" @onclick="ConfirmTypedAsync">OK</button>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private bool _expanded;
+    private bool _typing;
+    private bool _confirmingRemove;
+    private int _typedQuantity;
+
+    [Parameter, EditorRequired]
+    public CartItem Item { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<int> OnIncrement { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnSetQuantity { get; set; }
+
+    [Parameter]
+    public EventCallback OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback OnRemove { get; set; }
+
+    private string? DetailsLine
+    {
+        get
+        {
+            var parts = new List<string>();
+            if (!string.IsNullOrWhiteSpace(Item.ProductSnapshot.Brand))
+            {
+                parts.Add(Item.ProductSnapshot.Brand);
+            }
+
+            if (Item.ProductSnapshot.QuantityValue is { } value)
+            {
+                var unit = Item.ProductSnapshot.QuantityUnit?.Label() ?? string.Empty;
+                parts.Add($"{value.ToString("0.##", MoneyFormat.Culture)}{unit}");
+            }
+
+            return parts.Count > 0 ? string.Join(" · ", parts) : null;
+        }
+    }
+
+    private void ToggleExpanded()
+    {
+        _expanded = !_expanded;
+        _typing = false;
+        _confirmingRemove = false;
+    }
+
+    private Task IncrementAsync(int delta) => OnIncrement.InvokeAsync(delta);
+
+    private void ToggleTyping()
+    {
+        _typing = !_typing;
+        _typedQuantity = Item.Quantity;
+    }
+
+    private async Task ConfirmTypedAsync()
+    {
+        if (_typedQuantity >= 1)
+        {
+            await OnSetQuantity.InvokeAsync(_typedQuantity);
+            _typing = false;
+        }
+    }
+
+    private Task EditAsync() => OnEdit.InvokeAsync();
+
+    private void AskRemove() => _confirmingRemove = true;
+
+    private Task RemoveAsync() => OnRemove.InvokeAsync();
+}

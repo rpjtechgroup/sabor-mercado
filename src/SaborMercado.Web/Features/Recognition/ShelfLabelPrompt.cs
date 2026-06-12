@@ -1,0 +1,17 @@
+namespace SaborMercado.Web.Features.Recognition;
+
+internal static class ShelfLabelPrompt
+{
+    public const string Text = """
+        Extraia da imagem de etiqueta de preço de supermercado brasileiro:
+        - nome do produto
+        - marca
+        - peso ou volume com unidade (g, kg, ml, l ou un)
+        - preço em reais (formato brasileiro com vírgula)
+        - código EAN/GTIN se visível
+
+        Retorne null para campos não identificados com segurança.
+        O campo confidence deve ser sua certeza global de 0 a 1 sobre a extração completa.
+        O campo rawText deve conter o texto bruto legível na etiqueta.
+        """;
+}
