@@ -10,6 +10,7 @@ TestResults/
 
 # Publish
 publish/
+sabormercado-*.tar.gz
 *.pubxml
 
 # Secrets / ambiente
