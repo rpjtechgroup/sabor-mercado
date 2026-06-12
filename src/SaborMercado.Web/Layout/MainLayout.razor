@@ -4,6 +4,13 @@
 @inject IPreferencesStore Preferences
 
 <div class="@_shellClass">
+    <header class="app-topbar" aria-label="Barra superior">
+        <IconButton Icon="@(UiPrefs.ShowIconLabels ? AppIcons.IconsOnly : AppIcons.IconsWithText)"
+                    Label="@(UiPrefs.ShowIconLabels ? "Mostrar só ícones" : "Mostrar ícones com texto")"
+                    CssClass="btn btn-outline btn-icon app-topbar-toggle"
+                    OnClick="ToggleIconLabelsAsync" />
+    </header>
+
     <ToastHost />
     <ShoppingToastNotifier />
     <main class="app-content">
@@ -19,13 +26,18 @@
 </div>
 
 @code {
-    private string _shellClass = "app-shell app-shell--icons-only";
+    private string _shellClass = "app-shell app-shell--labels";
 
     protected override async Task OnInitializedAsync()
     {
         await UiPrefs.InitializeAsync(Preferences);
         UpdateShellClass();
         UiPrefs.Changed += OnUiPrefsChanged;
+    }
+
+    private async Task ToggleIconLabelsAsync()
+    {
+        await UiPrefs.SetShowIconLabelsAsync(Preferences, !UiPrefs.ShowIconLabels);
     }
 
     private void OnUiPrefsChanged()

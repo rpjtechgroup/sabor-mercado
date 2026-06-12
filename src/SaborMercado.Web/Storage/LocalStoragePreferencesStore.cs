@@ -98,6 +98,11 @@ public sealed class LocalStoragePreferencesStore(LocalStorageInterop localStorag
     public async Task<bool> GetShowIconLabelsAsync()
     {
         var raw = await localStorage.GetItemAsync(ShowIconLabelsKey);
+        if (string.IsNullOrEmpty(raw))
+        {
+            return true;
+        }
+
         return string.Equals(raw, "1", StringComparison.Ordinal);
     }
 

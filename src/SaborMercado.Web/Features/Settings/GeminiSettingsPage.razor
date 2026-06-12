@@ -1,6 +1,5 @@
 @page "/configuracoes"
 @inject IPreferencesStore Preferences
-@inject UiPreferencesState UiPrefs
 @inject NavigationManager Navigation
 
 <PageTitle>Sabor Mercado — Configurações</PageTitle>
@@ -9,23 +8,6 @@
     <header class="session-header">
         <PageIcon Icon="@AppIcons.Settings" Title="Configurações" />
     </header>
-
-    <section class="card settings-section" aria-labelledby="display-heading">
-        <SectionIcon Id="display-heading" Icon="@AppIcons.Settings" Title="Aparência" />
-        <p class="muted">Escolha se os botões e menus mostram só ícones ou ícones com texto.</p>
-        <div class="session-kind-toggle" role="radiogroup" aria-label="Modo de exibição dos ícones">
-            <IconButton Icon="@AppIcons.IconsOnly"
-                        Label="Só ícones"
-                        CssClass="@($"btn btn-icon {(UiPrefs.ShowIconLabels ? "btn-outline" : "btn-primary")}")"
-                        AdditionalAttributes="@IconsOnlyRadioAttrs"
-                        OnClick="@(() => SetIconLabelsAsync(false))" />
-            <IconButton Icon="@AppIcons.IconsWithText"
-                        Label="Ícones e texto"
-                        CssClass="@($"btn btn-icon {(UiPrefs.ShowIconLabels ? "btn-primary" : "btn-outline")}")"
-                        AdditionalAttributes="@IconsWithTextRadioAttrs"
-                        OnClick="@(() => SetIconLabelsAsync(true))" />
-        </div>
-    </section>
 
     <section class="card settings-section" aria-labelledby="stores-heading">
         <SectionIcon Id="stores-heading" Icon="@AppIcons.Store" Title="Comércios" />
@@ -98,33 +80,14 @@
     private bool _hasStoredKey;
     private string? _message;
 
-    private Dictionary<string, object> IconsOnlyRadioAttrs => new()
-    {
-        ["role"] = "radio",
-        ["aria-checked"] = !UiPrefs.ShowIconLabels,
-    };
-
-    private Dictionary<string, object> IconsWithTextRadioAttrs => new()
-    {
-        ["role"] = "radio",
-        ["aria-checked"] = UiPrefs.ShowIconLabels,
-    };
-
     protected override async Task OnInitializedAsync()
     {
-        await UiPrefs.InitializeAsync(Preferences);
         var stored = await Preferences.GetGeminiApiKeyAsync();
         _hasStoredKey = !string.IsNullOrWhiteSpace(stored);
         if (_hasStoredKey)
         {
             _apiKey = stored!;
         }
-    }
-
-    private async Task SetIconLabelsAsync(bool showLabels)
-    {
-        await UiPrefs.SetShowIconLabelsAsync(Preferences, showLabels);
-        StateHasChanged();
     }
 
     private async Task SaveAsync()
