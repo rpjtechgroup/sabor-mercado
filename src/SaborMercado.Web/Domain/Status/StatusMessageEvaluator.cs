@@ -3,19 +3,12 @@ using SaborMercado.Web.Shared;
 
 namespace SaborMercado.Web.Domain.Status;
 
-/// <summary>
-/// Avaliador puro do catálogo docs/domain/status-messages.md (Constitution III):
-/// (estado anterior, carrinho, mutação, relógio) → (mensagem?, novo estado).
-/// Sem efeitos colaterais; no máximo 1 mensagem por mutação; prioridade
-/// BUDGET_EXCEEDED > BUDGET_REACHED > BUDGET_HIGH_90 > BUDGET_WARN_75 >
-/// BUDGET_HALF > PACE_* > ITEM_*.
-/// </summary>
 public static class StatusMessageEvaluator
 {
     private static readonly TimeSpan PaceCooldownDuration = TimeSpan.FromMinutes(5);
     private const int PaceCooldownItemCount = 5;
 
-    /// <summary>Limiar percentual → código, em ordem de prioridade (maior primeiro).</summary>
+    
     private static readonly (decimal Threshold, string Code)[] CrossingThresholds =
     [
         (100m, StatusCodes.BudgetReached),
@@ -30,7 +23,7 @@ public static class StatusMessageEvaluator
         var percentUsed = cart.PercentUsed;
         var hasBudget = cart.BudgetAmount is { } budgetValue && budgetValue > 0m;
 
-        // Rearme (regra de emissão nº 1): recuar abaixo do limiar reabilita o código.
+        
         var emitted = new HashSet<string>(input.Before.EmittedCodes);
         foreach (var (threshold, code) in CrossingThresholds)
         {
@@ -55,7 +48,7 @@ public static class StatusMessageEvaluator
                 return new EvaluationResult(BuildSessionFinished(cart), after);
         }
 
-        // Mutações do carrinho (ItemAdded/ItemAddedOcr/ItemUpdated/ItemRemoved).
+        
         if (!hasBudget)
         {
             return TryBuildOcrItemMessage(input, after)
@@ -66,7 +59,7 @@ public static class StatusMessageEvaluator
         var remaining = budget - cart.Total;
         var isNewItem = input.Mutation is CartMutation.ItemAdded or CartMutation.ItemAddedOcr;
 
-        // Prioridade 1 — BUDGET_EXCEEDED: a cada novo item enquanto estourado.
+        
         if (isNewItem && cart.Total > budget)
         {
             return new EvaluationResult(
@@ -74,8 +67,8 @@ public static class StatusMessageEvaluator
                 after);
         }
 
-        // Prioridades 2–5 — cruzamentos de limiar (de baixo para cima),
-        // uma única emissão por sessão por código (com rearme).
+        
+        
         var percentBefore = input.Before.LastPercentUsed;
         foreach (var (threshold, code) in CrossingThresholds)
         {
@@ -89,7 +82,7 @@ public static class StatusMessageEvaluator
             }
         }
 
-        // Prioridade 6 — PACE_* com cooldown de 5 itens OU 5 minutos (regra nº 2).
+        
         if (TryComputeProjection(cart, input.Now, out var projection) &&
             IsPaceCooldownElapsed(input.Before, cart, input.Now))
         {
@@ -142,11 +135,11 @@ public static class StatusMessageEvaluator
             after);
     }
 
-    /// <summary>
-    /// Projeção de gasto final `E`:
-    /// regra 1 — com lista planejada (N conhecido, n ≥ 3): E = (T/n) × N;
-    /// regra 2 — sem lista (n ≥ 5): E = T × (duraçãoMédia / tempoDecorrido), teto 3×T.
-    /// </summary>
+    
+    
+    
+    
+    
     private static bool TryComputeProjection(CartSnapshot cart, DateTimeOffset now, out decimal projection)
     {
         projection = 0m;
@@ -197,9 +190,9 @@ public static class StatusMessageEvaluator
             ("T", MoneyFormat.Format(cart.Total)),
         };
 
-        // O arg "variant" seleciona a variação do texto localizado
-        // ("economia de {B−T}" | "{T−B} acima da meta"); o código permanece
-        // SESSION_FINISHED (o texto é recurso, o código é o contrato).
+        
+        
+        
         if (cart.BudgetAmount is { } budget && budget > 0m && cart.Total < budget)
         {
             args.Add(("variant", "under"));

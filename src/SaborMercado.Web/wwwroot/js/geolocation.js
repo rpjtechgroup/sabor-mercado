@@ -1,4 +1,3 @@
-// Geolocalização do navegador — consumido por Interop/GeolocationInterop.cs.
 
 function toMessage(err) {
   if (err.code === 1) {
@@ -30,7 +29,6 @@ export async function getCurrentPosition() {
     throw new Error('Geolocalização não suportada neste navegador.');
   }
 
-  // Rápido (rede/Wi‑Fi) primeiro; GPS de alta precisão só se o primeiro tentar expirar.
   const attempts = [
     { enableHighAccuracy: false, timeout: 20000, maximumAge: 300000 },
     { enableHighAccuracy: true, timeout: 45000, maximumAge: 0 },

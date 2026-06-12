@@ -2,7 +2,6 @@ using Microsoft.JSInterop;
 
 namespace SaborMercado.Web.Interop;
 
-/// <summary>Wrapper tipado do localStorage (somente preferências leves).</summary>
 public sealed class LocalStorageInterop(IJSRuntime jsRuntime)
 {
     public ValueTask SetItemAsync(string key, string value) =>

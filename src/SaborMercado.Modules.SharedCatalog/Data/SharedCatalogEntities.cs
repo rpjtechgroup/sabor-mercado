@@ -87,7 +87,7 @@ public sealed class ContributorTrust
 {
     public Guid PseudonymId { get; set; }
 
-    /// <summary>Vincula pseudônimo à conta para conquistas (não exposto publicamente).</summary>
+    
     public Guid? ContributorUserId { get; set; }
 
     public int TrustScore { get; set; } = 50;

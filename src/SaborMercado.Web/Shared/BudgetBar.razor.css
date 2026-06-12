@@ -19,7 +19,7 @@
     transition: width 0.25s ease, background-color 0.25s ease;
 }
 
-/* Códigos de faixa do catálogo (docs/domain/status-messages.md) */
+
 .budget-fill.budget-ok { background: var(--budget-ok); }
 .budget-fill.budget-warn { background: var(--budget-warn); }
 .budget-fill.budget-high { background: var(--budget-high); }

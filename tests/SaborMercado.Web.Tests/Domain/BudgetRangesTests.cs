@@ -2,7 +2,6 @@ using SaborMercado.Web.Domain.Status;
 
 namespace SaborMercado.Web.Tests.Domain;
 
-/// <summary>Limites exatos das faixas da barra (docs/domain/status-messages.md).</summary>
 public class BudgetRangesTests
 {
     [Theory]

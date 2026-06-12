@@ -3,10 +3,6 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Interop;
 
-/// <summary>
-/// Wrapper C# tipado do módulo wwwroot/js/indexedDb.js — único ponto de
-/// contato com JS para persistência (frontend-standards §6).
-/// </summary>
 public sealed class IndexedDbInterop(IJSRuntime jsRuntime) : IAsyncDisposable
 {
     private IJSObjectReference? _module;
@@ -68,7 +64,7 @@ public sealed class IndexedDbInterop(IJSRuntime jsRuntime) : IAsyncDisposable
             }
             catch (JSDisconnectedException)
             {
-                // Circuito já encerrado; nada a liberar.
+                
             }
         }
     }

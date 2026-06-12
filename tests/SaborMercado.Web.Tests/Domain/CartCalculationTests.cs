@@ -3,7 +3,6 @@ using SaborMercado.Web.Domain.Status;
 
 namespace SaborMercado.Web.Tests.Domain;
 
-/// <summary>Cálculos do carrinho (F2): subtotal, total e percentual.</summary>
 public class CartCalculationTests
 {
     private static CartItem Item(decimal unitPrice, int quantity) => new()
@@ -16,7 +15,7 @@ public class CartCalculationTests
     [Fact]
     public void Subtotal_IsQuantityTimesUnitPrice()
     {
-        // Exemplo canônico da visão: 3 × R$ 8,99 = R$ 26,97.
+        
         Assert.Equal(26.97m, Item(8.99m, 3).Subtotal);
     }
 

@@ -1,4 +1,4 @@
-/* Sabor Mercado — estilos globais (mobile-first, uso com uma mão). */
+
 
 :root {
     --primary: #15803d;
@@ -14,7 +14,7 @@
     --radius: 1rem;
     --shadow: 0 1px 3px rgb(0 0 0 / 8%);
 
-    /* Faixas da barra de orçamento (docs/domain/status-messages.md) */
+    
     --budget-ok: #22c55e;
     --budget-warn: #eab308;
     --budget-high: #f97316;
@@ -49,7 +49,7 @@ h2 {
     margin: 1.25rem 0 0.5rem;
 }
 
-/* ---------- Comércios ---------- */
+
 
 .store-row {
     display: flex;
@@ -78,7 +78,7 @@ h2 {
     margin-top: 0.5rem;
 }
 
-/* ---------- Botões (alvos de toque grandes) ---------- */
+
 
 button {
     font: inherit;
@@ -154,7 +154,7 @@ button {
     font-weight: 800;
 }
 
-/* ---------- UI iconizada (rótulos em title / aria-label) ---------- */
+
 
 .icon-glyph {
     font-size: 1.35rem;
@@ -266,7 +266,7 @@ button {
     font-size: 1.15rem;
 }
 
-/* Dica ao tocar ou focar (mobile + desktop) */
+
 [title].btn-icon,
 [title].icon-link,
 [title].bottom-nav-link,
@@ -330,7 +330,7 @@ button {
     }
 }
 
-/* ---------- Formulários ---------- */
+
 
 .field {
     display: flex;
@@ -373,7 +373,7 @@ textarea.input {
     flex: 1;
 }
 
-/* ---------- Cartões e listas ---------- */
+
 
 .card {
     background: var(--surface);
@@ -400,7 +400,7 @@ textarea.input {
     margin-bottom: 0.5rem;
 }
 
-/* ---------- Totais ---------- */
+
 
 .totals-row {
     display: flex;
@@ -564,7 +564,7 @@ textarea.input {
     font-size: 0.9rem;
 }
 
-/* ---------- Confiança comunitária ---------- */
+
 
 .trust-badge {
     display: inline-block;
@@ -691,7 +691,7 @@ textarea.input {
     box-shadow: 0 -4px 24px rgb(0 0 0 / 15%);
 }
 
-/* ---------- Carregamento / erro ---------- */
+
 
 .app-loading {
     display: flex;

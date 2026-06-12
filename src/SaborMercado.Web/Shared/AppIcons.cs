@@ -1,6 +1,5 @@
 namespace SaborMercado.Web.Shared;
 
-/// <summary>Ícones Unicode usados na UI iconizada (rótulos em aria-label/title).</summary>
 public static class AppIcons
 {
     public const string Shopping = "🛒";

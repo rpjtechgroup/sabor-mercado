@@ -2,10 +2,6 @@ using System.Security.Cryptography;
 
 namespace SaborMercado.Web.Domain;
 
-/// <summary>
-/// Gera GUIDs no formato UUID v7 (prefixo temporal ordenável), conforme
-/// docs/standards/data-standards.md. .NET 8 não possui Guid.CreateVersion7.
-/// </summary>
 public static class Ids
 {
     public static Guid NewId() => NewId(DateTimeOffset.UtcNow);

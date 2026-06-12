@@ -6,9 +6,6 @@ using SaborMercado.Web.Contracts.Recognition;
 
 namespace SaborMercado.Web.Features.Recognition;
 
-/// <summary>
-/// Chama o Gemini diretamente do navegador com a chave do usuário (localStorage).
-/// </summary>
 public sealed class GeminiShelfLabelClient(HttpClient httpClient, IConfiguration configuration)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()

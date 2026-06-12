@@ -1,0 +1,29 @@
+<label class="@CssClass"
+       title="@Label"
+       aria-label="@Label">
+    <IconContent Icon="@Icon" Label="@Label" />
+    <InputFile OnChange="OnChange"
+               accept="@Accept"
+               capture="@Capture"
+               class="photo-input-hidden" />
+</label>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = AppIcons.Photo;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string CssClass { get; set; } = "btn btn-primary btn-block photo-input-label btn-icon";
+
+    [Parameter]
+    public string Accept { get; set; } = "image/*";
+
+    [Parameter]
+    public string? Capture { get; set; }
+
+    [Parameter]
+    public EventCallback<InputFileChangeEventArgs> OnChange { get; set; }
+}

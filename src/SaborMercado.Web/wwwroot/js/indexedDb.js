@@ -1,5 +1,3 @@
-// Módulo fino de acesso ao IndexedDB (único JS do app — frontend-standards §6).
-// Consumido exclusivamente por Interop/IndexedDbInterop.cs.
 
 let dbPromise = null;
 

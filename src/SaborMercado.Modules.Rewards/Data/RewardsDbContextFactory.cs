@@ -3,9 +3,6 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace SaborMercado.Modules.Rewards.Data;
 
-/// <summary>
-/// Design-time factory for EF migrations targeting PostgreSQL (production provider).
-/// </summary>
 public sealed class RewardsDbContextFactory : IDesignTimeDbContextFactory<RewardsDbContext>
 {
     public RewardsDbContext CreateDbContext(string[] args)

@@ -6,7 +6,6 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Infrastructure;
 
-/// <summary>Cliente HTTP para a API Sabor Mercado (auth, compartilhamento, créditos).</summary>
 public sealed class SaborMercadoApiClient(HttpClient httpClient, IPreferencesStore preferences)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()

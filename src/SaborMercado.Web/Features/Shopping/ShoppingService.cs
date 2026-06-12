@@ -6,13 +6,6 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Shopping;
 
-/// <summary>
-/// Estado e casos de uso da sessão de compra (F2–F4). Toda mutação:
-/// 1) atualiza o estado em memória (recálculo instantâneo);
-/// 2) avalia o catálogo de mensagens (avaliador puro);
-/// 3) persiste imediatamente (usuário pode fechar o app a qualquer momento).
-/// Falha de persistência não interrompe o fluxo da compra (spec, edge case).
-/// </summary>
 public sealed class ShoppingService(
     IShoppingStore store,
     IPreferencesStore preferences,
@@ -35,7 +28,7 @@ public sealed class ShoppingService(
 
     public StatusMessage? LastMessage { get; private set; }
 
-    /// <summary>Incrementa a cada nova mensagem (permite re-exibir o banner).</summary>
+    
     public int MessageVersion { get; private set; }
 
     public bool StorageUnavailable { get; private set; }
@@ -310,7 +303,7 @@ public sealed class ShoppingService(
     {
         var session = RequireActiveSession();
 
-        // Sem mensagem: o catálogo não define código para abandono.
+        
         session.Status = SessionStatus.Abandoned;
         session.FinishedAt = clock.GetUtcNow();
 
@@ -418,7 +411,7 @@ public sealed class ShoppingService(
         }
         catch
         {
-            // Preferência é leve; falha não afeta o fluxo.
+            
         }
     }
 

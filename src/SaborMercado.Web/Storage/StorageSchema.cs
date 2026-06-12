@@ -1,18 +1,12 @@
 namespace SaborMercado.Web.Storage;
 
-/// <summary>
-/// Schema do armazenamento local (docs/standards/data-standards.md).
-/// A criação de stores/índices vive em wwwroot/js/indexedDb.js (upgrade);
-/// migrações de DADOS são funções puras versionadas dirigidas por
-/// <see cref="CurrentSchemaVersion"/> em cada objeto persistido.
-/// </summary>
 public static class StorageSchema
 {
     public const string DatabaseName = "sabor-mercado";
 
     public const int DatabaseVersion = 4;
 
-    /// <summary>Versão de schema gravada em todo objeto persistido.</summary>
+    
     public const int CurrentSchemaVersion = 1;
 
     public const string ShoppingSessionsStore = "shoppingSessions";

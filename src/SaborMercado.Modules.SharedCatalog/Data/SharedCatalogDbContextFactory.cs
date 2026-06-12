@@ -3,9 +3,6 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace SaborMercado.Modules.SharedCatalog.Data;
 
-/// <summary>
-/// Design-time factory for EF migrations targeting PostgreSQL (production provider).
-/// </summary>
 public sealed class SharedCatalogDbContextFactory : IDesignTimeDbContextFactory<SharedCatalogDbContext>
 {
     public SharedCatalogDbContext CreateDbContext(string[] args)

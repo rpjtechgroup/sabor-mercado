@@ -1,10 +1,5 @@
 namespace SaborMercado.Web.Domain.Status;
 
-/// <summary>
-/// Mensagem determinística emitida pelo avaliador. O código é o contrato
-/// (catálogo); os argumentos chegam formatados em pt-BR, prontos para o
-/// texto localizado.
-/// </summary>
 public sealed record StatusMessage(
     string Code,
     IReadOnlyDictionary<string, string> Args)

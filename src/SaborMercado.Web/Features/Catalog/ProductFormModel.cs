@@ -2,7 +2,6 @@ using SaborMercado.Web.Domain.Catalog;
 
 namespace SaborMercado.Web.Features.Catalog;
 
-/// <summary>Modelo de edição do formulário de produto do catálogo (F5).</summary>
 public sealed class ProductFormModel
 {
     public string Name { get; set; } = string.Empty;

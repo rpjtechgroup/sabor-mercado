@@ -3,7 +3,6 @@ using SaborMercado.Web.Shared;
 
 namespace SaborMercado.Web.Tests.Components;
 
-/// <summary>Barra de orçamento: cor/código por faixa (F3/F4).</summary>
 public class BudgetBarTests : BunitContext
 {
     private IRenderedComponent<BudgetBar> RenderBar(decimal total, decimal? budget) =>

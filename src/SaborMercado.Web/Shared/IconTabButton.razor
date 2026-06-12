@@ -1,0 +1,23 @@
+<button type="button"
+        class="history-tab btn-icon @(Active ? "active" : null)"
+        role="tab"
+        title="@Label"
+        aria-label="@Label"
+        aria-selected="@Active"
+        @onclick="OnClick">
+    <IconContent Icon="@Icon" Label="@Label" />
+</button>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool Active { get; set; }
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

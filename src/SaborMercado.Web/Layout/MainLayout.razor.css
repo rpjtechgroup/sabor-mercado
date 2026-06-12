@@ -78,12 +78,11 @@
     color: var(--primary);
 }
 
-/* O botão de alternar modo fica sempre legível no canto superior. */
-.app-topbar-toggle .icon-label {
+.app-topbar-toggle ::deep .icon-label {
     display: none;
 }
 
-.app-shell--labels .app-topbar-toggle .icon-label {
+.app-shell--labels .app-topbar-toggle ::deep .icon-label {
     display: inline;
     font-size: 0.75rem;
 }

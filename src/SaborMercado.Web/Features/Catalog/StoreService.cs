@@ -6,9 +6,6 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Catalog;
 
-/// <summary>
-/// Cadastro local de comércios (F5). Pré-requisito para vincular produtos e preços.
-/// </summary>
 public sealed class StoreService(IStoreStore store, ICatalogStore catalogStore, TimeProvider clock)
 {
     private readonly List<Store> _stores = [];

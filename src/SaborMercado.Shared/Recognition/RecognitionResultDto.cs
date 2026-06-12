@@ -1,6 +1,5 @@
 namespace SaborMercado.Shared.Recognition;
 
-/// <summary>Resultado estruturado da leitura de etiqueta (contrato API ↔ PWA).</summary>
 public sealed record RecognitionResultDto(
     string? ProductName,
     string? Brand,

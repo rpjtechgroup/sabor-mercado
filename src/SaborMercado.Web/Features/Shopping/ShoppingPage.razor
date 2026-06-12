@@ -24,7 +24,6 @@ else if (Shopping.CurrentSession is null)
     else
     {
         <SessionStart SuggestedBudget="@Shopping.SuggestedBudget" OnStart="StartSessionAsync" />
-        <IconLink Href="compra-mensal" Icon="@AppIcons.Calendar" Label="Editar lista mensal" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
         <IconLink Href="historico" Icon="@AppIcons.History" Label="Histórico de compras" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
     }
 }

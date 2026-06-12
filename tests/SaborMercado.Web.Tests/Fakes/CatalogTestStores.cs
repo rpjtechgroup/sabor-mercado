@@ -2,7 +2,6 @@ using SaborMercado.Web.Domain.Catalog;
 
 namespace SaborMercado.Web.Tests.Fakes;
 
-/// <summary>Comércios fixos para testes de catálogo e compras.</summary>
 public static class CatalogTestStores
 {
     public static readonly Guid StoreAId = Guid.Parse("11111111-1111-4111-8111-111111111111");

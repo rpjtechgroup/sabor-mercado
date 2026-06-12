@@ -2,10 +2,6 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Domain.Catalog;
 
-/// <summary>
-/// Comércio onde o usuário compra (cadastro local, F5).
-/// Geolocalização opcional para features futuras (ex.: proximidade).
-/// </summary>
 public sealed class Store
 {
     public Guid Id { get; set; } = Ids.NewId();

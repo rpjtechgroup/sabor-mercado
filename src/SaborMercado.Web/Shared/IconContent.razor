@@ -1,0 +1,13 @@
+<span class="icon-glyph @GlyphClass" aria-hidden="true">@Icon</span>
+<span class="icon-label">@Label</span>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string GlyphClass { get; set; } = string.Empty;
+}

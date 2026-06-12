@@ -23,13 +23,9 @@ using SaborMercado.Web.Shared;
 
 using SaborMercado.Web.Storage;
 
-
-
 CultureInfo.DefaultThreadCurrentCulture = MoneyFormat.Culture;
 
 CultureInfo.DefaultThreadCurrentUICulture = MoneyFormat.Culture;
-
-
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -37,13 +33,9 @@ builder.RootComponents.Add<App>("#app");
 
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-
-
 builder.Services.AddLocalization();
 
 builder.Services.AddSingleton(TimeProvider.System);
-
-
 
 builder.Services.AddScoped<IndexedDbInterop>();
 
@@ -55,8 +47,6 @@ builder.Services.AddScoped<DownloadInterop>();
 
 builder.Services.AddScoped<GeolocationInterop>();
 
-
-
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? "http://localhost:5280";
 
 builder.Services.AddScoped(sp => new SaborMercadoApiClient(
@@ -67,8 +57,6 @@ builder.Services.AddScoped(sp => new GeminiShelfLabelClient(
     new HttpClient { BaseAddress = new Uri("https://generativelanguage.googleapis.com/"), Timeout = TimeSpan.FromSeconds(15) },
     sp.GetRequiredService<IConfiguration>()));
 
-
-
 builder.Services.AddScoped<RecognitionService>();
 
 builder.Services.AddScoped<IShoppingStore, IndexedDbShoppingStore>();
@@ -78,10 +66,8 @@ builder.Services.AddScoped<ICatalogStore, IndexedDbCatalogStore>();
 builder.Services.AddScoped<IStoreStore, IndexedDbStoreStore>();
 
 builder.Services.AddScoped<IPreferencesStore, LocalStoragePreferencesStore>();
-builder.Services.AddScoped<UiPreferencesState>();
+builder.Services.AddSingleton<UiPreferencesState>();
 builder.Services.AddScoped<IPendingShareStore, IndexedDbPendingShareStore>();
-
-
 
 builder.Services.AddScoped<StatusMessageLocalizer>();
 
@@ -109,8 +95,6 @@ builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<MarketComparisonClient>();
 builder.Services.AddScoped<PremiumStatsService>();
 builder.Services.AddScoped<SmartListService>();
-
-
 
 await builder.Build().RunAsync();
 

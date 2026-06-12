@@ -2,9 +2,6 @@ using Microsoft.JSInterop;
 
 namespace SaborMercado.Web.Interop;
 
-/// <summary>
-/// Wrapper C# tipado do módulo wwwroot/js/geolocation.js.
-/// </summary>
 public sealed class GeolocationInterop(IJSRuntime jsRuntime) : IAsyncDisposable
 {
     private IJSObjectReference? _module;
@@ -36,7 +33,7 @@ public sealed class GeolocationInterop(IJSRuntime jsRuntime) : IAsyncDisposable
             }
             catch (JSDisconnectedException)
             {
-                // Circuito já encerrado.
+                
             }
         }
     }

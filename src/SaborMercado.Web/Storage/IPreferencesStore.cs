@@ -1,16 +1,12 @@
 namespace SaborMercado.Web.Storage;
 
-/// <summary>
-/// Preferências leves (localStorage). Proibido dado de domínio aqui
-/// (docs/standards/data-standards.md).
-/// </summary>
 public interface IPreferencesStore
 {
     Task<decimal?> GetBudgetDefaultAsync();
 
     Task SetBudgetDefaultAsync(decimal? value);
 
-    /// <summary>Chave Gemini do usuário (localStorage). Opcional — OCR só funciona com chave.</summary>
+    
     Task<string?> GetGeminiApiKeyAsync();
 
     Task SetGeminiApiKeyAsync(string? value);
@@ -34,7 +30,7 @@ public interface IPreferencesStore
 
     Task ClearAuthAsync();
 
-    /// <summary>Quando true, botões e navegação exibem ícone + texto; quando false, só ícones.</summary>
+    
     Task<bool> GetShowIconLabelsAsync();
 
     Task SetShowIconLabelsAsync(bool value);

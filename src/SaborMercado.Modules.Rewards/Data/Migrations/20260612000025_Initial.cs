@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SaborMercado.Modules.Rewards.Data.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class Initial : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
@@ -60,7 +60,7 @@ namespace SaborMercado.Modules.Rewards.Data.Migrations
                 columns: new[] { "UserId", "FeatureCode" });
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

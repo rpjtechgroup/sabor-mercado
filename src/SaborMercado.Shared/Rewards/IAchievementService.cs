@@ -1,6 +1,5 @@
 namespace SaborMercado.Shared.Rewards;
 
-/// <summary>Contrato entre SharedCatalog e Rewards para conquistas.</summary>
 public interface IAchievementService
 {
     Task EvaluateAfterContributionAsync(

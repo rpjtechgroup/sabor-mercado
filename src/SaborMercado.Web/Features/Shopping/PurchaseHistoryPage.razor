@@ -35,36 +35,18 @@ else if (SessionId is { } detailId)
 else
 {
     <div class="history-tabs" role="tablist">
-        <button type="button"
-                class="history-tab btn-icon @(_tab == HistoryTab.Comparator ? "active" : null)"
-                role="tab"
-                title="Comparador"
-                aria-label="Comparador"
-                aria-selected="@(_tab == HistoryTab.Comparator)"
-                @onclick="() => SelectTab(HistoryTab.Comparator)">
-            <span class="icon-glyph" aria-hidden="true">@AppIcons.Compare</span>
-            <span class="icon-label">Comparador</span>
-        </button>
-        <button type="button"
-                class="history-tab btn-icon @(_tab == HistoryTab.History ? "active" : null)"
-                role="tab"
-                title="Histórico"
-                aria-label="Histórico"
-                aria-selected="@(_tab == HistoryTab.History)"
-                @onclick="() => SelectTab(HistoryTab.History)">
-            <span class="icon-glyph" aria-hidden="true">@AppIcons.History</span>
-            <span class="icon-label">Histórico</span>
-        </button>
-        <button type="button"
-                class="history-tab btn-icon @(_tab == HistoryTab.BySession ? "active" : null)"
-                role="tab"
-                title="Por compra"
-                aria-label="Por compra"
-                aria-selected="@(_tab == HistoryTab.BySession)"
-                @onclick="() => SelectTab(HistoryTab.BySession)">
-            <span class="icon-glyph" aria-hidden="true">@AppIcons.TabSession</span>
-            <span class="icon-label">Por compra</span>
-        </button>
+        <IconTabButton Icon="@AppIcons.Compare"
+                       Label="Comparador"
+                       Active="@(_tab == HistoryTab.Comparator)"
+                       OnClick="@(() => SelectTab(HistoryTab.Comparator))" />
+        <IconTabButton Icon="@AppIcons.History"
+                       Label="Histórico"
+                       Active="@(_tab == HistoryTab.History)"
+                       OnClick="@(() => SelectTab(HistoryTab.History))" />
+        <IconTabButton Icon="@AppIcons.TabSession"
+                       Label="Por compra"
+                       Active="@(_tab == HistoryTab.BySession)"
+                       OnClick="@(() => SelectTab(HistoryTab.BySession))" />
     </div>
 
     @switch (_tab)

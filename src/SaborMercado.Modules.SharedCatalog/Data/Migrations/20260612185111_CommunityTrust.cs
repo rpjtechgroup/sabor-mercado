@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class CommunityTrust : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<int>(
@@ -118,7 +118,7 @@ namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
                 unique: true);
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

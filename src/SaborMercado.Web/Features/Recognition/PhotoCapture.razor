@@ -39,16 +39,9 @@
     else
     {
         <div class="card photo-actions">
-            <label class="btn btn-primary btn-block photo-input-label btn-icon"
-                   title="Fotografar etiqueta"
-                   aria-label="Fotografar etiqueta">
-                <span class="icon-glyph" aria-hidden="true">@AppIcons.Photo</span>
-                <span class="icon-label">Fotografar etiqueta</span>
-                <InputFile OnChange="OnPhotoSelectedAsync"
-                           accept="image/*"
-                           capture="environment"
-                           class="photo-input-hidden" />
-            </label>
+            <IconFileInputLabel Label="Fotografar etiqueta"
+                                OnChange="OnPhotoSelectedAsync"
+                                Capture="environment" />
 
             <IconButton Icon="@AppIcons.Manual" Label="Digitar manualmente" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenManualForm" />
 

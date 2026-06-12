@@ -7,10 +7,6 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Catalog;
 
-/// <summary>
-/// Casos de uso do catálogo pessoal de produtos e histórico de preços (F5).
-/// Persistência imediata e 100% local (Constitution I).
-/// </summary>
 public sealed class CatalogService(ICatalogStore store, StoreService stores, TimeProvider clock)
 {
     private readonly List<Product> _products = [];
@@ -77,7 +73,7 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         NotifyStateChanged();
     }
 
-    /// <summary>Exclui o produto e, em cascata, seu histórico de preços (dado local do usuário).</summary>
+    
     public async Task DeleteProductAsync(Guid productId)
     {
         _products.RemoveAll(p => p.Id == productId);
@@ -175,7 +171,7 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         return result;
     }
 
-    /// <summary>Último preço conhecido = registro com maior ObservedAt.</summary>
+    
     public async Task<PriceRecord?> GetLastKnownPriceAsync(Guid productId)
     {
         var history = await GetPriceHistoryAsync(productId);

@@ -12,7 +12,7 @@ public sealed class PriceRecord
 
     public Guid? StoreId { get; set; }
 
-    /// <summary>Nome denormalizado para compatibilidade e exibição offline.</summary>
+    
     public string? MarketName { get; set; }
 
     public DateTimeOffset ObservedAt { get; set; }

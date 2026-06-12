@@ -42,7 +42,7 @@ public class ShoppingServiceTests
         return service;
     }
 
-    // ----- Sessão -----
+    
 
     [Fact]
     public async Task StartSession_CreatesActiveSessionAndEmitsBudgetSet()
@@ -86,7 +86,7 @@ public class ShoppingServiceTests
         Assert.Equal(26.97m, restored.Total);
     }
 
-    // ----- Carrinho (F2) -----
+    
 
     [Fact]
     public async Task AddItem_UpdatesTotalAndPersistsImmediately()
@@ -121,7 +121,7 @@ public class ShoppingServiceTests
 
         await service.IncrementQuantityAsync(itemId, 1);
         await service.IncrementQuantityAsync(itemId, 1);
-        Assert.Equal(26.97m, service.Total); // 3 × R$ 8,99
+        Assert.Equal(26.97m, service.Total); 
 
         await service.IncrementQuantityAsync(itemId, 5);
         Assert.Equal(8, service.Items[0].Quantity);
@@ -192,7 +192,7 @@ public class ShoppingServiceTests
         Assert.Equal(40m, service.Total);
     }
 
-    // ----- Alertas integrados (F4) -----
+    
 
     [Fact]
     public async Task BudgetAlert_Crosses50Percent_EmitsBudgetHalf()
@@ -223,13 +223,13 @@ public class ShoppingServiceTests
         await service.AddItemAsync(Snapshot("A"), 55m, 1, CartItemSource.Manual);
         await service.AddItemAsync(Snapshot("B"), 10m, 1, CartItemSource.Manual);
 
-        await service.RemoveItemAsync(service.Items[0].Id); // P volta a 10%
-        await service.AddItemAsync(Snapshot("C"), 45m, 1, CartItemSource.Manual); // cruza 50% de novo
+        await service.RemoveItemAsync(service.Items[0].Id); 
+        await service.AddItemAsync(Snapshot("C"), 45m, 1, CartItemSource.Manual); 
 
         Assert.Equal(StatusCodes.BudgetHalf, service.LastMessage?.Code);
     }
 
-    // ----- Encerramento -----
+    
 
     [Fact]
     public async Task Finish_SetsStatusAndEmitsSessionFinished()
@@ -258,7 +258,7 @@ public class ShoppingServiceTests
         Assert.Equal(versionBefore, service.MessageVersion);
     }
 
-    // ----- Compra mensal -----
+    
 
     [Fact]
     public async Task StartMonthlySession_PrefillsCartWithoutBudget()
@@ -298,7 +298,7 @@ public class ShoppingServiceTests
         Assert.Equal(StatusCodes.BudgetSet, service.LastMessage?.Code);
     }
 
-    // ----- Falha de armazenamento (edge case da spec) -----
+    
 
     [Fact]
     public async Task StorageFailure_KeepsFlowInMemoryAndFlagsUnavailable()
@@ -309,6 +309,6 @@ public class ShoppingServiceTests
         await service.AddItemAsync(Snapshot(), 8.99m, 2, CartItemSource.Manual);
 
         Assert.True(service.StorageUnavailable);
-        Assert.Equal(17.98m, service.Total); // fluxo continua em memória
+        Assert.Equal(17.98m, service.Total); 
     }
 }

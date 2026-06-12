@@ -3,7 +3,6 @@ using SaborMercado.Web.Domain.Shopping;
 
 namespace SaborMercado.Web.Features.Shopping;
 
-/// <summary>Modelo de edição do formulário manual de item (F2/fallback F1).</summary>
 public sealed class CartItemFormModel
 {
     public string Name { get; set; } = string.Empty;

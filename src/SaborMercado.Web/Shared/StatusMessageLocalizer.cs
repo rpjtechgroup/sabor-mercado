@@ -4,10 +4,6 @@ using SaborMercado.Web.Resources;
 
 namespace SaborMercado.Web.Shared;
 
-/// <summary>
-/// Resolve o texto pt-BR de uma StatusMessage a partir dos recursos
-/// (frontend-standards §3: proibido texto de alerta hardcoded em componente).
-/// </summary>
 public sealed class StatusMessageLocalizer(IStringLocalizer<StatusMessages> localizer)
 {
     public string Localize(StatusMessage message)
