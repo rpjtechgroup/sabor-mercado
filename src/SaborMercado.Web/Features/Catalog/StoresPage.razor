@@ -1,0 +1,160 @@
+@page "/comercios"
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Comércios</PageTitle>
+
+<PageIcon Icon="@AppIcons.Store" Title="Meus comércios" />
+<p class="muted">
+    Cadastre os lugares onde você compra. Produtos e preços são vinculados a um comércio pré-cadastrado.
+</p>
+
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else if (_form is not null)
+{
+    @if (_saveError is not null)
+    {
+        <p class="text-over" role="alert">@_saveError</p>
+    }
+    <StoreForm Model="@_form" IsEdit="@_isEdit" OnSave="SaveAsync" OnCancel="CloseForm" />
+}
+else
+{
+    <IconButton Icon="@AppIcons.New" Label="Novo comércio" CssClass="btn btn-primary btn-block btn-icon" OnClick="OpenCreate" />
+
+    @if (StoreService.Stores.Count == 0)
+    {
+        <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">🏪</span>
+            Nenhum comércio cadastrado. Cadastre pelo menos um antes de registrar produtos.
+        </div>
+    }
+    else
+    {
+        <section aria-label="Lista de comércios">
+            @foreach (var store in StoreService.Stores)
+            {
+                <div class="card store-row">
+                    <div class="store-row-info">
+                        <strong>@store.Name</strong>
+                        @if (!string.IsNullOrWhiteSpace(store.City) || !string.IsNullOrWhiteSpace(store.State))
+                        {
+                            <span class="muted">@store.City@(!string.IsNullOrWhiteSpace(store.City) && !string.IsNullOrWhiteSpace(store.State) ? ", " : "")@store.State</span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(store.Address))
+                        {
+                            <span class="muted">@store.Address</span>
+                        }
+                        @if (store.Latitude is not null && store.Longitude is not null)
+                        {
+                            <span class="muted">📍 Localização registrada</span>
+                        }
+                    </div>
+                    <div class="store-row-actions">
+                        <IconButton Icon="@AppIcons.Edit" Label="Editar comércio" CssClass="btn btn-outline btn-icon" OnClick="@(() => OpenEdit(store))" />
+                        @if (_confirmDeleteId == store.Id)
+                        {
+                            <IconButton Icon="@AppIcons.Warning" Label="Confirmar exclusão" CssClass="btn btn-danger btn-icon" OnClick="@(() => DeleteAsync(store.Id))" />
+                        }
+                        else
+                        {
+                            <IconButton Icon="@AppIcons.Remove" Label="Excluir comércio" CssClass="btn btn-outline btn-icon" OnClick="@(() => _confirmDeleteId = store.Id)" />
+                        }
+                    </div>
+                    @if (_deleteErrorId == store.Id && _deleteError is not null)
+                    {
+                        <p class="text-over" role="alert">@_deleteError</p>
+                    }
+                </div>
+            }
+        </section>
+    }
+
+    <IconLink Href="configuracoes" Icon="@AppIcons.Back" Label="Voltar às configurações" CssClass="btn btn-outline btn-block btn-icon icon-link icon-back" />
+}
+
+@code {
+    private bool _loaded;
+    private StoreFormModel? _form;
+    private bool _isEdit;
+    private Guid? _confirmDeleteId;
+    private Guid? _deleteErrorId;
+    private string? _deleteError;
+    private string? _saveError;
+
+    [Inject]
+    public StoreService StoreService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        StoreService.StateChanged += OnStateChanged;
+        await StoreService.InitializeAsync();
+        _loaded = true;
+    }
+
+    private void OpenCreate()
+    {
+        _form = new StoreFormModel();
+        _isEdit = false;
+    }
+
+    private void OpenEdit(Store store)
+    {
+        _form = StoreFormModel.FromStore(store);
+        _isEdit = true;
+        _confirmDeleteId = null;
+    }
+
+    private void CloseForm()
+    {
+        _form = null;
+        _isEdit = false;
+        _saveError = null;
+    }
+
+    private async Task SaveAsync(StoreFormModel model)
+    {
+        _saveError = null;
+        try
+        {
+            var entity = model.ToStore();
+            if (_isEdit)
+            {
+                await StoreService.UpdateStoreAsync(entity);
+            }
+            else
+            {
+                await StoreService.CreateStoreAsync(entity);
+            }
+
+            CloseForm();
+        }
+        catch (Exception ex)
+        {
+            _form = model;
+            _saveError = ex.Message;
+        }
+    }
+
+    private async Task DeleteAsync(Guid storeId)
+    {
+        _deleteError = null;
+        _deleteErrorId = storeId;
+        try
+        {
+            await StoreService.DeleteStoreAsync(storeId);
+            _confirmDeleteId = null;
+            _deleteErrorId = null;
+        }
+        catch (Exception ex)
+        {
+            _deleteError = ex.Message;
+        }
+    }
+
+    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => StoreService.StateChanged -= OnStateChanged;
+}

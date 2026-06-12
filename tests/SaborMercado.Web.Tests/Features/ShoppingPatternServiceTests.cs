@@ -12,11 +12,18 @@ public class ShoppingPatternServiceTests
 
     private readonly InMemoryShoppingPatternStore _patternStore = new();
     private readonly InMemoryCatalogStore _catalogStore = new();
+    private readonly InMemoryStoreStore _storeStore = new();
     private readonly FixedTimeProvider _clock = new(Now);
+
+    public ShoppingPatternServiceTests()
+    {
+        CatalogTestStores.Seed(_storeStore, Now);
+    }
 
     private ShoppingPatternService CreateService()
     {
-        var catalog = new CatalogService(_catalogStore, _clock);
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
         return new ShoppingPatternService(_patternStore, catalog, _clock);
     }
 
@@ -32,8 +39,13 @@ public class ShoppingPatternServiceTests
     [Fact]
     public async Task AddAndRemoveProduct_UpdatesPattern()
     {
-        var catalog = new CatalogService(_catalogStore, _clock);
-        var product = await catalog.CreateProductAsync(new Product { Name = "Arroz" });
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
+        var product = await catalog.CreateProductAsync(new Product
+        {
+            Name = "Arroz",
+            StoreId = CatalogTestStores.DefaultId,
+        });
         var service = new ShoppingPatternService(_patternStore, catalog, _clock);
 
         await service.AddProductAsync(product.Id, defaultQuantity: 2);

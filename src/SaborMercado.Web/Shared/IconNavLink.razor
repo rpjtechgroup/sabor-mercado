@@ -1,0 +1,24 @@
+<NavLink href="@Href"
+         class="@CssClass"
+         title="@Label"
+         aria-label="@Label"
+         Match="@Match">
+    <span class="icon-glyph" aria-hidden="true">@Icon</span>
+</NavLink>
+
+@code {
+    [Parameter]
+    public string Href { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Icon { get; set; } = AppIcons.Link;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string CssClass { get; set; } = "bottom-nav-link";
+
+    [Parameter]
+    public NavLinkMatch Match { get; set; } = NavLinkMatch.Prefix;
+}

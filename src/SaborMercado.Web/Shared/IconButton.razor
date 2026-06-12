@@ -1,0 +1,35 @@
+<button type="@Type"
+        class="@CssClass"
+        title="@Label"
+        aria-label="@Label"
+        disabled="@Disabled"
+        @onclick="HandleClick"
+        @attributes="AdditionalAttributes">
+    <span class="icon-glyph" aria-hidden="true">@Icon</span>
+</button>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = AppIcons.Ok;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string CssClass { get; set; } = "btn btn-icon";
+
+    [Parameter]
+    public string Type { get; set; } = "button";
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private Task HandleClick(MouseEventArgs e) =>
+        OnClick.HasDelegate ? OnClick.InvokeAsync(e) : Task.CompletedTask;
+}

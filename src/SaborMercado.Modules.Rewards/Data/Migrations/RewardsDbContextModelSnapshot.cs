@@ -80,6 +80,32 @@ namespace SaborMercado.Modules.Rewards.Data.Migrations
 
                     b.ToTable("rewards_feature_unlocks", "rewards");
                 });
+
+            modelBuilder.Entity("SaborMercado.Modules.Rewards.Data.UserAchievement", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AchievementCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("achievement_code");
+
+                    b.Property<DateTimeOffset>("UnlockedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("unlocked_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "AchievementCode")
+                        .IsUnique();
+
+                    b.ToTable("rewards_user_achievements", "rewards");
+                });
 #pragma warning restore 612, 618
         }
     }

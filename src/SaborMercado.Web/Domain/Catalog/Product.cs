@@ -20,6 +20,9 @@ public sealed class Product
 
     public string? Notes { get; set; }
 
+    /// <summary>Comércio onde o produto é comprado (cadastro prévio obrigatório).</summary>
+    public Guid StoreId { get; set; }
+
     public DateTimeOffset CreatedAt { get; set; }
 
     public int SchemaVersion { get; set; } = StorageSchema.CurrentSchemaVersion;

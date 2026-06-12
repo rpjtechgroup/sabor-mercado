@@ -53,10 +53,14 @@ Invariantes:
   `status-messages.md`).
 
 ### Catalog (cliente)
+- **Store** (raiz): `id`, `name`, `city?`, `state?`, `address?`,
+  `latitude?`, `longitude?`, `createdAt`. Cadastro prévio obrigatório antes
+  de vincular produtos e preços.
 - **Product** (raiz): `id`, `name`, `brand?`, `quantityValue?`,
-  `quantityUnit? (g|kg|ml|l|un)`, `ean?`, `category?`, `notes?`, `createdAt`.
-- **PriceRecord**: `productId`, `price`, `marketName?`, `observedAt`,
-  `source (Ocr|Manual)`.
+  `quantityUnit? (g|kg|ml|l|un)`, `ean?`, `category?`, `notes?`, `storeId`,
+  `createdAt`.
+- **PriceRecord**: `productId`, `price`, `storeId`, `marketName?`
+  (denormalizado), `observedAt`, `source (Ocr|Manual)`.
 
 ### Recognition (servidor, stateless + log)
 - **RecognitionRequest**: imagem (não persistida), `userPseudonymId?`.
@@ -70,14 +74,24 @@ Invariantes:
   `quantityValue?`, `quantityUnit?`, `category?`, `attributes (JSONB)`.
 - **PriceObservation**: `sharedProductId`, `price`, `marketId`,
   `observedOn (date)`, `contributorPseudonymId`, `status
-  (Pending|Accepted|Rejected)`.
+  (Pending|Accepted|Rejected)`, `upvoteCount`, `downvoteCount`, `isHidden`.
 - **Market**: `id`, `name`, `city`, `state`.
+- **ObservationVote**: `observationId`, `voterUserId`, `value (+1/−1)` — um voto
+  por usuário por observação.
+- **ContributorTrust** (agregado por `pseudonymId`): `trustScore`, contadores de
+  votos/contribuições/denúncias, `isRestricted`, `restrictedUntil`.
+- **ContributorReport**: `reporterUserId`, `targetPseudonymId`,
+  `observationId?`, `reason`, `details?`.
+
+Regras: [`docs/business/community-trust.md`](../business/community-trust.md).
 
 ### Rewards (servidor)
 - **CreditLedgerEntry**: `userId`, `amount (+/−)`, `reason
   (ContributionAccepted|NewProductBonus|EanBonus|UnlockSpend)`, `refId`,
   `createdAt`. Saldo = soma do ledger (nunca campo mutável).
 - **FeatureUnlock**: `userId`, `featureCode`, `expiresAt?`.
+- **UserAchievement**: `userId`, `achievementCode`, `unlockedAt` — permanente,
+  vinculado à conta (não ao pseudônimo público).
 
 ### Identity (servidor)
 - **User**: `id`, `email`, `passwordHash`, `pseudonymId (GUID estável)`,

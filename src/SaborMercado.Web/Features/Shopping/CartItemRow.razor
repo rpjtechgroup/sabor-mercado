@@ -1,6 +1,6 @@
 @* Item do carrinho com ações rápidas +1 / +5 / Digitar quantidade (F2). *@
 <div class="card cart-item">
-    <button type="button" class="cart-item-header" @onclick="ToggleExpanded">
+    <button type="button" class="cart-item-header" @onclick="ToggleExpanded" aria-label="Expandir item @Item.ProductSnapshot.Name">
         <span class="cart-item-info">
             <strong>@Item.ProductSnapshot.Name</strong>
             @if (DetailsLine is not null)
@@ -17,18 +17,18 @@
     @if (_expanded)
     {
         <div class="cart-item-actions">
-            <button type="button" class="btn-qty" @onclick="() => IncrementAsync(1)">+1</button>
-            <button type="button" class="btn-qty" @onclick="() => IncrementAsync(5)">+5</button>
-            <button type="button" class="btn-qty" @onclick="ToggleTyping">Digitar</button>
+            <button type="button" class="btn-qty btn-icon" title="+1 unidade" aria-label="+1 unidade" @onclick="() => IncrementAsync(1)">+1</button>
+            <button type="button" class="btn-qty btn-icon" title="+5 unidades" aria-label="+5 unidades" @onclick="() => IncrementAsync(5)">+5</button>
+            <IconButton Icon="@AppIcons.Typing" Label="Digitar quantidade" CssClass="btn-qty btn-icon" OnClick="ToggleTyping" />
             <span class="cart-item-actions-spacer"></span>
-            <button type="button" class="btn btn-sm btn-outline" @onclick="EditAsync">Editar</button>
+            <IconButton Icon="@AppIcons.Edit" Label="Editar item" CssClass="btn btn-sm btn-outline btn-icon" OnClick="EditAsync" />
             @if (_confirmingRemove)
             {
-                <button type="button" class="btn btn-sm btn-danger" @onclick="RemoveAsync">Confirmar?</button>
+                <IconButton Icon="@AppIcons.Warning" Label="Confirmar remoção" CssClass="btn btn-sm btn-danger btn-icon" OnClick="RemoveAsync" />
             }
             else
             {
-                <button type="button" class="btn btn-sm btn-danger" @onclick="AskRemove">Remover</button>
+                <IconButton Icon="@AppIcons.Remove" Label="Remover item" CssClass="btn btn-sm btn-danger btn-icon" OnClick="AskRemove" />
             }
         </div>
 
@@ -36,7 +36,7 @@
         {
             <div class="cart-item-typing">
                 <input class="input" type="number" min="1" @bind="_typedQuantity" aria-label="Nova quantidade" />
-                <button type="button" class="btn btn-primary btn-sm" @onclick="ConfirmTypedAsync">OK</button>
+                <IconButton Icon="@AppIcons.Ok" Label="Confirmar quantidade" CssClass="btn btn-primary btn-sm btn-icon" OnClick="ConfirmTypedAsync" />
             </div>
         }
     }

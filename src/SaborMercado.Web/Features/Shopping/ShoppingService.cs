@@ -17,6 +17,7 @@ public sealed class ShoppingService(
     IShoppingStore store,
     IPreferencesStore preferences,
     CatalogService catalog,
+    StoreService stores,
     ShoppingPatternService patterns,
     TimeProvider clock)
 {
@@ -88,10 +89,10 @@ public sealed class ShoppingService(
         NotifyStateChanged();
     }
 
-    public Task StartSessionAsync(decimal? budgetAmount, string? marketName) =>
-        StartSessionAsync(SessionKind.Sporadic, budgetAmount, marketName);
+    public Task StartSessionAsync(decimal? budgetAmount, Guid? storeId) =>
+        StartSessionAsync(SessionKind.Sporadic, budgetAmount, storeId);
 
-    public async Task StartSessionAsync(SessionKind kind, decimal? budgetAmount, string? marketName, Guid? patternId = null)
+    public async Task StartSessionAsync(SessionKind kind, decimal? budgetAmount, Guid? storeId, Guid? patternId = null)
     {
         if (CurrentSession is not null)
         {
@@ -104,10 +105,19 @@ public sealed class ShoppingService(
             throw new ArgumentOutOfRangeException(nameof(budgetAmount));
         }
 
+        await stores.InitializeAsync();
+        string? marketName = null;
+        if (storeId is { } id && id != Guid.Empty)
+        {
+            stores.RequireStore(id);
+            marketName = stores.GetStoreName(id);
+        }
+
         var session = new ShoppingSession
         {
             Id = Ids.NewId(),
-            MarketName = string.IsNullOrWhiteSpace(marketName) ? null : marketName.Trim(),
+            StoreId = storeId is { } store && store != Guid.Empty ? store : null,
+            MarketName = marketName,
             BudgetAmount = kind == SessionKind.Sporadic && budgetAmount is > 0m ? budgetAmount : null,
             Kind = kind,
             PatternId = kind == SessionKind.Monthly ? patternId ?? StorageSchema.DefaultPatternId : null,
@@ -218,7 +228,7 @@ public sealed class ShoppingService(
 
         var item = RequireItem(itemId);
         var session = RequireActiveSession();
-        var product = await catalog.EnsureProductAsync(snapshot);
+        var product = await catalog.EnsureProductAsync(snapshot, session.StoreId);
         item.ProductSnapshot = snapshot;
         item.ProductId = product.Id;
         item.UnitPrice = unitPrice;
@@ -227,7 +237,7 @@ public sealed class ShoppingService(
         await catalog.TouchPriceFromPurchaseAsync(
             product.Id,
             unitPrice,
-            session.MarketName,
+            session.StoreId,
             clock.GetUtcNow());
 
         Evaluate(CartMutation.ItemUpdated);
@@ -420,13 +430,13 @@ public sealed class ShoppingService(
         CartItemSource source,
         bool recordPriceInCatalog = true)
     {
-        var product = await catalog.EnsureProductAsync(snapshot);
+        var product = await catalog.EnsureProductAsync(snapshot, session.StoreId);
         if (recordPriceInCatalog)
         {
             await catalog.TouchPriceFromPurchaseAsync(
                 product.Id,
                 unitPrice,
-                session.MarketName,
+                session.StoreId,
                 clock.GetUtcNow());
         }
 

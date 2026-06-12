@@ -7,7 +7,7 @@
 
 <div class="collab-catalog-page">
     <header class="session-header">
-        <h1>Catálogo colaborativo</h1>
+        <PageIcon Icon="@AppIcons.Catalog" Title="Catálogo colaborativo" />
         <p class="muted">Preços compartilhados anonimamente por outros usuários.</p>
     </header>
 
@@ -17,12 +17,12 @@
     }
     else if (!Account.IsLoggedIn)
     {
-        <p class="muted"><a href="conta">Entre na sua conta</a> para acessar.</p>
+        <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Login" Label="Entre na sua conta" /> para acessar.</p>
     }
     else if (!Account.HasUnlock(PremiumFeatureCodes.CollaborativePriceHistory))
     {
         <div class="card">
-            <p>Desbloqueie o histórico colaborativo em <a href="conta">Minha conta</a> (10 créditos).</p>
+            <p>Desbloqueie o histórico colaborativo em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (10 créditos).</p>
         </div>
     }
     else
@@ -30,9 +30,7 @@
         <div class="card">
             <label for="collab-query">Buscar produto</label>
             <input id="collab-query" class="input" @bind="_query" @bind:event="oninput" placeholder="ex.: arroz" />
-            <button type="button" class="btn btn-primary btn-block" disabled="@(_searching || string.IsNullOrWhiteSpace(_query))" @onclick="SearchAsync">
-                Buscar
-            </button>
+            <IconButton Icon="@AppIcons.Search" Label="Buscar" CssClass="btn btn-primary btn-block btn-icon" Disabled="@(_searching || string.IsNullOrWhiteSpace(_query))" OnClick="SearchAsync" />
         </div>
 
         @if (!string.IsNullOrEmpty(_error))
@@ -62,16 +60,17 @@
                     {
                         <p class="muted">Sem preço recente</p>
                     }
+                    <IconLink Href="@($"catalogo-colaborativo/{item.ProductId}")" Icon="@AppIcons.Catalog" Label="Ver observações" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
                     @if (Account.HasUnlock(PremiumFeatureCodes.MarketComparison))
                     {
-                        <a class="btn btn-outline btn-block" href="comparar-mercados/@item.ProductId">Comparar mercados</a>
+                        <IconLink Href="@($"comparar-mercados/{item.ProductId}")" Icon="@AppIcons.Compare" Label="Comparar mercados" CssClass="btn btn-outline btn-block btn-icon icon-link" />
                     }
                 </div>
             }
         }
     }
 
-    <p class="muted"><a href="conta">‹ Minha conta</a></p>
+    <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
 </div>
 
 @code {

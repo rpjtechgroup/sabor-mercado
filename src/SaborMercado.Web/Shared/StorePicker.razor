@@ -1,0 +1,49 @@
+@* Seletor de comércio pré-cadastrado. *@
+<div class="field">
+    <label for="@_inputId">@Label</label>
+    @if (_loaded && StoreService.Stores.Count == 0)
+    {
+        <p class="muted">Nenhum comércio cadastrado.</p>
+        <IconLink Href="comercios" Icon="@AppIcons.Store" Label="Cadastrar comércio" CssClass="btn btn-outline btn-block btn-icon icon-link" />
+    }
+    else
+    {
+        <select id="@_inputId" class="input" @bind="SelectedStoreId">
+            <option value="@Guid.Empty">@Placeholder</option>
+            @foreach (var store in StoreService.Stores)
+            {
+                <option value="@store.Id">@store.DisplayLabel</option>
+            }
+        </select>
+        <p class="muted store-picker-hint">
+            <IconInlineLink Href="comercios" Icon="@AppIcons.Store" Label="Gerenciar comércios" />
+        </p>
+    }
+</div>
+
+@code {
+    private static int _idCounter;
+    private readonly string _inputId = $"store-picker-{Interlocked.Increment(ref _idCounter)}";
+    private bool _loaded;
+
+    [Parameter]
+    public string Label { get; set; } = "Comércio *";
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Selecione…";
+
+    [Parameter]
+    public Guid SelectedStoreId { get; set; }
+
+    [Parameter]
+    public EventCallback<Guid> SelectedStoreIdChanged { get; set; }
+
+    [Inject]
+    public StoreService StoreService { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await StoreService.InitializeAsync();
+        _loaded = true;
+    }
+}

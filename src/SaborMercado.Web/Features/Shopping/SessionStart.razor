@@ -1,24 +1,20 @@
 @* Início de sessão (F3): compra mensal ou esporádica *@
 <div class="card">
-    <h1>Nova compra</h1>
+    <PageIcon Icon="@AppIcons.New" Title="Nova compra" />
 
     <div class="field">
         <span class="field-label">Tipo de compra</span>
         <div class="session-kind-toggle" role="radiogroup" aria-label="Tipo de compra">
-            <button type="button"
-                    class="btn @(_kind == SessionKind.Monthly ? "btn-primary" : "btn-outline")"
-                    role="radio"
-                    aria-checked="@(_kind == SessionKind.Monthly)"
-                    @onclick="() => SetKind(SessionKind.Monthly)">
-                📅 Compra mensal
-            </button>
-            <button type="button"
-                    class="btn @(_kind == SessionKind.Sporadic ? "btn-primary" : "btn-outline")"
-                    role="radio"
-                    aria-checked="@(_kind == SessionKind.Sporadic)"
-                    @onclick="() => SetKind(SessionKind.Sporadic)">
-                🛒 Compra esporádica
-            </button>
+            <IconButton Icon="@AppIcons.Calendar"
+                        Label="Compra mensal"
+                        CssClass="@($"btn btn-icon {(_kind == SessionKind.Monthly ? "btn-primary" : "btn-outline")}")"
+                        AdditionalAttributes="@MonthlyRadioAttrs"
+                        OnClick="@(() => SetKind(SessionKind.Monthly))" />
+            <IconButton Icon="@AppIcons.Shopping"
+                        Label="Compra esporádica"
+                        CssClass="@($"btn btn-icon {(_kind == SessionKind.Sporadic ? "btn-primary" : "btn-outline")}")"
+                        AdditionalAttributes="@SporadicRadioAttrs"
+                        OnClick="@(() => SetKind(SessionKind.Sporadic))" />
         </div>
     </div>
 
@@ -28,7 +24,7 @@
             O carrinho será pré-preenchido com sua lista mensal e os últimos preços conhecidos.
             Orçamento e alertas de meta não se aplicam.
         </p>
-        <a class="btn btn-outline btn-block" href="compra-mensal">✏️ Editar lista mensal</a>
+        <IconLink Href="compra-mensal" Icon="@AppIcons.Edit" Label="Editar lista mensal" CssClass="btn btn-outline btn-block btn-icon icon-link" />
     }
     else
     {
@@ -40,21 +36,31 @@
         </div>
     }
 
-    <div class="field">
-        <label for="market">Mercado</label>
-        <input id="market" class="input" @bind="_marketName" placeholder="ex.: Mercado do bairro" />
-    </div>
+    <StorePicker Label="Comércio" Placeholder="Opcional" @bind-SelectedStoreId="_storeId" />
 
-    <button type="button" class="btn btn-primary btn-block" @onclick="StartAsync">
-        @(_kind == SessionKind.Monthly ? "📅 Iniciar compra mensal" : "🛒 Começar compra")
-    </button>
+    <IconButton Icon="@(_kind == SessionKind.Monthly ? AppIcons.Calendar : AppIcons.Play)"
+                Label="@(_kind == SessionKind.Monthly ? "Iniciar compra mensal" : "Começar compra")"
+                CssClass="btn btn-primary btn-block btn-icon"
+                OnClick="StartAsync" />
 </div>
 
 @code {
     private SessionKind _kind = SessionKind.Sporadic;
     private decimal? _budget;
-    private string? _marketName;
+    private Guid _storeId;
     private bool _suggestionApplied;
+
+    private Dictionary<string, object> MonthlyRadioAttrs => new()
+    {
+        ["role"] = "radio",
+        ["aria-checked"] = _kind == SessionKind.Monthly,
+    };
+
+    private Dictionary<string, object> SporadicRadioAttrs => new()
+    {
+        ["role"] = "radio",
+        ["aria-checked"] = _kind == SessionKind.Sporadic,
+    };
 
     [Parameter]
     public decimal? SuggestedBudget { get; set; }
@@ -74,5 +80,8 @@
     private void SetKind(SessionKind kind) => _kind = kind;
 
     private Task StartAsync() =>
-        OnStart.InvokeAsync(new SessionStartRequest(_kind, _kind == SessionKind.Sporadic ? _budget : null, _marketName));
+        OnStart.InvokeAsync(new SessionStartRequest(
+            _kind,
+            _kind == SessionKind.Sporadic ? _budget : null,
+            _storeId == Guid.Empty ? null : _storeId));
 }

@@ -38,6 +38,11 @@
 | `POST /api/v1/price-observations`    | SharedCatalog | Contribuição anonimizada → `202 Accepted`  | requerida |
 | `GET  /api/v1/shared-products?query=`| SharedCatalog | Busca no catálogo colaborativo             | premium   |
 | `GET  /api/v1/shared-products/{id}/markets` | SharedCatalog | Comparação de preços por mercado    | premium   |
+| `GET  /api/v1/shared-products/{id}/observations` | SharedCatalog | Observações com reputação e votos | premium   |
+| `POST /api/v1/price-observations/{id}/vote` | SharedCatalog | Upvote (+1) ou downvote (−1)       | requerida |
+| `DELETE /api/v1/price-observations/{id}/vote` | SharedCatalog | Remove voto do usuário          | requerida |
+| `POST /api/v1/contributor-reports`   | SharedCatalog | Denúncia de contribuidor/observação        | requerida |
+| `GET  /api/v1/achievements`          | Rewards       | Conquistas desbloqueadas do usuário        | requerida |
 | `GET  /api/v1/credits`               | Rewards       | Saldo + extrato                            | requerida |
 | `POST /api/v1/unlocks`               | Rewards       | Gastar créditos em funcionalidade          | requerida |
 | `POST /api/v1/auth/register|login`   | Identity      | Conta leve (email+senha)                   | —         |

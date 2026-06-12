@@ -19,6 +19,8 @@ public static class RewardsModule
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<RewardsService>();
         services.AddScoped<IContributionRewardService, ContributionRewardService>();
+        services.AddScoped<IAchievementService, AchievementService>();
+        services.AddScoped<AchievementService>();
         services.AddScoped<IPremiumAccessService, PremiumAccessService>();
 
         services.AddDbContextPool<RewardsDbContext>(options =>

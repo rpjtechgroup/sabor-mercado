@@ -1,0 +1,20 @@
+<h2 id="@Id" @attributes="AdditionalAttributes" class="section-icon-title @CssClass" title="@Title" aria-label="@Title">
+    <span class="icon-glyph" aria-hidden="true">@Icon</span>
+</h2>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = AppIcons.Catalog;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? AdditionalAttributes { get; set; }
+}

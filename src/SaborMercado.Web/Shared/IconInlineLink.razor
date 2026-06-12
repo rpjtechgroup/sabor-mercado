@@ -1,0 +1,28 @@
+<a href="@Href"
+   class="icon-inline-link @CssClass"
+   title="@Label"
+   aria-label="@Label"
+   target="@Target"
+   rel="@Rel">
+    <span class="icon-glyph" aria-hidden="true">@Icon</span>
+</a>
+
+@code {
+    [Parameter]
+    public string Href { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Icon { get; set; } = AppIcons.Link;
+
+    [Parameter]
+    public string Label { get; set; } = string.Empty;
+
+    [Parameter]
+    public string CssClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Target { get; set; }
+
+    [Parameter]
+    public string? Rel { get; set; }
+}

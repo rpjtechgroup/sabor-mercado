@@ -39,7 +39,7 @@ public partial class ShoppingPage : IDisposable
 
     private async Task StartSessionAsync(SessionStartRequest input)
     {
-        await Shopping.StartSessionAsync(input.Kind, input.Budget, input.MarketName);
+        await Shopping.StartSessionAsync(input.Kind, input.Budget, input.StoreId);
         _showSummary = false;
         _confirmingAbandon = false;
     }

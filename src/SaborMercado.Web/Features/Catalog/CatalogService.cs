@@ -11,7 +11,7 @@ namespace SaborMercado.Web.Features.Catalog;
 /// Casos de uso do catálogo pessoal de produtos e histórico de preços (F5).
 /// Persistência imediata e 100% local (Constitution I).
 /// </summary>
-public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
+public sealed class CatalogService(ICatalogStore store, StoreService stores, TimeProvider clock)
 {
     private readonly List<Product> _products = [];
     private bool _initialized;
@@ -28,6 +28,8 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
         {
             return;
         }
+
+        await stores.InitializeAsync();
 
         try
         {
@@ -47,6 +49,7 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
 
     public async Task<Product> CreateProductAsync(Product product)
     {
+        await stores.InitializeAsync();
         ValidateProduct(product);
         product.Id = Ids.NewId();
         product.CreatedAt = clock.GetUtcNow();
@@ -60,6 +63,7 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
 
     public async Task UpdateProductAsync(Product product)
     {
+        await stores.InitializeAsync();
         ValidateProduct(product);
         var index = _products.FindIndex(p => p.Id == product.Id);
         if (index < 0)
@@ -112,10 +116,13 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
     public async Task<PriceRecord> AddPriceRecordAsync(
         Guid productId,
         decimal price,
-        string? marketName,
+        Guid storeId,
         DateTimeOffset? observedAt = null,
         PriceSource source = PriceSource.Manual)
     {
+        await stores.InitializeAsync();
+        stores.RequireStore(storeId);
+
         if (GetProduct(productId) is null)
         {
             throw new InvalidOperationException("Produto não encontrado.");
@@ -131,7 +138,8 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
             Id = Ids.NewId(),
             ProductId = productId,
             Price = price,
-            MarketName = string.IsNullOrWhiteSpace(marketName) ? null : marketName.Trim(),
+            StoreId = storeId,
+            MarketName = stores.GetStoreName(storeId),
             ObservedAt = observedAt ?? clock.GetUtcNow(),
             Source = source,
         };
@@ -174,7 +182,7 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
         return history.FirstOrDefault();
     }
 
-    public async Task<Product> EnsureProductAsync(ProductSnapshot snapshot)
+    public async Task<Product> EnsureProductAsync(ProductSnapshot snapshot, Guid? storeId = null)
     {
         if (string.IsNullOrWhiteSpace(snapshot.Name))
         {
@@ -189,12 +197,18 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
             return existing;
         }
 
+        if (storeId is null || storeId == Guid.Empty)
+        {
+            throw new InvalidOperationException("Selecione um comércio para cadastrar o produto.");
+        }
+
         var product = new Product
         {
             Name = snapshot.Name.Trim(),
             Brand = string.IsNullOrWhiteSpace(snapshot.Brand) ? null : snapshot.Brand.Trim(),
             QuantityValue = snapshot.QuantityValue,
             QuantityUnit = snapshot.QuantityUnit,
+            StoreId = storeId.Value,
             CreatedAt = clock.GetUtcNow(),
         };
 
@@ -226,7 +240,7 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
     public async Task TouchPriceFromPurchaseAsync(
         Guid productId,
         decimal price,
-        string? marketName,
+        Guid? storeId,
         DateTimeOffset observedAt)
     {
         if (GetProduct(productId) is null)
@@ -239,22 +253,27 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
             throw new ArgumentOutOfRangeException(nameof(price), "Preço não pode ser negativo.");
         }
 
+        if (storeId is null || storeId == Guid.Empty)
+        {
+            return;
+        }
+
         var history = await GetPriceHistoryAsync(productId);
         var sameDay = DateOnly.FromDateTime(observedAt.UtcDateTime);
         var duplicate = history.Any(r =>
             DateOnly.FromDateTime(r.ObservedAt.UtcDateTime) == sameDay &&
             r.Price == price &&
-            string.Equals(r.MarketName, marketName, StringComparison.OrdinalIgnoreCase));
+            r.StoreId == storeId);
 
         if (duplicate)
         {
             return;
         }
 
-        await AddPriceRecordAsync(productId, price, marketName, observedAt, PriceSource.Manual);
+        await AddPriceRecordAsync(productId, price, storeId.Value, observedAt, PriceSource.Manual);
     }
 
-    private static void ValidateProduct(Product product)
+    private void ValidateProduct(Product product)
     {
         if (string.IsNullOrWhiteSpace(product.Name))
         {
@@ -265,6 +284,13 @@ public sealed class CatalogService(ICatalogStore store, TimeProvider clock)
         {
             throw new ArgumentOutOfRangeException(nameof(product), "Peso/volume deve ser maior que zero.");
         }
+
+        if (product.StoreId == Guid.Empty)
+        {
+            throw new ArgumentException("Selecione o comércio onde você compra este produto.", nameof(product));
+        }
+
+        stores.RequireStore(product.StoreId);
     }
 
     private void SortProducts() =>

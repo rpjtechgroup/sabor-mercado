@@ -1,0 +1,119 @@
+@* Formulário de cadastro/edição de comércio. *@
+<div class="card">
+    <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.Store)" Title="@(IsEdit ? "Editar comércio" : "Novo comércio")" />
+
+    <div class="field">
+        <label for="store-name">Nome *</label>
+        <input id="store-name" class="input" @bind="Model.Name" placeholder="ex.: Mercado do Bairro" />
+    </div>
+
+    <div class="field-row">
+        <div class="field">
+            <label for="store-city">Cidade</label>
+            <input id="store-city" class="input" @bind="Model.City" placeholder="ex.: São Paulo" />
+        </div>
+        <div class="field">
+            <label for="store-state">Estado</label>
+            <input id="store-state" class="input" @bind="Model.State" placeholder="ex.: SP" maxlength="2" />
+        </div>
+    </div>
+
+    <div class="field">
+        <label for="store-address">Endereço</label>
+        <input id="store-address" class="input" @bind="Model.Address" placeholder="rua, número — opcional" />
+    </div>
+
+    <div class="field">
+        <span class="field-label">Localização</span>
+        <p class="muted">Opcional. Ajuda em recursos futuros (ex.: comércios próximos).</p>
+        <IconButton Icon="@AppIcons.Location"
+                    Label="@(_locating ? "Obtendo localização… (pode levar até 1 min)" : "Usar minha localização atual")"
+                    CssClass="btn btn-outline btn-block btn-icon"
+                    Disabled="@_locating"
+                    OnClick="UseCurrentLocationAsync" />
+        @if (Model.Latitude is { } lat && Model.Longitude is { } lng)
+        {
+            <p class="muted geo-coords" role="status">
+                Coordenadas: @lat.ToString("0.######", MoneyFormat.Culture),
+                @lng.ToString("0.######", MoneyFormat.Culture)
+            </p>
+            <IconButton Icon="@AppIcons.Remove" Label="Remover localização" CssClass="btn btn-outline btn-block btn-icon" OnClick="ClearLocation" />
+        }
+        @if (_locationError is not null)
+        {
+            <p class="text-over" role="alert">@_locationError</p>
+        }
+    </div>
+
+    @if (_error is not null)
+    {
+        <p class="text-over" role="alert">@_error</p>
+    }
+
+    <div class="field-row">
+        <IconButton Icon="@AppIcons.Cancel" Label="Cancelar" CssClass="btn btn-outline btn-block btn-icon" OnClick="CancelAsync" />
+        <IconButton Icon="@AppIcons.Save" Label="Salvar" CssClass="btn btn-primary btn-block btn-icon" OnClick="SaveAsync" />
+    </div>
+</div>
+
+@code {
+    private string? _error;
+    private string? _locationError;
+    private bool _locating;
+
+    [Parameter]
+    public StoreFormModel Model { get; set; } = new();
+
+    [Parameter]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<StoreFormModel> OnSave { get; set; }
+
+    [Parameter]
+    public EventCallback OnCancel { get; set; }
+
+    [Inject]
+    public GeolocationInterop Geolocation { get; set; } = default!;
+
+    private async Task SaveAsync()
+    {
+        if (string.IsNullOrWhiteSpace(Model.Name))
+        {
+            _error = "Informe o nome do comércio.";
+            return;
+        }
+
+        _error = null;
+        await OnSave.InvokeAsync(Model);
+    }
+
+    private Task CancelAsync() => OnCancel.InvokeAsync();
+
+    private async Task UseCurrentLocationAsync()
+    {
+        _locating = true;
+        _locationError = null;
+        try
+        {
+            var coords = await Geolocation.GetCurrentPositionAsync();
+            Model.Latitude = coords.Latitude;
+            Model.Longitude = coords.Longitude;
+        }
+        catch (Exception ex)
+        {
+            _locationError = ex.Message;
+        }
+        finally
+        {
+            _locating = false;
+        }
+    }
+
+    private void ClearLocation()
+    {
+        Model.Latitude = null;
+        Model.Longitude = null;
+        _locationError = null;
+    }
+}

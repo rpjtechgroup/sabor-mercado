@@ -8,6 +8,8 @@ public sealed class RewardsDbContext(DbContextOptions<RewardsDbContext> options)
 
     public DbSet<FeatureUnlock> FeatureUnlocks => Set<FeatureUnlock>();
 
+    public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("rewards");
@@ -28,6 +30,15 @@ public sealed class RewardsDbContext(DbContextOptions<RewardsDbContext> options)
             entity.HasIndex(e => new { e.UserId, e.FeatureCode });
             entity.Property(e => e.UnlockedAt).HasColumnName("unlocked_at");
             entity.Property(e => e.ExpiresAt).HasColumnName("expires_at");
+        });
+
+        modelBuilder.Entity<UserAchievement>(entity =>
+        {
+            entity.ToTable("rewards_user_achievements");
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.UserId, e.AchievementCode }).IsUnique();
+            entity.Property(e => e.AchievementCode).HasColumnName("achievement_code");
+            entity.Property(e => e.UnlockedAt).HasColumnName("unlocked_at");
         });
     }
 }

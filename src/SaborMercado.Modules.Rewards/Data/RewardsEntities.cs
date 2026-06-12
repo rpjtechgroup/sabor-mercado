@@ -35,3 +35,14 @@ public sealed class FeatureUnlock
 
     public DateTimeOffset? ExpiresAt { get; set; }
 }
+
+public sealed class UserAchievement
+{
+    public Guid Id { get; set; }
+
+    public Guid UserId { get; set; }
+
+    public string AchievementCode { get; set; } = string.Empty;
+
+    public DateTimeOffset UnlockedAt { get; set; }
+}

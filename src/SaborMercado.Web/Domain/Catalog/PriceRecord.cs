@@ -10,6 +10,9 @@ public sealed class PriceRecord
 
     public decimal Price { get; set; }
 
+    public Guid? StoreId { get; set; }
+
+    /// <summary>Nome denormalizado para compatibilidade e exibição offline.</summary>
     public string? MarketName { get; set; }
 
     public DateTimeOffset ObservedAt { get; set; }

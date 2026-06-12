@@ -12,26 +12,26 @@ else if (Shopping.CurrentSession is null)
     @if (_showSummary && Shopping.LastFinishedSession is { } finished)
     {
         <div class="card session-summary">
-            <h1>Compra finalizada 🎉</h1>
+            <PageIcon Icon="@AppIcons.Party" Title="Compra finalizada" />
             @if (finished.MarketName is not null)
             {
                 <p class="muted">@finished.MarketName</p>
             }
-            <button type="button" class="btn btn-primary btn-block" @onclick="StartNew">Nova compra</button>
-            <a class="btn btn-outline btn-block history-link" href="historico">📋 Ver histórico desta compra</a>
+            <IconButton Icon="@AppIcons.New" Label="Nova compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="StartNew" />
+            <IconLink Href="historico" Icon="@AppIcons.History" Label="Ver histórico desta compra" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
         </div>
     }
     else
     {
         <SessionStart SuggestedBudget="@Shopping.SuggestedBudget" OnStart="StartSessionAsync" />
-        <a class="btn btn-outline btn-block history-link" href="compra-mensal">📅 Editar lista mensal</a>
-        <a class="btn btn-outline btn-block history-link" href="historico">📋 Histórico de compras</a>
+        <IconLink Href="compra-mensal" Icon="@AppIcons.Calendar" Label="Editar lista mensal" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
+        <IconLink Href="historico" Icon="@AppIcons.History" Label="Histórico de compras" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
     }
 }
 else
 {
     <header class="session-header">
-        <h1>@(Shopping.CurrentSession.MarketName ?? "Compra em andamento")</h1>
+        <PageIcon Icon="@AppIcons.Shopping" Title="@(Shopping.CurrentSession.MarketName ?? "Compra em andamento")" />
     </header>
 
     @if (Shopping.CurrentSession.Kind == SessionKind.Sporadic)
@@ -56,8 +56,8 @@ else
     }
     else
     {
-        <a class="btn btn-primary btn-block" href="foto">📸 Foto da etiqueta</a>
-        <button type="button" class="btn btn-secondary btn-block" @onclick="OpenAddForm">＋ Digitar manualmente</button>
+        <IconLink Href="foto" Icon="@AppIcons.Photo" Label="Foto da etiqueta" CssClass="btn btn-primary btn-block btn-icon icon-link" />
+        <IconButton Icon="@AppIcons.Manual" Label="Digitar manualmente" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenAddForm" />
     }
 
     @if (Shopping.Items.Count == 0 && _itemForm is null)
@@ -84,26 +84,18 @@ else
 
     @if (_canExportCsv && Shopping.Items.Count > 0)
     {
-        <button type="button" class="btn btn-secondary btn-block" @onclick="ExportCsvAsync">
-            📄 Exportar carrinho (CSV)
-        </button>
+        <IconButton Icon="@AppIcons.Export" Label="Exportar carrinho (CSV)" CssClass="btn btn-secondary btn-block btn-icon" OnClick="ExportCsvAsync" />
     }
 
     <div class="session-actions">
-        <button type="button" class="btn btn-primary btn-block" @onclick="FinishAsync">
-            ✅ Encerrar compra
-        </button>
+        <IconButton Icon="@AppIcons.Finish" Label="Encerrar compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="FinishAsync" />
         @if (_confirmingAbandon)
         {
-            <button type="button" class="btn btn-danger btn-block" @onclick="AbandonAsync">
-                Confirmar abandono (itens serão descartados)
-            </button>
+            <IconButton Icon="@AppIcons.Warning" Label="Confirmar abandono (itens serão descartados)" CssClass="btn btn-danger btn-block btn-icon" OnClick="AbandonAsync" />
         }
         else
         {
-            <button type="button" class="btn btn-outline btn-block" @onclick="AskAbandon">
-                Abandonar compra
-            </button>
+            <IconButton Icon="@AppIcons.Abandon" Label="Abandonar compra" CssClass="btn btn-outline btn-block btn-icon" OnClick="AskAbandon" />
         }
     </div>
 }

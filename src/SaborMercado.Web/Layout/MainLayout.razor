@@ -8,21 +8,9 @@
     </main>
 
     <nav class="bottom-nav" aria-label="Navegação principal">
-        <NavLink class="bottom-nav-link" href="" Match="NavLinkMatch.All">
-            <span class="bottom-nav-icon" aria-hidden="true">🛒</span>
-            <span>Compra</span>
-        </NavLink>
-        <NavLink class="bottom-nav-link" href="foto">
-            <span class="bottom-nav-icon" aria-hidden="true">📸</span>
-            <span>Foto</span>
-        </NavLink>
-        <NavLink class="bottom-nav-link" href="catalogo">
-            <span class="bottom-nav-icon" aria-hidden="true">📦</span>
-            <span>Catálogo</span>
-        </NavLink>
-        <NavLink class="bottom-nav-link" href="configuracoes">
-            <span class="bottom-nav-icon" aria-hidden="true">⚙️</span>
-            <span>Ajustes</span>
-        </NavLink>
+        <IconNavLink Href="" Icon="@AppIcons.Shopping" Label="Compra" CssClass="bottom-nav-link" Match="NavLinkMatch.All" />
+        <IconNavLink Href="foto" Icon="@AppIcons.Photo" Label="Foto" CssClass="bottom-nav-link" />
+        <IconNavLink Href="catalogo" Icon="@AppIcons.Catalog" Label="Catálogo" CssClass="bottom-nav-link" />
+        <IconNavLink Href="configuracoes" Icon="@AppIcons.Settings" Label="Ajustes" CssClass="bottom-nav-link" />
     </nav>
 </div>

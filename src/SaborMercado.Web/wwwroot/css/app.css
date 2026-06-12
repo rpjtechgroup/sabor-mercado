@@ -49,6 +49,35 @@ h2 {
     margin: 1.25rem 0 0.5rem;
 }
 
+/* ---------- Comércios ---------- */
+
+.store-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.store-row-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.store-row-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.store-picker-hint {
+    margin: 0.35rem 0 0;
+    font-size: 0.9rem;
+}
+
+.geo-coords {
+    margin-top: 0.5rem;
+}
+
 /* ---------- Botões (alvos de toque grandes) ---------- */
 
 button {
@@ -123,6 +152,137 @@ button {
     background: var(--primary-soft);
     color: var(--primary-dark);
     font-weight: 800;
+}
+
+/* ---------- UI iconizada (rótulos em title / aria-label) ---------- */
+
+.icon-glyph {
+    font-size: 1.35rem;
+    line-height: 1;
+    display: block;
+}
+
+.icon-glyph-lg {
+    font-size: 1.85rem;
+}
+
+.btn-icon,
+.icon-link {
+    min-width: 3rem;
+    padding-inline: 0.85rem;
+    text-decoration: none;
+}
+
+.btn-icon.btn-block,
+.icon-link.btn-block {
+    width: 100%;
+}
+
+.btn-icon.btn-sm {
+    min-width: 2.5rem;
+    padding-inline: 0.65rem;
+}
+
+.btn-icon.btn-qty {
+    font-size: 1.1rem;
+}
+
+.page-icon-title,
+.section-icon-title {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin: 0 0 0.75rem;
+}
+
+.section-icon-title {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem;
+}
+
+.history-tab .icon-glyph {
+    font-size: 1.25rem;
+}
+
+.icon-back {
+    display: inline-flex;
+    margin-bottom: 0.75rem;
+    text-decoration: none;
+}
+
+.icon-inline-link {
+    display: inline-flex;
+    vertical-align: middle;
+    text-decoration: none;
+    margin-inline: 0.15rem;
+}
+
+.icon-inline-link .icon-glyph {
+    font-size: 1.15rem;
+}
+
+/* Dica ao tocar ou focar (mobile + desktop) */
+[title].btn-icon,
+[title].icon-link,
+[title].bottom-nav-link,
+[title].page-icon-title,
+[title].section-icon-title,
+[title].history-tab,
+[title].btn-qty {
+    position: relative;
+}
+
+[title].btn-icon:focus-visible::after,
+[title].icon-link:focus-visible::after,
+[title].bottom-nav-link:focus-visible::after,
+[title].btn-icon:active::after,
+[title].icon-link:active::after,
+[title].bottom-nav-link:active::after,
+[title].history-tab:active::after,
+[title].btn-qty:active::after {
+    content: attr(aria-label);
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.4rem);
+    transform: translateX(-50%);
+    z-index: 30;
+    max-width: 14rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.5rem;
+    background: rgb(29 37 32 / 92%);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25;
+    text-align: center;
+    white-space: normal;
+    pointer-events: none;
+}
+
+@media (hover: hover) {
+    [title].btn-icon:hover::after,
+    [title].icon-link:hover::after,
+    [title].bottom-nav-link:hover::after,
+    [title].history-tab:hover::after,
+    [title].btn-qty:hover::after {
+        content: attr(aria-label);
+        position: absolute;
+        left: 50%;
+        bottom: calc(100% + 0.4rem);
+        transform: translateX(-50%);
+        z-index: 30;
+        max-width: 14rem;
+        padding: 0.35rem 0.6rem;
+        border-radius: 0.5rem;
+        background: rgb(29 37 32 / 92%);
+        color: #fff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+        white-space: normal;
+        pointer-events: none;
+    }
 }
 
 /* ---------- Formulários ---------- */
@@ -357,6 +517,133 @@ textarea.input {
 .product-row-price {
     white-space: nowrap;
     font-size: 0.9rem;
+}
+
+/* ---------- Confiança comunitária ---------- */
+
+.trust-badge {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.trust-badge--confiavel {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.trust-badge--neutro {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.trust-badge--cautela {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.observation-row-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.observation-price {
+    font-size: 1.1rem;
+}
+
+.vote-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+}
+
+.vote-btn {
+    min-height: 2.5rem;
+    min-width: 3.5rem;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 0.5rem;
+    background: #fff;
+    font-weight: 600;
+}
+
+.vote-btn.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+}
+
+.vote-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.vote-btn--active-up {
+    border-color: #16a34a;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.vote-btn--active-down {
+    border-color: #dc2626;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.vote-net {
+    min-width: 2rem;
+    text-align: center;
+    font-weight: 700;
+}
+
+.achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+    gap: 0.75rem;
+}
+
+.achievement-badge {
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    background: #fafafa;
+}
+
+.achievement-badge-title {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.achievement-badge-date {
+    font-size: 0.75rem;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 45%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 900;
+}
+
+.modal-card {
+    width: 100%;
+    max-width: 28rem;
+    background: #fff;
+    border-radius: 1rem 1rem 0.75rem 0.75rem;
+    padding: 1.25rem;
+    box-shadow: 0 -4px 24px rgb(0 0 0 / 15%);
 }
 
 /* ---------- Carregamento / erro ---------- */

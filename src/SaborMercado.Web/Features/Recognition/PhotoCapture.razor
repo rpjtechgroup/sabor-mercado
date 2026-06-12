@@ -10,7 +10,7 @@
 
 <div class="photo-capture">
     <header class="session-header">
-        <h1>Modo Foto</h1>
+        <PageIcon Icon="@AppIcons.Photo" Title="Modo Foto" />
         <p class="muted">Aponte para a etiqueta da prateleira ou do produto.</p>
     </header>
 
@@ -18,7 +18,7 @@
     {
         <div class="card">
             <p>Inicie uma compra antes de usar o modo foto.</p>
-            <button type="button" class="btn btn-primary btn-block" @onclick="GoShopping">Ir para compra</button>
+            <IconButton Icon="@AppIcons.Shopping" Label="Ir para compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="GoShopping" />
         </div>
     }
     else if (_showManualForm)
@@ -32,26 +32,24 @@
     {
         <div class="card">
             <p>Para ler etiquetas por foto, configure sua chave gratuita do Gemini neste aparelho.</p>
-            <a class="btn btn-primary btn-block" href="configuracoes">Configurar chave Gemini</a>
-            <button type="button" class="btn btn-secondary btn-block" @onclick="OpenManualForm">
-                Digitar manualmente
-            </button>
+            <IconLink Href="configuracoes" Icon="@AppIcons.Key" Label="Configurar chave Gemini" CssClass="btn btn-primary btn-block btn-icon icon-link" />
+            <IconButton Icon="@AppIcons.Manual" Label="Digitar manualmente" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenManualForm" />
         </div>
     }
     else
     {
         <div class="card photo-actions">
-            <label class="btn btn-primary btn-block photo-input-label">
-                📸 Fotografar etiqueta
+            <label class="btn btn-primary btn-block photo-input-label btn-icon"
+                   title="Fotografar etiqueta"
+                   aria-label="Fotografar etiqueta">
+                <span class="icon-glyph" aria-hidden="true">@AppIcons.Photo</span>
                 <InputFile OnChange="OnPhotoSelectedAsync"
                            accept="image/*"
                            capture="environment"
                            class="photo-input-hidden" />
             </label>
 
-            <button type="button" class="btn btn-secondary btn-block" @onclick="OpenManualForm">
-                Digitar manualmente
-            </button>
+            <IconButton Icon="@AppIcons.Manual" Label="Digitar manualmente" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenManualForm" />
 
             @if (_busy)
             {

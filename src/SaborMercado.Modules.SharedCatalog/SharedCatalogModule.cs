@@ -19,6 +19,10 @@ public static class SharedCatalogModule
         services.AddScoped<ContributionService>();
         services.AddScoped<SharedProductSearchService>();
         services.AddScoped<MarketComparisonService>();
+        services.AddScoped<ContributorTrustService>();
+        services.AddScoped<ObservationVoteService>();
+        services.AddScoped<ContributorReportService>();
+        services.AddScoped<SharedObservationQueryService>();
 
         services.AddDbContextPool<SharedCatalogDbContext>(options =>
             DatabaseBootstrap.ConfigureDbContext<SharedCatalogDbContext>(
@@ -34,5 +38,8 @@ public static class SharedCatalogModule
         DatabaseBootstrap.InitializeModuleAsync<SharedCatalogDbContext>(app);
 
     public static IEndpointRouteBuilder MapSharedCatalogModule(this IEndpointRouteBuilder app) =>
-        app.MapContributionEndpoints().MapSharedProductEndpoints();
+        app.MapContributionEndpoints()
+            .MapSharedProductEndpoints()
+            .MapCommunityEndpoints()
+            .MapSharedObservationEndpoints();
 }

@@ -4,7 +4,7 @@
 
 <PageTitle>Sabor Mercado — Catálogo</PageTitle>
 
-<h1>Meus produtos</h1>
+<PageIcon Icon="@AppIcons.Catalog" Title="Meus produtos" />
 
 @if (!_loaded)
 {
@@ -12,13 +12,21 @@
 }
 else
 {
-    @if (_form is not null)
+    @if (StoreService.Stores.Count == 0)
+    {
+        <div class="empty-state">
+            <span class="empty-icon" aria-hidden="true">🏪</span>
+            Cadastre um comércio antes de registrar produtos.
+            <p><IconLink Href="comercios" Icon="@AppIcons.Store" Label="Cadastrar comércio" CssClass="btn btn-primary btn-block btn-icon icon-link" /></p>
+        </div>
+    }
+    else if (_form is not null)
     {
         <ProductForm Model="@_form" OnSave="CreateAsync" OnCancel="@(() => _form = null)" />
     }
     else
     {
-        <button type="button" class="btn btn-primary btn-block" @onclick="OpenForm">＋ Novo produto</button>
+        <IconButton Icon="@AppIcons.New" Label="Novo produto" CssClass="btn btn-primary btn-block btn-icon" OnClick="OpenForm" />
 
         <div class="field catalog-search">
             <input class="input" placeholder="Buscar produto…" aria-label="Buscar produto"
@@ -65,6 +73,9 @@ else
     public CatalogService Catalog { get; set; } = default!;
 
     [Inject]
+    public StoreService StoreService { get; set; } = default!;
+
+    [Inject]
     public NavigationManager Navigation { get; set; } = default!;
 
     private IReadOnlyList<Product> FilteredProducts =>
@@ -78,6 +89,8 @@ else
     protected override async Task OnInitializedAsync()
     {
         Catalog.StateChanged += OnStateChanged;
+        StoreService.StateChanged += OnStateChanged;
+        await StoreService.InitializeAsync();
         await Catalog.InitializeAsync();
         _lastPrices = await Catalog.GetLastPricesByProductIdAsync();
         _loaded = true;
@@ -107,13 +120,16 @@ else
         return string.Join(" · ", parts);
     }
 
-    private void OpenForm() => _form = new ProductFormModel();
+    private void OpenForm() => _form = new ProductFormModel
+    {
+        StoreId = StoreService.Stores.Count == 1 ? StoreService.Stores[0].Id : Guid.Empty,
+    };
 
     private void OnSearch(ChangeEventArgs e) => _search = e.Value?.ToString() ?? string.Empty;
 
     private async Task CreateAsync(ProductFormModel model)
     {
-        var product = new Product { Name = model.Name };
+        var product = new Product { Name = model.Name, StoreId = model.StoreId };
         model.ApplyTo(product);
         var created = await Catalog.CreateProductAsync(product);
         _form = null;
@@ -126,5 +142,9 @@ else
         StateHasChanged();
     });
 
-    public void Dispose() => Catalog.StateChanged -= OnStateChanged;
+    public void Dispose()
+    {
+        Catalog.StateChanged -= OnStateChanged;
+        StoreService.StateChanged -= OnStateChanged;
+    }
 }

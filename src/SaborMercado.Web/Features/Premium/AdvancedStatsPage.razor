@@ -5,7 +5,7 @@
 <PageTitle>Sabor Mercado — Estatísticas</PageTitle>
 
 <div class="premium-page">
-    <h1>Estatísticas avançadas</h1>
+    <PageIcon Icon="@AppIcons.Chart" Title="Estatísticas avançadas" />
 
     @if (!_loaded)
     {
@@ -13,7 +13,7 @@
     }
     else if (!Account.HasUnlock(PremiumFeatureCodes.AdvancedStats))
     {
-        <p class="muted">Desbloqueie em <a href="conta">Minha conta</a> (25 créditos).</p>
+        <p class="muted">Desbloqueie em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (25 créditos).</p>
     }
     else if (_stats is null || _stats.FinishedTrips == 0)
     {
@@ -28,7 +28,7 @@
             <p>Menor compra: <strong>@MoneyFormat.Format(_stats.LowestSpend)</strong></p>
         </div>
 
-        <h2>Últimos meses</h2>
+        <SectionIcon Icon="@AppIcons.Calendar" Title="Últimos meses" />
         @foreach (var month in _stats.RecentMonths)
         {
             <div class="card price-row">
@@ -38,7 +38,7 @@
         }
     }
 
-    <p class="muted"><a href="conta">‹ Minha conta</a></p>
+    <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
 </div>
 
 @code {

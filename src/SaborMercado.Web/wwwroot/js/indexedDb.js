@@ -18,6 +18,9 @@ function upgrade(db, oldVersion) {
   if (oldVersion < 3) {
     db.createObjectStore('shoppingPatterns', { keyPath: 'id' });
   }
+  if (oldVersion < 4) {
+    db.createObjectStore('stores', { keyPath: 'id' });
+  }
 }
 
 export function open(name, version) {

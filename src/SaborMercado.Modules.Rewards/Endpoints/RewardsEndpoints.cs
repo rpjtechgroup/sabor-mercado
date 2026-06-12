@@ -15,6 +15,7 @@ public static class RewardsEndpoints
 
         group.MapGet("/credits", GetCreditsAsync);
         group.MapPost("/unlocks", UnlockAsync);
+        group.MapGet("/achievements", ListAchievementsAsync);
 
         return app;
     }
@@ -25,6 +26,16 @@ public static class RewardsEndpoints
         CancellationToken cancellationToken)
     {
         var response = await rewards.GetCreditsAsync(user, cancellationToken);
+        return Results.Ok(response);
+    }
+
+    private static async Task<IResult> ListAchievementsAsync(
+        ClaimsPrincipal user,
+        AchievementService achievements,
+        CancellationToken cancellationToken)
+    {
+        var userId = GetAccountId(user);
+        var response = await achievements.ListForUserAsync(userId, cancellationToken);
         return Results.Ok(response);
     }
 
@@ -56,5 +67,13 @@ public static class RewardsEndpoints
                 },
                 statusCode: status);
         }
+    }
+
+    private static Guid GetAccountId(ClaimsPrincipal user)
+    {
+        var sub = user.FindFirstValue(ClaimTypes.NameIdentifier) ?? user.FindFirstValue("sub");
+        return Guid.TryParse(sub, out var id)
+            ? id
+            : throw new UnauthorizedAccessException();
     }
 }

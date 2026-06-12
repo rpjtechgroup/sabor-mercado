@@ -58,4 +58,68 @@ public sealed class PriceObservation
     public string? RejectionReason { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }
+
+    public int UpvoteCount { get; set; }
+
+    public int DownvoteCount { get; set; }
+
+    public bool IsHidden { get; set; }
+}
+
+public sealed class ObservationVote
+{
+    public Guid Id { get; set; }
+
+    public Guid ObservationId { get; set; }
+
+    public PriceObservation Observation { get; set; } = null!;
+
+    public Guid VoterUserId { get; set; }
+
+    public int Value { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
+
+    public DateTimeOffset UpdatedAt { get; set; }
+}
+
+public sealed class ContributorTrust
+{
+    public Guid PseudonymId { get; set; }
+
+    /// <summary>Vincula pseudônimo à conta para conquistas (não exposto publicamente).</summary>
+    public Guid? ContributorUserId { get; set; }
+
+    public int TrustScore { get; set; } = 50;
+
+    public int TotalUpvotesReceived { get; set; }
+
+    public int TotalDownvotesReceived { get; set; }
+
+    public int AcceptedContributions { get; set; }
+
+    public int ReportCount { get; set; }
+
+    public bool IsRestricted { get; set; }
+
+    public DateTimeOffset? RestrictedUntil { get; set; }
+
+    public DateTimeOffset UpdatedAt { get; set; }
+}
+
+public sealed class ContributorReport
+{
+    public Guid Id { get; set; }
+
+    public Guid ReporterUserId { get; set; }
+
+    public Guid TargetPseudonymId { get; set; }
+
+    public Guid? ObservationId { get; set; }
+
+    public string Reason { get; set; } = string.Empty;
+
+    public string? Details { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
 }

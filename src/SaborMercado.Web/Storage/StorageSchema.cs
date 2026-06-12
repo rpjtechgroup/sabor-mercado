@@ -10,7 +10,7 @@ public static class StorageSchema
 {
     public const string DatabaseName = "sabor-mercado";
 
-    public const int DatabaseVersion = 3;
+    public const int DatabaseVersion = 4;
 
     /// <summary>Versão de schema gravada em todo objeto persistido.</summary>
     public const int CurrentSchemaVersion = 1;
@@ -23,6 +23,8 @@ public static class StorageSchema
     public const string PendingSharesStore = "pendingShares";
 
     public const string ShoppingPatternsStore = "shoppingPatterns";
+
+    public const string StoresStore = "stores";
 
     public static readonly Guid DefaultPatternId = Guid.Parse("00000000-0000-4000-8000-000000000001");
 }

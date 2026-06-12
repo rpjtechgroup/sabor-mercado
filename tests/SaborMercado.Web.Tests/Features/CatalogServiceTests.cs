@@ -10,11 +10,18 @@ public class CatalogServiceTests
     private static readonly DateTimeOffset T0 = new(2026, 6, 11, 12, 0, 0, TimeSpan.Zero);
 
     private readonly InMemoryCatalogStore _store = new();
+    private readonly InMemoryStoreStore _storeStore = new();
     private readonly FixedTimeProvider _clock = new(T0);
+
+    public CatalogServiceTests()
+    {
+        CatalogTestStores.Seed(_storeStore, T0);
+    }
 
     private async Task<CatalogService> CreateInitializedAsync()
     {
-        var service = new CatalogService(_store, _clock);
+        var stores = new StoreService(_storeStore, _store, _clock);
+        var service = new CatalogService(_store, stores, _clock);
         await service.InitializeAsync();
         return service;
     }
@@ -26,6 +33,7 @@ public class CatalogServiceTests
         QuantityValue = 900m,
         QuantityUnit = QuantityUnit.Ml,
         Category = "Mercearia",
+        StoreId = CatalogTestStores.DefaultId,
     };
 
     [Fact]
@@ -46,7 +54,17 @@ public class CatalogServiceTests
         var service = await CreateInitializedAsync();
 
         await Assert.ThrowsAsync<ArgumentException>(
-            () => service.CreateProductAsync(new Product { Name = "  " }));
+            () => service.CreateProductAsync(new Product { Name = "  ", StoreId = CatalogTestStores.DefaultId }));
+    }
+
+    [Fact]
+    public async Task CreateProduct_WithoutStore_Throws()
+    {
+        var service = await CreateInitializedAsync();
+        var product = NewProduct();
+        product.StoreId = Guid.Empty;
+
+        await Assert.ThrowsAsync<ArgumentException>(() => service.CreateProductAsync(product));
     }
 
     [Fact]
@@ -67,8 +85,8 @@ public class CatalogServiceTests
     {
         var service = await CreateInitializedAsync();
         var product = await service.CreateProductAsync(NewProduct());
-        await service.AddPriceRecordAsync(product.Id, 8.99m, "Mercado A");
-        await service.AddPriceRecordAsync(product.Id, 9.49m, "Mercado B");
+        await service.AddPriceRecordAsync(product.Id, 8.99m, CatalogTestStores.StoreAId);
+        await service.AddPriceRecordAsync(product.Id, 9.49m, CatalogTestStores.StoreBId);
 
         await service.DeleteProductAsync(product.Id);
 
@@ -83,9 +101,9 @@ public class CatalogServiceTests
         var service = await CreateInitializedAsync();
         var product = await service.CreateProductAsync(NewProduct());
 
-        await service.AddPriceRecordAsync(product.Id, 8.49m, "Mercado A", T0.AddDays(-10));
-        await service.AddPriceRecordAsync(product.Id, 8.99m, "Mercado B", T0.AddDays(-1));
-        await service.AddPriceRecordAsync(product.Id, 8.79m, "Mercado C", T0.AddDays(-5));
+        await service.AddPriceRecordAsync(product.Id, 8.49m, CatalogTestStores.StoreAId, T0.AddDays(-10));
+        await service.AddPriceRecordAsync(product.Id, 8.99m, CatalogTestStores.StoreBId, T0.AddDays(-1));
+        await service.AddPriceRecordAsync(product.Id, 8.79m, CatalogTestStores.StoreCId, T0.AddDays(-5));
 
         var history = await service.GetPriceHistoryAsync(product.Id);
 
@@ -97,8 +115,8 @@ public class CatalogServiceTests
     {
         var service = await CreateInitializedAsync();
         var product = await service.CreateProductAsync(NewProduct());
-        await service.AddPriceRecordAsync(product.Id, 8.49m, null, T0.AddDays(-10));
-        await service.AddPriceRecordAsync(product.Id, 8.99m, null, T0.AddDays(-1));
+        await service.AddPriceRecordAsync(product.Id, 8.49m, CatalogTestStores.StoreAId, T0.AddDays(-10));
+        await service.AddPriceRecordAsync(product.Id, 8.99m, CatalogTestStores.StoreAId, T0.AddDays(-1));
 
         var last = await service.GetLastKnownPriceAsync(product.Id);
 
@@ -112,7 +130,7 @@ public class CatalogServiceTests
         var product = await service.CreateProductAsync(NewProduct());
 
         await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
-            () => service.AddPriceRecordAsync(product.Id, -1m, null));
+            () => service.AddPriceRecordAsync(product.Id, -1m, CatalogTestStores.StoreAId));
     }
 
     [Fact]
@@ -121,13 +139,14 @@ public class CatalogServiceTests
         var service = await CreateInitializedAsync();
 
         await Assert.ThrowsAsync<InvalidOperationException>(
-            () => service.AddPriceRecordAsync(Guid.NewGuid(), 5m, null));
+            () => service.AddPriceRecordAsync(Guid.NewGuid(), 5m, CatalogTestStores.StoreAId));
     }
 
     [Fact]
     public async Task Initialize_RestoresPersistedProductsSortedByName()
     {
-        var seeded = new CatalogService(_store, _clock);
+        var stores = new StoreService(_storeStore, _store, _clock);
+        var seeded = new CatalogService(_store, stores, _clock);
         await seeded.InitializeAsync();
         await seeded.CreateProductAsync(NewProduct("Feijão"));
         await seeded.CreateProductAsync(NewProduct("Arroz"));
@@ -143,8 +162,8 @@ public class CatalogServiceTests
         var service = await CreateInitializedAsync();
         var snapshot = new ProductSnapshot("Leite Integral", "Itambé", 1m, QuantityUnit.L);
 
-        var first = await service.EnsureProductAsync(snapshot);
-        var second = await service.EnsureProductAsync(snapshot);
+        var first = await service.EnsureProductAsync(snapshot, CatalogTestStores.StoreAId);
+        var second = await service.EnsureProductAsync(snapshot, CatalogTestStores.StoreAId);
 
         Assert.Equal(first.Id, second.Id);
         Assert.Single(service.Products);
@@ -169,8 +188,8 @@ public class CatalogServiceTests
         var service = await CreateInitializedAsync();
         var product = await service.CreateProductAsync(NewProduct());
 
-        await service.TouchPriceFromPurchaseAsync(product.Id, 8.99m, "Mercado A", T0);
-        await service.TouchPriceFromPurchaseAsync(product.Id, 8.99m, "Mercado A", T0.AddHours(2));
+        await service.TouchPriceFromPurchaseAsync(product.Id, 8.99m, CatalogTestStores.StoreAId, T0);
+        await service.TouchPriceFromPurchaseAsync(product.Id, 8.99m, CatalogTestStores.StoreAId, T0.AddHours(2));
 
         var history = await service.GetPriceHistoryAsync(product.Id);
         Assert.Single(history);

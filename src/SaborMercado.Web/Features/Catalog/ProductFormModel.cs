@@ -19,6 +19,8 @@ public sealed class ProductFormModel
 
     public string? Notes { get; set; }
 
+    public Guid StoreId { get; set; }
+
     public static ProductFormModel FromProduct(Product product) => new()
     {
         Name = product.Name,
@@ -28,6 +30,7 @@ public sealed class ProductFormModel
         Ean = product.Ean,
         Category = product.Category,
         Notes = product.Notes,
+        StoreId = product.StoreId,
     };
 
     public void ApplyTo(Product product)
@@ -39,6 +42,7 @@ public sealed class ProductFormModel
         product.Ean = Normalize(Ean);
         product.Category = Normalize(Category);
         product.Notes = Normalize(Notes);
+        product.StoreId = StoreId;
     }
 
     private static string? Normalize(string? value) =>

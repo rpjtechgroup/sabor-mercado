@@ -2,7 +2,7 @@
 @using SaborMercado.Web.Features.Catalog
 @* Formulário manual de item — caminho manual obrigatório (Constitution II). *@
 <div class="card">
-    <h2>@(IsEdit ? "Editar item" : "Adicionar item")</h2>
+    <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.New)" Title="@(IsEdit ? "Editar item" : "Adicionar item")" />
 
     <div class="field">
         <label for="item-name">Produto *</label>
@@ -51,8 +51,8 @@
     }
 
     <div class="field-row">
-        <button type="button" class="btn btn-outline btn-block" @onclick="CancelAsync">Cancelar</button>
-        <button type="button" class="btn btn-primary btn-block" @onclick="SaveAsync">Salvar</button>
+        <IconButton Icon="@AppIcons.Cancel" Label="Cancelar" CssClass="btn btn-outline btn-block btn-icon" OnClick="CancelAsync" />
+        <IconButton Icon="@AppIcons.Save" Label="Salvar" CssClass="btn btn-primary btn-block btn-icon" OnClick="SaveAsync" />
     </div>
 </div>
 

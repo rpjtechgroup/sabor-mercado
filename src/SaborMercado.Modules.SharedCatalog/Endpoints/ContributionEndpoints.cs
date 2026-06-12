@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SaborMercado.Modules.SharedCatalog.Services;
+using SaborMercado.Shared.Community;
 using SaborMercado.Shared.SharedCatalog;
 
 namespace SaborMercado.Modules.SharedCatalog.Endpoints;
@@ -33,6 +34,19 @@ public static class ContributionEndpoints
 
             var result = await service.SubmitAsync(user, request, idempotencyKey, cancellationToken);
             return Results.Accepted($"/api/v1/price-observations/{result.ObservationId}", result);
+        }
+        catch (CommunityException ex)
+        {
+            return Results.Json(
+                new
+                {
+                    type = $"https://sabormercado.app/errors/{ex.Code.ToLowerInvariant()}",
+                    title = ex.Message,
+                    status = StatusCodes.Status403Forbidden,
+                    code = ex.Code,
+                    detail = ex.Message,
+                },
+                statusCode: StatusCodes.Status403Forbidden);
         }
         catch (ContributionException ex)
         {

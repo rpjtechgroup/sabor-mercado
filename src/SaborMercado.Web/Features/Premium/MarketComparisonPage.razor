@@ -5,7 +5,7 @@
 <PageTitle>Sabor Mercado — Comparar mercados</PageTitle>
 
 <div class="premium-page">
-    <h1>Comparação entre mercados</h1>
+    <PageIcon Icon="@AppIcons.Compare" Title="Comparação entre mercados" />
 
     @if (!_loaded)
     {
@@ -13,7 +13,7 @@
     }
     else if (!Account.HasUnlock(PremiumFeatureCodes.MarketComparison))
     {
-        <p class="muted">Desbloqueie em <a href="conta">Minha conta</a> (20 créditos).</p>
+        <p class="muted">Desbloqueie em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (20 créditos).</p>
     }
     else if (_comparison is null)
     {
@@ -42,7 +42,7 @@
         }
     }
 
-    <p class="muted"><a href="catalogo-colaborativo">‹ Catálogo colaborativo</a></p>
+    <p class="muted"><IconInlineLink Href="catalogo-colaborativo" Icon="@AppIcons.Back" Label="Catálogo colaborativo" /></p>
 </div>
 
 @code {

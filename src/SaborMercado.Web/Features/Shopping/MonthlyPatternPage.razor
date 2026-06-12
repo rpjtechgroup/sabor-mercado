@@ -3,7 +3,7 @@
 
 <PageTitle>Sabor Mercado — Lista mensal</PageTitle>
 
-<h1>Lista de compra mensal</h1>
+<PageIcon Icon="@AppIcons.Calendar" Title="Lista de compra mensal" />
 <p class="muted">Produtos que entram automaticamente no carrinho ao iniciar uma compra mensal.</p>
 
 @if (!_loaded)
@@ -54,14 +54,14 @@ else
     }
 
     <div class="card">
-        <h2>Adicionar produto</h2>
+        <SectionIcon Icon="@AppIcons.New" Title="Adicionar produto" />
         <ProductAutocomplete Name="@_searchName"
                              NameChanged="OnSearchNameChanged"
                              OnProductSelected="AddProductAsync"
                              Placeholder="Buscar no catálogo…" />
     </div>
 
-    <a class="btn btn-outline btn-block" href="">‹ Voltar à compra</a>
+    <IconLink Href="" Icon="@AppIcons.Back" Label="Voltar à compra" CssClass="btn btn-outline btn-block btn-icon icon-link icon-back" />
 }
 
 @code {

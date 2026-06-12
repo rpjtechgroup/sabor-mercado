@@ -56,6 +56,81 @@ namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
                     b.ToTable("contribution_idempotency", "shared_catalog");
                 });
 
+            modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.ContributorReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("ObservationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ReporterUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TargetPseudonymId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TargetPseudonymId", "CreatedAt");
+
+                    b.HasIndex("ReporterUserId", "TargetPseudonymId", "ObservationId", "Reason");
+
+                    b.ToTable("contributor_reports", "shared_catalog");
+                });
+
+            modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.ContributorTrust", b =>
+                {
+                    b.Property<Guid>("PseudonymId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("AcceptedContributions")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ContributorUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsRestricted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("ReportCount")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("RestrictedUntil")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("restricted_until");
+
+                    b.Property<int>("TotalDownvotesReceived")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalUpvotesReceived")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TrustScore")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("PseudonymId");
+
+                    b.ToTable("contributor_trust", "shared_catalog");
+                });
+
             modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.Market", b =>
                 {
                     b.Property<Guid>("Id")
@@ -79,6 +154,37 @@ namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
                     b.ToTable("shared_markets", "shared_catalog");
                 });
 
+            modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.ObservationVote", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<Guid>("ObservationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("VoterUserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ObservationId", "VoterUserId")
+                        .IsUnique();
+
+                    b.ToTable("observation_votes", "shared_catalog");
+                });
+
             modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.PriceObservation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -91,6 +197,12 @@ namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("DownvoteCount")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("MarketId")
                         .HasColumnType("uuid");
@@ -109,6 +221,9 @@ namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UpvoteCount")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -154,6 +269,17 @@ namespace SaborMercado.Modules.SharedCatalog.Data.Migrations
                     b.HasIndex("NormalizedName");
 
                     b.ToTable("shared_products", "shared_catalog");
+                });
+
+            modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.ObservationVote", b =>
+                {
+                    b.HasOne("SaborMercado.Modules.SharedCatalog.Data.PriceObservation", "Observation")
+                        .WithMany()
+                        .HasForeignKey("ObservationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Observation");
                 });
 
             modelBuilder.Entity("SaborMercado.Modules.SharedCatalog.Data.PriceObservation", b =>

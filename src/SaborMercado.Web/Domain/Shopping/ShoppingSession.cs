@@ -6,6 +6,9 @@ public sealed class ShoppingSession
 {
     public Guid Id { get; set; } = Ids.NewId();
 
+    public Guid? StoreId { get; set; }
+
+    /// <summary>Nome denormalizado do comércio (legado e exibição).</summary>
     public string? MarketName { get; set; }
 
     public decimal? BudgetAmount { get; set; }

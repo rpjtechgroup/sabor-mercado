@@ -1,0 +1,291 @@
+@page "/catalogo-colaborativo/{ProductId:guid}"
+@implements IDisposable
+@inject AccountService Account
+@inject CommunityService Community
+@inject NavigationManager Navigation
+
+<PageTitle>Sabor Mercado — @( _productName ?? "Produto colaborativo")</PageTitle>
+
+<div class="collab-detail-page">
+    <header class="session-header">
+        <PageIcon Icon="@AppIcons.Catalog" Title="@(_productName ?? "Produto colaborativo")" />
+        <p class="muted">Observações compartilhadas pela comunidade. Vote e denuncie comportamentos suspeitos.</p>
+    </header>
+
+    @if (!_loaded)
+    {
+        <p class="muted">Carregando…</p>
+    }
+    else if (!Account.IsLoggedIn)
+    {
+        <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Login" Label="Entre na sua conta" /> para acessar.</p>
+    }
+    else if (!Account.HasUnlock(PremiumFeatureCodes.CollaborativePriceHistory))
+    {
+        <div class="card">
+            <p>Desbloqueie o histórico colaborativo em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (10 créditos).</p>
+        </div>
+    }
+    else
+    {
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p class="text-danger" role="alert">@_error</p>
+        }
+
+        @if (_observations.Count == 0)
+        {
+            <p class="muted">Nenhuma observação visível para este produto.</p>
+        }
+        else
+        {
+            @foreach (var item in _observations)
+            {
+                <article class="card observation-row" aria-label="Observação de preço">
+                    <div class="observation-row-header">
+                        <strong class="observation-price">@MoneyFormat.Format(item.Price)</strong>
+                        <span class="@TrustBadgeClass(item.Contributor.TrustLabel)">@item.Contributor.TrustLabel</span>
+                    </div>
+                    <p class="muted observation-market">
+                        @item.MarketName
+                        @if (!string.IsNullOrWhiteSpace(item.MarketCity))
+                        {
+                            <span> · @item.MarketCity@if (!string.IsNullOrWhiteSpace(item.MarketState)) { <text>/@item.MarketState</text> }</span>
+                        }
+                        · @item.ObservedOn.ToString("dd/MM/yyyy")
+                    </p>
+                    <div class="vote-controls" role="group" aria-label="Avaliar observação">
+                        <button type="button"
+                                class="vote-btn btn-icon @(item.CurrentUserVote == 1 ? "vote-btn--active-up" : string.Empty)"
+                                disabled="@(!item.CanVote || _busyObservationId == item.ObservationId)"
+                                title="@($"Voto positivo ({item.UpvoteCount})")"
+                                aria-label="@($"Voto positivo ({item.UpvoteCount})")"
+                                aria-pressed="@(item.CurrentUserVote == 1)"
+                                @onclick="() => VoteAsync(item, 1)">
+                            <span class="icon-glyph" aria-hidden="true">@AppIcons.VoteUp</span>
+                            <span class="vote-count" aria-hidden="true">@item.UpvoteCount</span>
+                        </button>
+                        <span class="vote-net" aria-label="Pontuação líquida">@item.NetScore</span>
+                        <button type="button"
+                                class="vote-btn btn-icon @(item.CurrentUserVote == -1 ? "vote-btn--active-down" : string.Empty)"
+                                disabled="@(!item.CanVote || _busyObservationId == item.ObservationId)"
+                                title="@($"Voto negativo ({item.DownvoteCount})")"
+                                aria-label="@($"Voto negativo ({item.DownvoteCount})")"
+                                aria-pressed="@(item.CurrentUserVote == -1)"
+                                @onclick="() => VoteAsync(item, -1)">
+                            <span class="icon-glyph" aria-hidden="true">@AppIcons.VoteDown</span>
+                            <span class="vote-count" aria-hidden="true">@item.DownvoteCount</span>
+                        </button>
+                    </div>
+                    @if (item.CanReport)
+                    {
+                        <IconButton Icon="@AppIcons.Report" Label="Denunciar" CssClass="btn btn-outline btn-block btn-icon" OnClick="@(() => OpenReport(item))" />
+                    }
+                </article>
+            }
+        }
+    }
+
+    <p class="muted"><IconInlineLink Href="catalogo-colaborativo" Icon="@AppIcons.Back" Label="Catálogo colaborativo" /></p>
+</div>
+
+@if (_reportTarget is not null)
+{
+    <div class="modal-backdrop" @onclick="CloseReport">
+        <div class="modal-card" role="dialog" aria-labelledby="report-title" @onclick:stopPropagation="true">
+            <SectionIcon Id="report-title" Icon="@AppIcons.Report" Title="Denunciar contribuidor" />
+            <p class="muted">Sua denúncia é anônima para o denunciado.</p>
+            <div class="form-field">
+                <label for="report-reason">Motivo</label>
+                <select id="report-reason" class="input" @bind="_reportReason">
+                    @foreach (var option in ReportReasons.Options)
+                    {
+                        <option value="@option.Code">@option.Label</option>
+                    }
+                </select>
+            </div>
+            @if (_reportReason == ReportReasons.Other)
+            {
+                <div class="form-field">
+                    <label for="report-details">Detalhes</label>
+                    <textarea id="report-details" class="input" rows="3" maxlength="500" @bind="_reportDetails" placeholder="Descreva o problema"></textarea>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(_reportError))
+            {
+                <p class="text-danger" role="alert">@_reportError</p>
+            }
+            @if (!string.IsNullOrEmpty(_reportSuccess))
+            {
+                <p class="success-text" role="status">@_reportSuccess</p>
+            }
+            <IconButton Icon="@AppIcons.Report" Label="Enviar denúncia" CssClass="btn btn-danger btn-block btn-icon" Disabled="@_reportBusy" OnClick="SubmitReportAsync" />
+            <IconButton Icon="@AppIcons.Cancel" Label="Cancelar" CssClass="btn btn-outline btn-block btn-icon" OnClick="CloseReport" />
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public Guid ProductId { get; set; }
+
+    private bool _loaded;
+    private bool _reportBusy;
+    private Guid? _busyObservationId;
+    private string? _error;
+    private string? _productName;
+    private string _reportReason = ReportReasons.MisleadingPrice;
+    private string _reportDetails = string.Empty;
+    private string? _reportError;
+    private string? _reportSuccess;
+    private SharedObservationDto? _reportTarget;
+    private List<SharedObservationDto> _observations = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        Account.StateChanged += OnStateChanged;
+        await Account.InitializeAsync();
+        await LoadAsync();
+        _loaded = true;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (_loaded)
+        {
+            await LoadAsync();
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        _error = null;
+        if (!Account.IsLoggedIn || !Account.HasUnlock(PremiumFeatureCodes.CollaborativePriceHistory))
+        {
+            return;
+        }
+
+        try
+        {
+            var response = await Community.ListObservationsAsync(ProductId);
+            _productName = response.ProductName;
+            _observations = response.Observations.ToList();
+        }
+        catch (CommunityException ex)
+        {
+            _error = ex.Message;
+            _observations = [];
+        }
+    }
+
+    private async Task VoteAsync(SharedObservationDto item, int value)
+    {
+        _busyObservationId = item.ObservationId;
+        _error = null;
+        try
+        {
+            VoteObservationResponse result;
+            if (item.CurrentUserVote == value)
+            {
+                result = await Community.RemoveVoteAsync(item.ObservationId);
+            }
+            else
+            {
+                result = await Community.VoteAsync(item.ObservationId, value);
+            }
+
+            UpdateObservation(item.ObservationId, result);
+        }
+        catch (CommunityException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busyObservationId = null;
+        }
+    }
+
+    private void UpdateObservation(Guid observationId, VoteObservationResponse result)
+    {
+        var index = _observations.FindIndex(o => o.ObservationId == observationId);
+        if (index < 0)
+        {
+            return;
+        }
+
+        var current = _observations[index];
+        _observations[index] = current with
+        {
+            NetScore = result.NetScore,
+            UpvoteCount = result.UpvoteCount,
+            DownvoteCount = result.DownvoteCount,
+            CurrentUserVote = result.CurrentUserVote,
+        };
+
+        if (result.NetScore <= -3)
+        {
+            _observations.RemoveAt(index);
+        }
+    }
+
+    private void OpenReport(SharedObservationDto item)
+    {
+        _reportTarget = item;
+        _reportReason = ReportReasons.MisleadingPrice;
+        _reportDetails = string.Empty;
+        _reportError = null;
+        _reportSuccess = null;
+    }
+
+    private void CloseReport()
+    {
+        _reportTarget = null;
+        _reportBusy = false;
+    }
+
+    private async Task SubmitReportAsync()
+    {
+        if (_reportTarget is null)
+        {
+            return;
+        }
+
+        _reportBusy = true;
+        _reportError = null;
+        _reportSuccess = null;
+        try
+        {
+            await Community.SubmitReportAsync(new SubmitContributorReportRequest(
+                _reportTarget.Contributor.PseudonymId,
+                _reportTarget.ObservationId,
+                _reportReason,
+                string.IsNullOrWhiteSpace(_reportDetails) ? null : _reportDetails.Trim()));
+
+            _reportSuccess = "Denúncia registrada. Obrigado por ajudar a comunidade.";
+        }
+        catch (CommunityException ex)
+        {
+            _reportError = ex.Message;
+        }
+        finally
+        {
+            _reportBusy = false;
+        }
+    }
+
+    private static string TrustBadgeClass(string label) => label switch
+    {
+        "Confiável" => "trust-badge trust-badge--confiavel",
+        "Neutro" => "trust-badge trust-badge--neutro",
+        _ => "trust-badge trust-badge--cautela",
+    };
+
+    private void OnStateChanged() => InvokeAsync(async () =>
+    {
+        await LoadAsync();
+        StateHasChanged();
+    });
+
+    public void Dispose() => Account.StateChanged -= OnStateChanged;
+}

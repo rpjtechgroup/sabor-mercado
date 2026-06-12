@@ -14,15 +14,22 @@ public class ShoppingServiceTests
 
     private readonly InMemoryShoppingStore _store = new();
     private readonly InMemoryCatalogStore _catalogStore = new();
+    private readonly InMemoryStoreStore _storeStore = new();
     private readonly InMemoryShoppingPatternStore _patternStore = new();
     private readonly InMemoryPreferencesStore _preferences = new();
     private readonly FixedTimeProvider _clock = new(T0);
 
+    public ShoppingServiceTests()
+    {
+        CatalogTestStores.Seed(_storeStore, T0);
+    }
+
     private ShoppingService CreateService()
     {
-        var catalog = new CatalogService(_catalogStore, _clock);
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
         var patterns = new ShoppingPatternService(_patternStore, catalog, _clock);
-        return new ShoppingService(_store, _preferences, catalog, patterns, _clock);
+        return new ShoppingService(_store, _preferences, catalog, stores, patterns, _clock);
     }
 
     private static ProductSnapshot Snapshot(string name = "Óleo de Soja Liza") =>
@@ -31,7 +38,7 @@ public class ShoppingServiceTests
     private static async Task<ShoppingService> StartedAsync(ShoppingService service, decimal? budget = 100m)
     {
         await service.InitializeAsync();
-        await service.StartSessionAsync(budget, "Mercado Teste");
+        await service.StartSessionAsync(budget, CatalogTestStores.DefaultId);
         return service;
     }
 
@@ -256,15 +263,22 @@ public class ShoppingServiceTests
     [Fact]
     public async Task StartMonthlySession_PrefillsCartWithoutBudget()
     {
-        var catalog = new CatalogService(_catalogStore, _clock);
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
         var patterns = new ShoppingPatternService(_patternStore, catalog, _clock);
-        var product = await catalog.CreateProductAsync(new Product { Name = "Feijão", QuantityValue = 1m, QuantityUnit = QuantityUnit.Kg });
-        await catalog.AddPriceRecordAsync(product.Id, 8.50m, "Mercado A");
+        var product = await catalog.CreateProductAsync(new Product
+        {
+            Name = "Feijão",
+            QuantityValue = 1m,
+            QuantityUnit = QuantityUnit.Kg,
+            StoreId = CatalogTestStores.StoreAId,
+        });
+        await catalog.AddPriceRecordAsync(product.Id, 8.50m, CatalogTestStores.StoreAId);
         await patterns.AddProductAsync(product.Id, defaultQuantity: 2);
 
-        var service = new ShoppingService(_store, _preferences, catalog, patterns, _clock);
+        var service = new ShoppingService(_store, _preferences, catalog, stores, patterns, _clock);
         await service.InitializeAsync();
-        await service.StartSessionAsync(SessionKind.Monthly, null, "Mercado Mensal");
+        await service.StartSessionAsync(SessionKind.Monthly, null, CatalogTestStores.StoreAId);
 
         Assert.Equal(SessionKind.Monthly, service.CurrentSession?.Kind);
         Assert.Null(service.CurrentSession?.BudgetAmount);

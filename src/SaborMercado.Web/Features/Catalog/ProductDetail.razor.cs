@@ -15,18 +15,22 @@ public partial class ProductDetail : IDisposable
     private List<PriceRecord> _history = [];
     private PriceRecord? _lastPrice;
     private decimal? _newPrice;
-    private string? _newPriceMarket;
+    private Guid _newPriceStoreId;
     private ProductFormModel? _editForm;
     private bool _sharing;
-    private string? _shareMarket;
+    private Guid _shareStoreId;
     private string? _shareMessage;
     private string? _shareError;
+    private string? _storeLabel;
 
     [Parameter]
     public Guid ProductId { get; set; }
 
     [Inject]
     public CatalogService Catalog { get; set; } = default!;
+
+    [Inject]
+    public StoreService StoreService { get; set; } = default!;
 
     [Inject]
     public ShoppingService Shopping { get; set; } = default!;
@@ -79,8 +83,10 @@ public partial class ProductDetail : IDisposable
     protected override async Task OnInitializedAsync()
     {
         Catalog.StateChanged += OnStateChanged;
+        StoreService.StateChanged += OnStateChanged;
         Shopping.StateChanged += OnStateChanged;
         Account.StateChanged += OnStateChanged;
+        await StoreService.InitializeAsync();
         await Catalog.InitializeAsync();
         await Shopping.InitializeAsync();
         await Account.InitializeAsync();
@@ -89,19 +95,51 @@ public partial class ProductDetail : IDisposable
     protected override async Task OnParametersSetAsync()
     {
         await ReloadHistoryAsync();
+        UpdateStoreLabel();
         _loaded = true;
+    }
+
+    private void UpdateStoreLabel()
+    {
+        if (Product is null || Product.StoreId == Guid.Empty)
+        {
+            _storeLabel = null;
+            return;
+        }
+
+        _storeLabel = StoreService.GetStore(Product.StoreId)?.DisplayLabel;
     }
 
     private async Task ReloadHistoryAsync()
     {
         _history = await Catalog.GetPriceHistoryAsync(ProductId);
         _lastPrice = _history.FirstOrDefault();
-        _shareMarket ??= _lastPrice?.MarketName ?? Shopping.CurrentSession?.MarketName;
+
+        var defaultStore = Product?.StoreId
+            ?? _lastPrice?.StoreId
+            ?? Shopping.CurrentSession?.StoreId
+            ?? Guid.Empty;
+
+        if (_newPriceStoreId == Guid.Empty && defaultStore != Guid.Empty)
+        {
+            _newPriceStoreId = defaultStore;
+        }
+
+        if (_shareStoreId == Guid.Empty && defaultStore != Guid.Empty)
+        {
+            _shareStoreId = defaultStore;
+        }
     }
 
     private async Task SharePriceAsync()
     {
-        if (Product is null || _lastPrice is not { } priceRecord || string.IsNullOrWhiteSpace(_shareMarket))
+        if (Product is null || _lastPrice is not { } priceRecord || _shareStoreId == Guid.Empty)
+        {
+            return;
+        }
+
+        var store = StoreService.GetStore(_shareStoreId);
+        if (store is null)
         {
             return;
         }
@@ -115,9 +153,9 @@ public partial class ProductDetail : IDisposable
             var result = await Share.SharePriceAsync(
                 Product,
                 priceRecord.Price,
-                _shareMarket.Trim(),
-                marketCity: null,
-                marketState: null,
+                store.Name,
+                marketCity: store.City,
+                marketState: store.State,
                 observedOn);
 
             if (result.IsQueued)
@@ -145,14 +183,13 @@ public partial class ProductDetail : IDisposable
 
     private async Task AddPriceAsync()
     {
-        if (_newPrice is not { } price || Product is null)
+        if (_newPrice is not { } price || Product is null || _newPriceStoreId == Guid.Empty)
         {
             return;
         }
 
-        await Catalog.AddPriceRecordAsync(ProductId, price, _newPriceMarket);
+        await Catalog.AddPriceRecordAsync(ProductId, price, _newPriceStoreId);
         _newPrice = null;
-        _newPriceMarket = null;
         await ReloadHistoryAsync();
     }
 
@@ -180,6 +217,8 @@ public partial class ProductDetail : IDisposable
         }
     }
 
+    private void AskDelete() => _confirmingDelete = true;
+
     private async Task SaveEditAsync(ProductFormModel model)
     {
         if (Product is null)
@@ -190,6 +229,7 @@ public partial class ProductDetail : IDisposable
         model.ApplyTo(Product);
         await Catalog.UpdateProductAsync(Product);
         _editForm = null;
+        UpdateStoreLabel();
     }
 
     private async Task DeleteAsync()
@@ -198,11 +238,17 @@ public partial class ProductDetail : IDisposable
         Navigation.NavigateTo("catalogo");
     }
 
-    private void OnStateChanged() => InvokeAsync(StateHasChanged);
+    private void OnStateChanged() => InvokeAsync(async () =>
+    {
+        UpdateStoreLabel();
+        await ReloadHistoryAsync();
+        StateHasChanged();
+    });
 
     public void Dispose()
     {
         Catalog.StateChanged -= OnStateChanged;
+        StoreService.StateChanged -= OnStateChanged;
         Shopping.StateChanged -= OnStateChanged;
         Account.StateChanged -= OnStateChanged;
     }

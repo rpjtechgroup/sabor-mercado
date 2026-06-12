@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using SaborMercado.Modules.SharedCatalog.Data;
 using SaborMercado.Modules.SharedCatalog.Domain;
+using SaborMercado.Shared.Community;
 using SaborMercado.Shared.Rewards;
 using SaborMercado.Shared.SharedCatalog;
 
@@ -13,6 +14,8 @@ namespace SaborMercado.Modules.SharedCatalog.Services;
 public sealed class ContributionService(
     SharedCatalogDbContext db,
     IContributionRewardService rewards,
+    IAchievementService achievements,
+    ContributorTrustService trust,
     TimeProvider clock)
 {
     private const int DailySubmissionLimit = 50;
@@ -60,6 +63,8 @@ public sealed class ContributionService(
         {
             throw new ContributionException(ContributionErrorCodes.DailyLimit, "Limite diário de compartilhamentos atingido.");
         }
+
+        await trust.EnsureCanContributeAsync(pseudonymId, cancellationToken);
 
         var ean = ProductNormalizer.NormalizeEan(request.Ean);
         var normalizedName = ProductNormalizer.NormalizeName(request.ProductName);
@@ -110,6 +115,15 @@ public sealed class ContributionService(
 
         db.PriceObservations.Add(observation);
         await db.SaveChangesAsync(cancellationToken);
+
+        await trust.IncrementAcceptedContributionAsync(pseudonymId, accountId, cancellationToken);
+        var contributorTrust = await trust.GetOrCreateAsync(pseudonymId, cancellationToken);
+        await achievements.EvaluateAfterContributionAsync(
+            accountId,
+            contributorTrust.AcceptedContributions,
+            contributorTrust.TrustScore,
+            contributorTrust.TotalUpvotesReceived,
+            cancellationToken);
 
         var credits = await rewards.GrantForAcceptedObservationAsync(
             accountId,

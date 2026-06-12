@@ -1,0 +1,48 @@
+name: Deploy to VM
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Publish API
+        run: dotnet publish src/SaborMercado.Api/SaborMercado.Api.csproj -c Release -o publish/api
+
+      - name: Publish PWA
+        run: dotnet publish src/SaborMercado.Web/SaborMercado.Web.csproj -c Release -o publish/web
+
+      - name: Pack artifact
+        run: |
+          tar -czf sabormercado-publish.tar.gz -C publish api web
+          tar -czf sabormercado-scripts.tar.gz scripts/deploy-sabormercado-vm.sh scripts/nginx-rpjtechgroup.conf
+
+      - name: Copy to VM
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          source: "sabormercado-publish.tar.gz,sabormercado-scripts.tar.gz"
+          target: "/home/ubuntu/deploy/"
+
+      - name: Deploy on VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            set -e
+            cd /home/ubuntu/deploy
+            tar -xzf sabormercado-scripts.tar.gz
+            PUBLIC_BASE=https://rpjtechgroup.ddns.net/mercado bash scripts/deploy-sabormercado-vm.sh

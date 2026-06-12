@@ -53,6 +53,8 @@ builder.Services.AddScoped<ImageCompressInterop>();
 
 builder.Services.AddScoped<DownloadInterop>();
 
+builder.Services.AddScoped<GeolocationInterop>();
+
 
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? "http://localhost:5280";
@@ -73,6 +75,8 @@ builder.Services.AddScoped<IShoppingStore, IndexedDbShoppingStore>();
 
 builder.Services.AddScoped<ICatalogStore, IndexedDbCatalogStore>();
 
+builder.Services.AddScoped<IStoreStore, IndexedDbStoreStore>();
+
 builder.Services.AddScoped<IPreferencesStore, LocalStoragePreferencesStore>();
 builder.Services.AddScoped<IPendingShareStore, IndexedDbPendingShareStore>();
 
@@ -81,6 +85,8 @@ builder.Services.AddScoped<IPendingShareStore, IndexedDbPendingShareStore>();
 builder.Services.AddScoped<StatusMessageLocalizer>();
 
 builder.Services.AddScoped<ToastService>();
+
+builder.Services.AddScoped<StoreService>();
 
 builder.Services.AddScoped<CatalogService>();
 
@@ -98,6 +104,7 @@ builder.Services.AddScoped<AccountService>();
 
 builder.Services.AddScoped<ShareService>();
 builder.Services.AddScoped<CollaborativeCatalogService>();
+builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<MarketComparisonClient>();
 builder.Services.AddScoped<PremiumStatsService>();
 builder.Services.AddScoped<SmartListService>();

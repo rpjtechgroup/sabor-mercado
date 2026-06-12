@@ -4,7 +4,7 @@
 
 <PageTitle>Sabor Mercado — Comparador</PageTitle>
 
-<h1>Comparador de compras</h1>
+<PageIcon Icon="@AppIcons.Compare" Title="Comparador de compras" />
 <p class="muted">Últimos 3 meses · escolha o melhor mercado por produto</p>
 
 @if (!_loaded)
@@ -13,7 +13,7 @@
 }
 else if (SessionId is { } detailId)
 {
-    <a class="muted history-back" href="historico">‹ Voltar</a>
+    <IconLink Href="historico" Icon="@AppIcons.Back" Label="Voltar" CssClass="muted history-back icon-link icon-back" />
 
     @if (_sessionRows.Count == 0)
     {
@@ -36,25 +36,31 @@ else
 {
     <div class="history-tabs" role="tablist">
         <button type="button"
-                class="history-tab @(_tab == HistoryTab.Comparator ? "active" : null)"
+                class="history-tab btn-icon @(_tab == HistoryTab.Comparator ? "active" : null)"
                 role="tab"
+                title="Comparador"
+                aria-label="Comparador"
                 aria-selected="@(_tab == HistoryTab.Comparator)"
                 @onclick="() => SelectTab(HistoryTab.Comparator)">
-            Comparador
+            <span class="icon-glyph" aria-hidden="true">@AppIcons.Compare</span>
         </button>
         <button type="button"
-                class="history-tab @(_tab == HistoryTab.History ? "active" : null)"
+                class="history-tab btn-icon @(_tab == HistoryTab.History ? "active" : null)"
                 role="tab"
+                title="Histórico"
+                aria-label="Histórico"
                 aria-selected="@(_tab == HistoryTab.History)"
                 @onclick="() => SelectTab(HistoryTab.History)">
-            Histórico
+            <span class="icon-glyph" aria-hidden="true">@AppIcons.History</span>
         </button>
         <button type="button"
-                class="history-tab @(_tab == HistoryTab.BySession ? "active" : null)"
+                class="history-tab btn-icon @(_tab == HistoryTab.BySession ? "active" : null)"
                 role="tab"
+                title="Por compra"
+                aria-label="Por compra"
                 aria-selected="@(_tab == HistoryTab.BySession)"
                 @onclick="() => SelectTab(HistoryTab.BySession)">
-            Por compra
+            <span class="icon-glyph" aria-hidden="true">@AppIcons.TabSession</span>
         </button>
     </div>
 
@@ -72,7 +78,7 @@ else
                 <div class="empty-state">
                     <span class="empty-icon" aria-hidden="true">🧾</span>
                     Nenhuma compra finalizada nos últimos 3 meses.
-                    <p><a href="">Iniciar uma compra</a></p>
+                    <p><IconInlineLink Href="" Icon="@AppIcons.Shopping" Label="Iniciar uma compra" /></p>
                 </div>
             }
             else
