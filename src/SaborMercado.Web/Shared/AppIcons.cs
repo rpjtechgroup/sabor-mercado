@@ -47,6 +47,6 @@ public static class AppIcons
     public const string Price = "💰";
     public const string Help = "❓";
     public const string TabSession = "🧾";
-    public const string IconsOnly = "⊟";
-    public const string IconsWithText = "⊞";
+    public const string IconsOnly = "🔲";
+    public const string IconsWithText = "🔤";
 }

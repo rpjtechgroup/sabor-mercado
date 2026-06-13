@@ -1,6 +1,16 @@
-<h1 class="page-icon-title" title="@Title" aria-label="@Title">
-    <IconContent Icon="@Icon" Label="@Title" GlyphClass="icon-glyph-lg" />
-</h1>
+@inject UiPreferencesState UiPrefs
+@inject IPreferencesStore Preferences
+@implements IDisposable
+
+<div class="page-header">
+    <h1 class="page-icon-title" title="@Title" aria-label="@Title">
+        <IconContent Icon="@Icon" Label="@Title" GlyphClass="icon-glyph-lg" />
+    </h1>
+    <IconButton Icon="@(UiPrefs.ShowIconLabels ? AppIcons.IconsOnly : AppIcons.IconsWithText)"
+                Label="@(UiPrefs.ShowIconLabels ? "Mostrar só ícones" : "Mostrar ícones com texto")"
+                CssClass="btn btn-outline btn-icon page-header-toggle"
+                OnClick="ToggleIconLabelsAsync" />
+</div>
 
 @code {
     [Parameter]
@@ -8,4 +18,15 @@
 
     [Parameter]
     public string Title { get; set; } = string.Empty;
+
+    protected override void OnInitialized() => UiPrefs.Changed += OnUiPrefsChanged;
+
+    private async Task ToggleIconLabelsAsync()
+    {
+        await UiPrefs.SetShowIconLabelsAsync(Preferences, !UiPrefs.ShowIconLabels);
+    }
+
+    private void OnUiPrefsChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => UiPrefs.Changed -= OnUiPrefsChanged;
 }
