@@ -5,9 +5,9 @@
 <PageTitle>Sabor Mercado — Listas inteligentes</PageTitle>
 
 <div class="premium-page">
-    <PageIcon Icon="@AppIcons.List" Title="Listas inteligentes" />
-    <p class="muted">Sugestões com base nas suas compras finalizadas (dados locais).</p>
-
+    <PageLayout Icon="@AppIcons.List"
+                Title="Listas inteligentes"
+                Subtitle="Sugestões com base nas suas compras finalizadas (dados locais).">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -32,6 +32,7 @@
     }
 
     <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
+    </PageLayout>
 </div>
 
 @code {

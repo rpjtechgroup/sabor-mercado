@@ -1,7 +1,3 @@
-.session-header {
-    margin-bottom: 0.75rem;
-}
-
 .cart-list {
     margin-top: 0.9rem;
     display: flex;
@@ -14,8 +10,4 @@
     flex-direction: column;
     gap: 0.6rem;
     margin-top: 1.25rem;
-}
-
-.session-summary h1 {
-    margin-bottom: 0.75rem;
 }

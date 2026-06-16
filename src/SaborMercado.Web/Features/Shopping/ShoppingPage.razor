@@ -11,90 +11,88 @@ else if (Shopping.CurrentSession is null)
 {
     @if (_showSummary && Shopping.LastFinishedSession is { } finished)
     {
-        <div class="card session-summary">
-            <PageIcon Icon="@AppIcons.Party" Title="Compra finalizada" />
-            @if (finished.MarketName is not null)
-            {
-                <p class="muted">@finished.MarketName</p>
-            }
-            <IconButton Icon="@AppIcons.New" Label="Nova compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="StartNew" />
-            <IconLink Href="historico" Icon="@AppIcons.History" Label="Ver histórico desta compra" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
-        </div>
+        <PageLayout Icon="@AppIcons.Party" Title="Compra finalizada">
+            <div class="card session-summary">
+                @if (finished.MarketName is not null)
+                {
+                    <p class="muted">@finished.MarketName</p>
+                }
+                <IconButton Icon="@AppIcons.New" Label="Nova compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="StartNew" />
+                <IconLink Href="historico" Icon="@AppIcons.History" Label="Ver histórico desta compra" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
+            </div>
+        </PageLayout>
     }
     else
     {
-        <SessionStart SuggestedBudget="@Shopping.SuggestedBudget" OnStart="StartSessionAsync" />
-        <IconLink Href="historico" Icon="@AppIcons.History" Label="Histórico de compras" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
+        <PageLayout Icon="@AppIcons.New" Title="Nova compra">
+            <SessionStart SuggestedBudget="@Shopping.SuggestedBudget" OnStart="StartSessionAsync" />
+            <IconLink Href="historico" Icon="@AppIcons.History" Label="Histórico de compras" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
+        </PageLayout>
     }
 }
 else
 {
-    <header class="session-header">
-        <PageIcon Icon="@AppIcons.Shopping" Title="@(Shopping.CurrentSession.MarketName ?? "Compra em andamento")" />
-    </header>
-
-    @if (Shopping.CurrentSession.Kind == SessionKind.Sporadic)
-    {
-        <BudgetBar Total="@Shopping.Total" Budget="@Shopping.CurrentSession.BudgetAmount" />
-    }
-
-    @if (Shopping.CurrentSession.Kind == SessionKind.Monthly || Shopping.CurrentSession.BudgetAmount is null)
-    {
-        <div class="card totals-row">
-            <span class="muted">Total do carrinho</span>
-            <span class="totals-value">@MoneyFormat.Format(Shopping.Total)</span>
-        </div>
-    }
-
-    @if (_itemForm is not null)
-    {
-        <CartItemForm Model="@_itemForm"
-                      IsEdit="@(_editingItemId is not null)"
-                      OnSave="SaveItemAsync"
-                      OnCancel="CloseItemForm" />
-    }
-    else
-    {
-        <IconLink Href="foto" Icon="@AppIcons.Photo" Label="Foto da etiqueta" CssClass="btn btn-primary btn-block btn-icon icon-link" />
-        <IconButton Icon="@AppIcons.Manual" Label="Digitar manualmente" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenAddForm" />
-    }
-
-    @if (Shopping.Items.Count == 0 && _itemForm is null)
-    {
-        <div class="empty-state">
-            <span class="empty-icon" aria-hidden="true">🧺</span>
-            Carrinho vazio. Adicione o primeiro item para acompanhar o gasto.
-        </div>
-    }
-    else
-    {
-        <section class="cart-list" aria-label="Itens do carrinho">
-            @foreach (var item in Shopping.Items)
-            {
-                <CartItemRow @key="item.Id"
-                             Item="@item"
-                             OnIncrement="@(delta => IncrementAsync(item.Id, delta))"
-                             OnSetQuantity="@(quantity => SetQuantityAsync(item.Id, quantity))"
-                             OnEdit="@(() => OpenEditForm(item))"
-                             OnRemove="@(() => RemoveAsync(item.Id))" />
-            }
-        </section>
-    }
-
-    @if (_canExportCsv && Shopping.Items.Count > 0)
-    {
-        <IconButton Icon="@AppIcons.Export" Label="Exportar carrinho (CSV)" CssClass="btn btn-secondary btn-block btn-icon" OnClick="ExportCsvAsync" />
-    }
-
-    <div class="session-actions">
-        <IconButton Icon="@AppIcons.Finish" Label="Encerrar compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="FinishAsync" />
-        @if (_confirmingAbandon)
+    <PageLayout Icon="@AppIcons.Shopping" Title="@(Shopping.CurrentSession.MarketName ?? "Compra em andamento")">
+        @if (Shopping.CurrentSession.Kind == SessionKind.Sporadic)
         {
-            <IconButton Icon="@AppIcons.Warning" Label="Confirmar abandono (itens serão descartados)" CssClass="btn btn-danger btn-block btn-icon" OnClick="AbandonAsync" />
+            <BudgetBar Total="@Shopping.Total" Budget="@Shopping.CurrentSession.BudgetAmount" />
+        }
+
+        @if (Shopping.CurrentSession.Kind == SessionKind.Monthly || Shopping.CurrentSession.BudgetAmount is null)
+        {
+            <div class="card totals-row">
+                <span class="muted">Total do carrinho</span>
+                <span class="totals-value">@MoneyFormat.Format(Shopping.Total)</span>
+            </div>
+        }
+
+        @if (_itemForm is not null)
+        {
+            <CartItemForm Model="@_itemForm"
+                          IsEdit="@(_editingItemId is not null)"
+                          OnSave="SaveItemAsync"
+                          OnCancel="CloseItemForm" />
         }
         else
         {
-            <IconButton Icon="@AppIcons.Abandon" Label="Abandonar compra" CssClass="btn btn-outline btn-block btn-icon" OnClick="AskAbandon" />
+            <IconLink Href="foto" Icon="@AppIcons.Photo" Label="Foto da etiqueta" CssClass="btn btn-primary btn-block btn-icon icon-link" />
+            <IconButton Icon="@AppIcons.Manual" Label="Digitar manualmente" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenAddForm" />
         }
-    </div>
+
+        @if (Shopping.Items.Count == 0 && _itemForm is null)
+        {
+            <EmptyState Icon="🧺" Message="Carrinho vazio. Adicione o primeiro item para acompanhar o gasto." />
+        }
+        else
+        {
+            <section class="cart-list" aria-label="Itens do carrinho">
+                @foreach (var item in Shopping.Items)
+                {
+                    <CartItemRow @key="item.Id"
+                                 Item="@item"
+                                 OnIncrement="@(delta => IncrementAsync(item.Id, delta))"
+                                 OnSetQuantity="@(quantity => SetQuantityAsync(item.Id, quantity))"
+                                 OnEdit="@(() => OpenEditForm(item))"
+                                 OnRemove="@(() => RemoveAsync(item.Id))" />
+                }
+            </section>
+        }
+
+        @if (_canExportCsv && Shopping.Items.Count > 0)
+        {
+            <IconButton Icon="@AppIcons.Export" Label="Exportar carrinho (CSV)" CssClass="btn btn-secondary btn-block btn-icon" OnClick="ExportCsvAsync" />
+        }
+
+        <div class="session-actions">
+            <IconButton Icon="@AppIcons.Finish" Label="Encerrar compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="FinishAsync" />
+            @if (_confirmingAbandon)
+            {
+                <IconButton Icon="@AppIcons.Warning" Label="Confirmar abandono (itens serão descartados)" CssClass="btn btn-danger btn-block btn-icon" OnClick="AbandonAsync" />
+            }
+            else
+            {
+                <IconButton Icon="@AppIcons.Abandon" Label="Abandonar compra" CssClass="btn btn-outline btn-block btn-icon" OnClick="AskAbandon" />
+            }
+        </div>
+    </PageLayout>
 }

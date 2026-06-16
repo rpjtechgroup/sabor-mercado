@@ -5,8 +5,7 @@
 <PageTitle>Sabor Mercado — Comparar mercados</PageTitle>
 
 <div class="premium-page">
-    <PageIcon Icon="@AppIcons.Compare" Title="Comparação entre mercados" />
-
+    <PageLayout Icon="@AppIcons.Compare" Title="Comparação entre mercados">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -43,6 +42,7 @@
     }
 
     <p class="muted"><IconInlineLink Href="catalogo-colaborativo" Icon="@AppIcons.Back" Label="Catálogo colaborativo" /></p>
+    </PageLayout>
 </div>
 
 @code {

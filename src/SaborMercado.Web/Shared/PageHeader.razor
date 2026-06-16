@@ -24,6 +24,7 @@
     private async Task ToggleIconLabelsAsync()
     {
         await UiPrefs.SetShowIconLabelsAsync(Preferences, !UiPrefs.ShowIconLabels);
+        StateHasChanged();
     }
 
     private void OnUiPrefsChanged() => InvokeAsync(StateHasChanged);

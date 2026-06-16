@@ -9,126 +9,128 @@
 }
 else if (Product is null)
 {
-    <div class="empty-state">
-        <span class="empty-icon" aria-hidden="true">🤷</span>
-        Produto não encontrado.
-        <p><IconLink Href="catalogo" Icon="@AppIcons.Back" Label="Voltar ao catálogo" CssClass="btn btn-outline btn-icon icon-link" /></p>
-    </div>
+    <PageLayout Icon="@AppIcons.Catalog" Title="Produto">
+        <EmptyState Icon="🤷" Message="Produto não encontrado.">
+            <p><IconLink Href="catalogo" Icon="@AppIcons.Back" Label="Voltar ao catálogo" CssClass="btn btn-outline btn-icon icon-link" /></p>
+        </EmptyState>
+    </PageLayout>
 }
 else if (_editForm is not null)
 {
-    <ProductForm Model="@_editForm" IsEdit="true" OnSave="SaveEditAsync" OnCancel="@(() => _editForm = null)" />
+    <PageLayout Icon="@AppIcons.Catalog" Title="@Product.Name">
+        <ProductForm Model="@_editForm" IsEdit="true" OnSave="SaveEditAsync" OnCancel="@(() => _editForm = null)" />
+    </PageLayout>
 }
 else
 {
-    <IconLink Href="catalogo" Icon="@AppIcons.Back" Label="Catálogo" CssClass="muted icon-link icon-back" />
-    <h1>@Product.Name</h1>
-    <p class="muted">@DetailsLine</p>
-    @if (_storeLabel is not null)
-    {
-        <p class="muted">🏪 @_storeLabel</p>
-    }
-
-    @if (!string.IsNullOrWhiteSpace(Product.Notes))
-    {
-        <p class="muted">@Product.Notes</p>
-    }
-
-    @if (Shopping.CurrentSession is not null)
-    {
-        <div class="card add-to-cart-card">
-            <div class="totals-row">
-                <span>Adicionar à compra atual</span>
-                <strong>@(_lastPrice is { } last ? MoneyFormat.Format(last.Price) : "sem preço")</strong>
-            </div>
-            <IconButton Icon="@AppIcons.Shopping" Label="Adicionar à compra" CssClass="btn btn-primary btn-block btn-icon" Disabled="@(_lastPrice is null)" OnClick="AddToCartAsync" />
-            @if (_lastPrice is null)
-            {
-                <p class="muted">Registre um preço para poder adicionar direto ao carrinho.</p>
-            }
-            @if (_addedToCart)
-            {
-                <p class="text-ok" role="status">Adicionado ao carrinho.</p>
-            }
-        </div>
-    }
-
-    @if (Account.IsLoggedIn && _lastPrice is { } sharePrice)
-    {
-        <div class="card share-card">
-            <SectionIcon Icon="@AppIcons.Share" Title="Compartilhar preço" />
-            <p class="muted">
-                Envio opcional e anonimizado para o catálogo colaborativo.
-                Você ganha créditos quando a observação for aceita.
-            </p>
-            <StorePicker Label="Comércio" @bind-SelectedStoreId="_shareStoreId" />
-            @if (!string.IsNullOrEmpty(_shareMessage))
-            {
-                <p class="success-text" role="status">@_shareMessage</p>
-            }
-            @if (!string.IsNullOrEmpty(_shareError))
-            {
-                <p class="text-danger" role="alert">@_shareError</p>
-            }
-            <IconButton Icon="@AppIcons.Share"
-                        Label="@($"Compartilhar {MoneyFormat.Format(sharePrice.Price)} anonimamente")"
-                        CssClass="btn btn-secondary btn-block btn-icon"
-                        Disabled="@(_sharing || _shareStoreId == Guid.Empty)"
-                        OnClick="SharePriceAsync" />
-        </div>
-    }
-    else if (!Account.IsLoggedIn)
-    {
-        <p class="muted">
-            <IconInlineLink Href="conta" Icon="@AppIcons.Login" Label="Entre na sua conta" /> para compartilhar preços e ganhar créditos.
-        </p>
-    }
-
-    <SectionIcon Icon="@AppIcons.History" Title="Histórico de preços" />
-
-    <div class="card">
-        <div class="field-row">
-            <div class="field">
-                <label for="new-price">Preço (R$)</label>
-                <MoneyInput Id="new-price" @bind-Value="_newPrice" Placeholder="ex.: 8,99" />
-            </div>
-            <StorePicker Label="Comércio" @bind-SelectedStoreId="_newPriceStoreId" />
-        </div>
-        <IconButton Icon="@AppIcons.Price" Label="Registrar preço" CssClass="btn btn-primary btn-block btn-icon" Disabled="@(_newPrice is null || _newPriceStoreId == Guid.Empty)" OnClick="AddPriceAsync" />
-    </div>
-
-    @if (_history.Count == 0)
-    {
-        <p class="muted">Nenhum preço registrado ainda.</p>
-    }
-    else
-    {
-        <section aria-label="Histórico de preços">
-            @foreach (var record in _history)
-            {
-                <div class="card price-row">
-                    <span>
-                        <strong>@MoneyFormat.Format(record.Price)</strong>
-                        @if (record.MarketName is not null)
-                        {
-                            <span class="muted"> · @record.MarketName</span>
-                        }
-                    </span>
-                    <span class="muted">@record.ObservedAt.ToLocalTime().ToString("dd/MM/yyyy", MoneyFormat.Culture)</span>
-                </div>
-            }
-        </section>
-    }
-
-    <div class="session-actions">
-        <IconButton Icon="@AppIcons.Edit" Label="Editar produto" CssClass="btn btn-outline btn-block btn-icon" OnClick="OpenEdit" />
-        @if (_confirmingDelete)
+    <PageLayout Icon="@AppIcons.Catalog" Title="@Product.Name" Subtitle="@DetailsLine">
+        @if (_storeLabel is not null)
         {
-            <IconButton Icon="@AppIcons.Warning" Label="Confirmar exclusão (apaga o histórico de preços)" CssClass="btn btn-danger btn-block btn-icon" OnClick="DeleteAsync" />
+            <p class="muted">🏪 @_storeLabel</p>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(Product.Notes))
+        {
+            <p class="muted">@Product.Notes</p>
+        }
+
+        @if (Shopping.CurrentSession is not null)
+        {
+            <div class="card add-to-cart-card">
+                <div class="totals-row">
+                    <span>Adicionar à compra atual</span>
+                    <strong>@(_lastPrice is { } last ? MoneyFormat.Format(last.Price) : "sem preço")</strong>
+                </div>
+                <IconButton Icon="@AppIcons.Shopping" Label="Adicionar à compra" CssClass="btn btn-primary btn-block btn-icon" Disabled="@(_lastPrice is null)" OnClick="AddToCartAsync" />
+                @if (_lastPrice is null)
+                {
+                    <p class="muted">Registre um preço para poder adicionar direto ao carrinho.</p>
+                }
+                @if (_addedToCart)
+                {
+                    <p class="text-ok" role="status">Adicionado ao carrinho.</p>
+                }
+            </div>
+        }
+
+        @if (Account.IsLoggedIn && _lastPrice is { } sharePrice)
+        {
+            <div class="card share-card">
+                <SectionIcon Icon="@AppIcons.Share" Title="Compartilhar preço" />
+                <p class="muted">
+                    Envio opcional e anonimizado para o catálogo colaborativo.
+                    Você ganha créditos quando a observação for aceita.
+                </p>
+                <StorePicker Label="Comércio" @bind-SelectedStoreId="_shareStoreId" />
+                @if (!string.IsNullOrEmpty(_shareMessage))
+                {
+                    <p class="success-text" role="status">@_shareMessage</p>
+                }
+                @if (!string.IsNullOrEmpty(_shareError))
+                {
+                    <p class="text-danger" role="alert">@_shareError</p>
+                }
+                <IconButton Icon="@AppIcons.Share"
+                            Label="@($"Compartilhar {MoneyFormat.Format(sharePrice.Price)} anonimamente")"
+                            CssClass="btn btn-secondary btn-block btn-icon"
+                            Disabled="@(_sharing || _shareStoreId == Guid.Empty)"
+                            OnClick="SharePriceAsync" />
+            </div>
+        }
+        else if (!Account.IsLoggedIn)
+        {
+            <p class="muted">
+                <IconInlineLink Href="conta" Icon="@AppIcons.Login" Label="Entre na sua conta" /> para compartilhar preços e ganhar créditos.
+            </p>
+        }
+
+        <SectionIcon Icon="@AppIcons.History" Title="Histórico de preços" />
+
+        <div class="card">
+            <div class="field-row">
+                <div class="field">
+                    <label for="new-price">Preço (R$)</label>
+                    <MoneyInput Id="new-price" @bind-Value="_newPrice" Placeholder="ex.: 8,99" />
+                </div>
+                <StorePicker Label="Comércio" @bind-SelectedStoreId="_newPriceStoreId" />
+            </div>
+            <IconButton Icon="@AppIcons.Price" Label="Registrar preço" CssClass="btn btn-primary btn-block btn-icon" Disabled="@(_newPrice is null || _newPriceStoreId == Guid.Empty)" OnClick="AddPriceAsync" />
+        </div>
+
+        @if (_history.Count == 0)
+        {
+            <p class="muted">Nenhum preço registrado ainda.</p>
         }
         else
         {
-            <IconButton Icon="@AppIcons.Remove" Label="Excluir produto" CssClass="btn btn-danger btn-block btn-icon" OnClick="AskDelete" />
+            <section aria-label="Histórico de preços">
+                @foreach (var record in _history)
+                {
+                    <div class="card price-row">
+                        <span>
+                            <strong>@MoneyFormat.Format(record.Price)</strong>
+                            @if (record.MarketName is not null)
+                            {
+                                <span class="muted"> · @record.MarketName</span>
+                            }
+                        </span>
+                        <span class="muted">@record.ObservedAt.ToLocalTime().ToString("dd/MM/yyyy", MoneyFormat.Culture)</span>
+                    </div>
+                }
+            </section>
         }
-    </div>
+
+        <div class="session-actions">
+            <IconLink Href="catalogo" Icon="@AppIcons.Back" Label="Voltar ao catálogo" CssClass="btn btn-outline btn-block btn-icon icon-link" />
+            <IconButton Icon="@AppIcons.Edit" Label="Editar produto" CssClass="btn btn-outline btn-block btn-icon" OnClick="OpenEdit" />
+            @if (_confirmingDelete)
+            {
+                <IconButton Icon="@AppIcons.Warning" Label="Confirmar exclusão (apaga o histórico de preços)" CssClass="btn btn-danger btn-block btn-icon" OnClick="DeleteAsync" />
+            }
+            else
+            {
+                <IconButton Icon="@AppIcons.Remove" Label="Excluir produto" CssClass="btn btn-danger btn-block btn-icon" OnClick="AskDelete" />
+            }
+        </div>
+    </PageLayout>
 }

@@ -75,6 +75,10 @@ body {
     font-size: 0.72rem;
 }
 
+.page-lead {
+    margin: 0 0 1rem;
+}
+
 .app-content {
     flex: 1;
     width: 100%;

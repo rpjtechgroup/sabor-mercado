@@ -7,11 +7,9 @@
 <PageTitle>Sabor Mercado — @( _productName ?? "Produto colaborativo")</PageTitle>
 
 <div class="collab-detail-page">
-    <header class="session-header">
-        <PageIcon Icon="@AppIcons.Catalog" Title="@(_productName ?? "Produto colaborativo")" />
-        <p class="muted">Observações compartilhadas pela comunidade. Vote e denuncie comportamentos suspeitos.</p>
-    </header>
-
+    <PageLayout Icon="@AppIcons.Catalog"
+                Title="@(_productName ?? "Produto colaborativo")"
+                Subtitle="Observações compartilhadas pela comunidade. Vote e denuncie comportamentos suspeitos.">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -87,6 +85,7 @@
     }
 
     <p class="muted"><IconInlineLink Href="catalogo-colaborativo" Icon="@AppIcons.Back" Label="Catálogo colaborativo" /></p>
+    </PageLayout>
 </div>
 
 @if (_reportTarget is not null)

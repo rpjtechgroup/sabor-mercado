@@ -3,9 +3,9 @@
 
 <PageTitle>Sabor Mercado — Lista mensal</PageTitle>
 
-<PageIcon Icon="@AppIcons.Calendar" Title="Lista de compra mensal" />
-<p class="muted">Produtos que entram automaticamente no carrinho ao iniciar uma compra mensal.</p>
-
+<PageLayout Icon="@AppIcons.Calendar"
+            Title="Lista de compra mensal"
+            Subtitle="Produtos que entram automaticamente no carrinho ao iniciar uma compra mensal.">
 @if (!_loaded)
 {
     <p class="muted">Carregando…</p>
@@ -14,10 +14,7 @@ else
 {
     @if (_lines.Count == 0)
     {
-        <div class="empty-state">
-            <span class="empty-icon" aria-hidden="true">📅</span>
-            Nenhum produto na lista mensal. Adicione itens do catálogo abaixo.
-        </div>
+        <EmptyState Icon="📅" Message="Nenhum produto na lista mensal. Adicione itens do catálogo abaixo." />
     }
     else
     {
@@ -63,6 +60,7 @@ else
 
     <IconLink Href="" Icon="@AppIcons.Back" Label="Voltar à compra" CssClass="btn btn-outline btn-block btn-icon icon-link icon-back" />
 }
+</PageLayout>
 
 @code {
     private bool _loaded;

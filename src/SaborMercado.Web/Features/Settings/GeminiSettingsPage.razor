@@ -4,22 +4,16 @@
 
 <PageTitle>Sabor Mercado — Configurações</PageTitle>
 
-<div class="settings-page">
-    <header class="session-header">
-        <PageIcon Icon="@AppIcons.Settings" Title="Configurações" />
-    </header>
-
-    <section class="card settings-section" aria-labelledby="account-heading">
-        <SectionIcon Id="account-heading" Icon="@AppIcons.Account" Title="Conta e créditos" />
+<PageLayout Icon="@AppIcons.Settings" Title="Configurações">
+    <SettingsSection Id="account-heading" Icon="@AppIcons.Account" Title="Conta e créditos">
         <p class="muted">
             Crie uma conta para compartilhar preços anonimizados, acumular créditos
             e desbloquear exportação CSV e outros recursos premium.
         </p>
         <IconLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-    </section>
+    </SettingsSection>
 
-    <section class="card settings-section" aria-labelledby="gemini-heading">
-        <SectionIcon Id="gemini-heading" Icon="@AppIcons.Photo" Title="Leitura por foto (Gemini)" />
+    <SettingsSection Id="gemini-heading" Icon="@AppIcons.Photo" Title="Leitura por foto (Gemini)">
         <p class="muted">
             Para usar o modo foto, informe sua chave da API Gemini (free tier).
             A chave fica <strong>somente neste dispositivo</strong> (localStorage)
@@ -55,8 +49,8 @@
         {
             <IconButton Icon="@AppIcons.Remove" Label="Remover chave salva" CssClass="btn btn-outline btn-block btn-icon" OnClick="RemoveAsync" />
         }
-    </section>
-</div>
+    </SettingsSection>
+</PageLayout>
 
 @code {
     private string _apiKey = string.Empty;

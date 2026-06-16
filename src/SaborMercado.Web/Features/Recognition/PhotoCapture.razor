@@ -8,12 +8,10 @@
 
 <PageTitle>Sabor Mercado — Foto</PageTitle>
 
+<PageLayout Icon="@AppIcons.Photo"
+            Title="Modo Foto"
+            Subtitle="Aponte para a etiqueta da prateleira ou do produto.">
 <div class="photo-capture">
-    <header class="session-header">
-        <PageIcon Icon="@AppIcons.Photo" Title="Modo Foto" />
-        <p class="muted">Aponte para a etiqueta da prateleira ou do produto.</p>
-    </header>
-
     @if (Shopping.CurrentSession is null)
     {
         <div class="card">
@@ -57,6 +55,7 @@
         </div>
     }
 </div>
+</PageLayout>
 
 @code {
     private bool _busy;

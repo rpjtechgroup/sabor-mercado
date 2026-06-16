@@ -4,9 +4,9 @@
 
 <PageTitle>Sabor Mercado — Comparador</PageTitle>
 
-<PageIcon Icon="@AppIcons.Compare" Title="Comparador de compras" />
-<p class="muted">Últimos 3 meses · escolha o melhor mercado por produto</p>
-
+<PageLayout Icon="@AppIcons.Compare"
+            Title="Comparador de compras"
+            Subtitle="Últimos 3 meses · escolha o melhor mercado por produto">
 @if (!_loaded)
 {
     <p class="muted">Carregando…</p>
@@ -60,11 +60,9 @@ else
         case HistoryTab.BySession:
             @if (_sessions.Count == 0)
             {
-                <div class="empty-state">
-                    <span class="empty-icon" aria-hidden="true">🧾</span>
-                    Nenhuma compra finalizada nos últimos 3 meses.
+                <EmptyState Icon="🧾" Message="Nenhuma compra finalizada nos últimos 3 meses.">
                     <p><IconInlineLink Href="" Icon="@AppIcons.Shopping" Label="Iniciar uma compra" /></p>
-                </div>
+                </EmptyState>
             }
             else
             {
@@ -87,6 +85,7 @@ else
             break;
     }
 }
+</PageLayout>
 
 @code {
     private enum HistoryTab { Comparator, History, BySession }

@@ -6,11 +6,9 @@
 <PageTitle>Sabor Mercado — Catálogo colaborativo</PageTitle>
 
 <div class="collab-catalog-page">
-    <header class="session-header">
-        <PageIcon Icon="@AppIcons.Catalog" Title="Catálogo colaborativo" />
-        <p class="muted">Preços compartilhados anonimamente por outros usuários.</p>
-    </header>
-
+    <PageLayout Icon="@AppIcons.Catalog"
+                Title="Catálogo colaborativo"
+                Subtitle="Preços compartilhados anonimamente por outros usuários.">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -71,6 +69,7 @@
     }
 
     <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
+    </PageLayout>
 </div>
 
 @code {

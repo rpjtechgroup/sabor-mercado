@@ -1,0 +1,20 @@
+<PageHeader Icon="@Icon" Title="@Title" />
+@if (!string.IsNullOrWhiteSpace(Subtitle))
+{
+    <p class="muted page-lead">@Subtitle</p>
+}
+@ChildContent
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = AppIcons.Catalog;
+
+    [Parameter]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public string? Subtitle { get; set; }
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}

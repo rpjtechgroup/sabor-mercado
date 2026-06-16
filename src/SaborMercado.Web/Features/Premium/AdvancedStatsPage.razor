@@ -5,8 +5,7 @@
 <PageTitle>Sabor Mercado — Estatísticas</PageTitle>
 
 <div class="premium-page">
-    <PageIcon Icon="@AppIcons.Chart" Title="Estatísticas avançadas" />
-
+    <PageLayout Icon="@AppIcons.Chart" Title="Estatísticas avançadas">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -39,6 +38,7 @@
     }
 
     <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
+    </PageLayout>
 </div>
 
 @code {

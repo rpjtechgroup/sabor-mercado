@@ -4,21 +4,16 @@
 
 <PageTitle>Sabor Mercado — Catálogo</PageTitle>
 
-<PageIcon Icon="@AppIcons.Catalog" Title="Meus produtos" />
-
-@if (!_loaded)
-{
-    <p class="muted">Carregando…</p>
-}
-else
-{
-    @if (StoreService.Stores.Count == 0)
+<PageLayout Icon="@AppIcons.Catalog" Title="Meus produtos">
+    @if (!_loaded)
     {
-        <div class="empty-state">
-            <span class="empty-icon" aria-hidden="true">🏪</span>
-            Cadastre um comércio antes de registrar produtos.
+        <p class="muted">Carregando…</p>
+    }
+    else if (StoreService.Stores.Count == 0)
+    {
+        <EmptyState Icon="🏪" Message="Cadastre um comércio antes de registrar produtos.">
             <p><IconLink Href="comercios" Icon="@AppIcons.Store" Label="Cadastrar comércio" CssClass="btn btn-primary btn-block btn-icon icon-link" /></p>
-        </div>
+        </EmptyState>
     }
     else if (_form is not null)
     {
@@ -36,12 +31,10 @@ else
 
         @if (FilteredProducts.Count == 0)
         {
-            <div class="empty-state">
-                <span class="empty-icon" aria-hidden="true">📦</span>
-                @(string.IsNullOrWhiteSpace(_search)
-                    ? "Nenhum produto cadastrado ainda."
-                    : "Nenhum produto encontrado para a busca.")
-            </div>
+            <EmptyState Icon="📦"
+                        Message="@(string.IsNullOrWhiteSpace(_search)
+                            ? "Nenhum produto cadastrado ainda."
+                            : "Nenhum produto encontrado para a busca.")" />
         }
         else
         {
@@ -62,7 +55,7 @@ else
             </section>
         }
     }
-}
+</PageLayout>
 
 @code {
     private bool _loaded;

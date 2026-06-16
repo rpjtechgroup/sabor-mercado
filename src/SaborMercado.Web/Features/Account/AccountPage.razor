@@ -6,23 +6,16 @@
 
 <PageTitle>Sabor Mercado — Minha conta</PageTitle>
 
-<div class="account-page">
-    <header class="session-header">
-        <PageIcon Icon="@AppIcons.Account" Title="Minha conta" />
-        <p class="muted">
-            Compartilhe preços anonimizados para ganhar créditos e desbloquear recursos premium.
-            O fluxo principal continua gratuito e offline.
-        </p>
-    </header>
-
+<PageLayout Icon="@AppIcons.Account"
+            Title="Minha conta"
+            Subtitle="Compartilhe preços anonimizados para ganhar créditos e desbloquear recursos premium. O fluxo principal continua gratuito e offline.">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
     }
     else if (!Account.IsLoggedIn)
     {
-        <section class="card settings-section" aria-labelledby="auth-heading">
-            <SectionIcon Id="auth-heading" Icon="@(_registerMode ? AppIcons.New : AppIcons.Login)" Title="@(_registerMode ? "Criar conta" : "Entrar")" />
+        <SettingsSection Id="auth-heading" Icon="@(_registerMode ? AppIcons.New : AppIcons.Login)" Title="@(_registerMode ? "Criar conta" : "Entrar")">
             <p class="muted">
                 Conta leve (e-mail e senha). Seus dados de compra permanecem no dispositivo.
             </p>
@@ -50,12 +43,11 @@
                         Label="@(_registerMode ? "Já tenho conta" : "Criar conta gratuita")"
                         CssClass="btn btn-outline btn-block btn-icon"
                         OnClick="ToggleMode" />
-        </section>
+        </SettingsSection>
     }
     else
     {
-        <section class="card settings-section" aria-labelledby="credits-heading">
-            <SectionIcon Id="credits-heading" Icon="@AppIcons.Trophy" Title="Créditos" />
+        <SettingsSection Id="credits-heading" Icon="@AppIcons.Trophy" Title="Créditos">
             <p class="totals-value">@Account.CreditBalance crédito@(Account.CreditBalance == 1 ? string.Empty : "s")</p>
             <p class="muted">Logado como @Account.Email</p>
             @if (Account.PendingShareCount > 0)
@@ -76,10 +68,9 @@
                 <IconLink Href="listas-inteligentes" Icon="@AppIcons.List" Label="Listas inteligentes" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
             }
             <IconButton Icon="@AppIcons.Logout" Label="Sair" CssClass="btn btn-outline btn-block btn-icon" OnClick="LogoutAsync" />
-        </section>
+        </SettingsSection>
 
-        <section class="card settings-section" aria-labelledby="achievements-heading">
-            <SectionIcon Id="achievements-heading" Icon="@AppIcons.Trophy" Title="Conquistas" />
+        <SettingsSection Id="achievements-heading" Icon="@AppIcons.Trophy" Title="Conquistas">
             @if (_achievements.Count == 0)
             {
                 <p class="muted">Contribua com preços e vote em observações para desbloquear conquistas.</p>
@@ -96,10 +87,9 @@
                     }
                 </div>
             }
-        </section>
+        </SettingsSection>
 
-        <section class="card settings-section" aria-labelledby="unlocks-heading">
-            <SectionIcon Id="unlocks-heading" Icon="@AppIcons.Unlock" Title="Desbloqueios premium" />
+        <SettingsSection Id="unlocks-heading" Icon="@AppIcons.Unlock" Title="Desbloqueios premium">
             @foreach (var offer in UnlockOffers.All)
             {
                 var active = Account.HasUnlock(offer.Code);
@@ -131,10 +121,9 @@
             {
                 <p class="text-danger" role="alert">@_error</p>
             }
-        </section>
+        </SettingsSection>
 
-        <section class="card settings-section" aria-labelledby="danger-heading">
-            <SectionIcon Id="danger-heading" Icon="@AppIcons.Warning" Title="Zona de perigo" />
+        <SettingsSection Id="danger-heading" Icon="@AppIcons.Warning" Title="Zona de perigo">
             <p class="muted">Exclui sua conta. Compartilhamentos já anonimizados permanecem no catálogo colaborativo.</p>
             @if (_confirmingDelete)
             {
@@ -144,11 +133,11 @@
             {
                 <IconButton Icon="@AppIcons.Remove" Label="Excluir conta" CssClass="btn btn-danger btn-block btn-icon" OnClick="AskDeleteAccount" />
             }
-        </section>
+        </SettingsSection>
     }
 
     <p class="muted"><IconInlineLink Href="configuracoes" Icon="@AppIcons.Back" Label="Voltar aos ajustes" /></p>
-</div>
+</PageLayout>
 
 @code {
     private bool _loaded;

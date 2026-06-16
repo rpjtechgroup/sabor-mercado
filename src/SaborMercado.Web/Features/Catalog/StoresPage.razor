@@ -3,11 +3,9 @@
 
 <PageTitle>Sabor Mercado — Comércios</PageTitle>
 
-<PageIcon Icon="@AppIcons.Store" Title="Meus comércios" />
-<p class="muted">
-    Cadastre os lugares onde você compra. Produtos e preços são vinculados a um comércio pré-cadastrado.
-</p>
-
+<PageLayout Icon="@AppIcons.Store"
+            Title="Meus comércios"
+            Subtitle="Cadastre os lugares onde você compra. Produtos e preços são vinculados a um comércio pré-cadastrado.">
 @if (!_loaded)
 {
     <p class="muted">Carregando…</p>
@@ -26,10 +24,7 @@ else
 
     @if (StoreService.Stores.Count == 0)
     {
-        <div class="empty-state">
-            <span class="empty-icon" aria-hidden="true">🏪</span>
-            Nenhum comércio cadastrado. Cadastre pelo menos um antes de registrar produtos.
-        </div>
+        <EmptyState Icon="🏪" Message="Nenhum comércio cadastrado. Cadastre pelo menos um antes de registrar produtos." />
     }
     else
     {
@@ -74,6 +69,7 @@ else
 
     <IconLink Href="catalogo" Icon="@AppIcons.Back" Label="Voltar ao catálogo" CssClass="btn btn-outline btn-block btn-icon icon-link icon-back" />
 }
+</PageLayout>
 
 @code {
     private bool _loaded;

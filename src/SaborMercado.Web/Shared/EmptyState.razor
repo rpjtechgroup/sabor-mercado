@@ -1,0 +1,16 @@
+<div class="empty-state">
+    <span class="empty-icon" aria-hidden="true">@Icon</span>
+    @Message
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public string Icon { get; set; } = "📦";
+
+    [Parameter]
+    public string Message { get; set; } = string.Empty;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+}
