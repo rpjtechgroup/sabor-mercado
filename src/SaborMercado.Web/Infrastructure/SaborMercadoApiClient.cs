@@ -6,6 +6,26 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Infrastructure;
 
+public static class ApiAddress
+{
+    public static Uri NormalizeBase(string apiBaseUrl)
+    {
+        var trimmed = apiBaseUrl.Trim();
+        if (!trimmed.EndsWith('/'))
+        {
+            trimmed += '/';
+        }
+
+        return new Uri(trimmed);
+    }
+
+    /// <summary>
+    /// Paths starting with '/' are treated as root-absolute by HttpClient and ignore BaseAddress path (e.g. /mercado).
+    /// </summary>
+    public static string ToRelativePath(string path) =>
+        path.StartsWith('/') ? path[1..] : path;
+}
+
 public sealed class SaborMercadoApiClient(HttpClient httpClient, IPreferencesStore preferences)
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -24,7 +44,7 @@ public sealed class SaborMercadoApiClient(HttpClient httpClient, IPreferencesSto
         string? idempotencyKey = null,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(method, path);
+        using var request = new HttpRequestMessage(method, ApiAddress.ToRelativePath(path));
 
         if (!string.IsNullOrWhiteSpace(idempotencyKey))
         {

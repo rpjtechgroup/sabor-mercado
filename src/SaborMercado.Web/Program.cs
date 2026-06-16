@@ -61,7 +61,7 @@ builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.H
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? "http://localhost:5280";
 
 builder.Services.AddScoped(sp => new SaborMercadoApiClient(
-    new HttpClient { BaseAddress = new Uri(apiBaseUrl), Timeout = TimeSpan.FromSeconds(15) },
+    new HttpClient { BaseAddress = ApiAddress.NormalizeBase(apiBaseUrl), Timeout = TimeSpan.FromSeconds(15) },
     sp.GetRequiredService<IPreferencesStore>()));
 
 builder.Services.AddScoped(sp => new GeminiShelfLabelClient(
