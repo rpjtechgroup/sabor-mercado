@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaborMercado.Modules.Reward
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaborMercado.Infrastructure", "src\SaborMercado.Infrastructure\SaborMercado.Infrastructure.csproj", "{8C4A45C0-EC32-4943-92EC-B9FE75DEFDE2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaborMercado.Modules.Support", "src\SaborMercado.Modules.Support\SaborMercado.Modules.Support.csproj", "{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -155,6 +157,18 @@ Global
 		{8C4A45C0-EC32-4943-92EC-B9FE75DEFDE2}.Release|x64.Build.0 = Release|Any CPU
 		{8C4A45C0-EC32-4943-92EC-B9FE75DEFDE2}.Release|x86.ActiveCfg = Release|Any CPU
 		{8C4A45C0-EC32-4943-92EC-B9FE75DEFDE2}.Release|x86.Build.0 = Release|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Debug|x64.Build.0 = Debug|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Debug|x86.Build.0 = Debug|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x64.ActiveCfg = Release|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x64.Build.0 = Release|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -170,5 +184,6 @@ Global
 		{9678806F-4F7E-471B-BC24-8F375C96AA10} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{3C063705-6C31-4C39-9FCF-D26846A42B21} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{8C4A45C0-EC32-4943-92EC-B9FE75DEFDE2} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal

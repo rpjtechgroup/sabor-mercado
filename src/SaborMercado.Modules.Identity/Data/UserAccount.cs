@@ -8,6 +8,8 @@ public sealed class UserAccount
 
     public string PasswordHash { get; set; } = string.Empty;
 
+    public string? GoogleSubjectId { get; set; }
+
     public Guid PseudonymId { get; set; }
 
     public DateTimeOffset CreatedAt { get; set; }

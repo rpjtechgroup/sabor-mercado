@@ -17,6 +17,7 @@ public static class AuthEndpoints
 
         group.MapPost("/register", RegisterAsync);
         group.MapPost("/login", LoginAsync);
+        group.MapPost("/google", GoogleLoginAsync);
         group.MapPost("/refresh", RefreshAsync);
         group.MapGet("/me", MeAsync).RequireAuthorization();
         group.MapDelete("/me", DeleteAccountAsync).RequireAuthorization();
@@ -53,6 +54,25 @@ public static class AuthEndpoints
         catch (AuthException ex)
         {
             return Problem(ex.Code, ex.Message, StatusCodes.Status401Unauthorized);
+        }
+    }
+
+    private static async Task<IResult> GoogleLoginAsync(
+        GoogleLoginRequest request,
+        GoogleAuthService googleAuth,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await googleAuth.LoginWithGoogleAsync(request, cancellationToken);
+            return Results.Ok(response);
+        }
+        catch (AuthException ex)
+        {
+            var status = ex.Code == AuthErrorCodes.GoogleAuthNotConfigured
+                ? StatusCodes.Status503ServiceUnavailable
+                : StatusCodes.Status401Unauthorized;
+            return Problem(ex.Code, ex.Message, status);
         }
     }
 

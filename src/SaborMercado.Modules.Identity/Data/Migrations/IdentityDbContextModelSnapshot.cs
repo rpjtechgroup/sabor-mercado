@@ -69,6 +69,11 @@ namespace SaborMercado.Modules.Identity.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
+                    b.Property<string>("GoogleSubjectId")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("google_subject_id");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasMaxLength(512)
@@ -81,6 +86,9 @@ namespace SaborMercado.Modules.Identity.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("GoogleSubjectId")
                         .IsUnique();
 
                     b.ToTable("identity_users", "identity");

@@ -19,6 +19,8 @@ public sealed class IdentityDbContext(DbContextOptions<IdentityDbContext> option
             entity.HasIndex(e => e.Email).IsUnique();
             entity.Property(e => e.Email).HasMaxLength(256);
             entity.Property(e => e.PasswordHash).HasMaxLength(512);
+            entity.HasIndex(e => e.GoogleSubjectId).IsUnique();
+            entity.Property(e => e.GoogleSubjectId).HasMaxLength(64).HasColumnName("google_subject_id");
             entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             entity.Property(e => e.PseudonymId).HasColumnName("pseudonym_id");
         });

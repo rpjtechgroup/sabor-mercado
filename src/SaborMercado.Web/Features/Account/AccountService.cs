@@ -85,6 +85,22 @@ public sealed class AccountService(
         await FlushPendingSharesAsync();
     }
 
+    public async Task LoginWithGoogleAsync(string idToken)
+    {
+        var response = await api.SendAsync(HttpMethod.Post, "/api/v1/auth/google", new GoogleLoginRequest(idToken));
+        if (!response.IsSuccessStatusCode)
+        {
+            var detail = await api.ReadErrorDetailAsync(response, CancellationToken.None);
+            throw new AccountException(detail ?? "Não foi possível entrar com Google.");
+        }
+
+        var auth = await api.ReadJsonAsync<AuthResponse>(response, CancellationToken.None)
+            ?? throw new InvalidOperationException("Resposta de autenticação inválida.");
+
+        await RefreshProfileAfterGoogleAsync(auth);
+        await FlushPendingSharesAsync();
+    }
+
     public async Task DeleteAccountAsync()
     {
         var response = await api.SendAsync(HttpMethod.Delete, "/api/v1/auth/me", requireAuth: true);
@@ -177,6 +193,22 @@ public sealed class AccountService(
         Notify();
     }
 
+    private async Task RefreshProfileAfterGoogleAsync(AuthResponse auth)
+    {
+        await preferences.SetAuthAsync(
+            auth.AccessToken,
+            auth.RefreshToken,
+            auth.ExpiresAt,
+            string.Empty,
+            auth.PseudonymId);
+
+        IsLoggedIn = true;
+        PseudonymId = auth.PseudonymId;
+        await RefreshProfileAsync();
+        await RefreshCreditsAsync();
+        Notify();
+    }
+
     private async Task StoreSessionAsync(string email, AuthResponse auth)
     {
         await preferences.SetAuthAsync(
@@ -244,6 +276,16 @@ public sealed class AccountService(
         {
             Email = me.Email;
             PseudonymId = Guid.TryParse(me.PseudonymId, out var pseudonym) ? pseudonym : PseudonymId;
+            if (!string.IsNullOrWhiteSpace(me.Email))
+            {
+                var token = await preferences.GetAccessTokenAsync();
+                var refresh = await preferences.GetRefreshTokenAsync();
+                var expires = await preferences.GetAccessTokenExpiresAtAsync();
+                if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(refresh) && expires is not null)
+                {
+                    await preferences.SetAuthAsync(token, refresh, expires.Value, me.Email, PseudonymId ?? Guid.Empty);
+                }
+            }
         }
     }
 

@@ -14,6 +14,7 @@ using SaborMercado.Web.Features.Catalog;
 using SaborMercado.Web.Features.Recognition;
 
 using SaborMercado.Web.Features.Shopping;
+using SaborMercado.Web.Features.Support;
 
 using SaborMercado.Web.Infrastructure;
 
@@ -50,6 +51,10 @@ builder.Services.AddScoped<GeolocationInterop>();
 
 builder.Services.AddScoped<ISpeechRecognitionService, SpeechRecognitionInterop>();
 builder.Services.AddScoped<SpeechRecognitionInterop>();
+builder.Services.AddScoped<IGoogleSignInService, GoogleSignInInterop>();
+builder.Services.AddScoped<GoogleSignInInterop>();
+builder.Services.AddScoped<ISupportDiagnosticsInterop, SupportDiagnosticsInterop>();
+builder.Services.AddScoped<SupportDiagnosticsInterop>();
 
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
@@ -107,6 +112,10 @@ builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<MarketComparisonClient>();
 builder.Services.AddScoped<PremiumStatsService>();
 builder.Services.AddScoped<SmartListService>();
+
+builder.Services.AddScoped<SupportDialogState>();
+builder.Services.AddScoped<SupportDiagnosticsCollector>();
+builder.Services.AddScoped<SupportService>();
 
 await builder.Build().RunAsync();
 

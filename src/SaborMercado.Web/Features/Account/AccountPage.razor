@@ -39,6 +39,8 @@
                         CssClass="btn btn-primary btn-block btn-icon"
                         Disabled="@_busy"
                         OnClick="SubmitAuthAsync" />
+            <p class="auth-divider muted">ou</p>
+            <GoogleSignInButton OnError="OnGoogleError" />
             <IconButton Icon="@(_registerMode ? AppIcons.Login : AppIcons.New)"
                         Label="@(_registerMode ? "Já tenho conta" : "Criar conta gratuita")"
                         CssClass="btn btn-outline btn-block btn-icon"
@@ -182,6 +184,8 @@
         _registerMode = !_registerMode;
         _error = null;
     }
+
+    private void OnGoogleError(string message) => _error = message;
 
     private void AskDeleteAccount() => _confirmingDelete = true;
 

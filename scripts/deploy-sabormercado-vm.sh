@@ -13,6 +13,9 @@ DB_NAME="sabormercado"
 DB_USER="sabormercado"
 DB_PASS="${SABOR_DB_PASS:?Set SABOR_DB_PASS}"
 JWT_KEY="${SABOR_JWT_KEY:?Set SABOR_JWT_KEY}"
+SMTP_USER="${SABOR_SMTP_USER:-rpjtechgroup@gmail.com}"
+SMTP_PASSWORD="${SABOR_SMTP_PASSWORD:?Set SABOR_SMTP_PASSWORD}"
+GOOGLE_CLIENT_ID="${SABOR_GOOGLE_CLIENT_ID:?Set SABOR_GOOGLE_CLIENT_ID}"
 
 echo "==> iptables: allow HTTP/HTTPS (OCI image blocks by default)"
 if [ -x /tmp/patch-iptables-http.sh ]; then
@@ -92,6 +95,19 @@ cat > "$API_PUBLISH/appsettings.Production.json" <<JSON
   "Cors": {
     "Origins": [ "${PUBLIC_BASE}", "https://rpjtechgroup.ddns.net", "http://rpjtechgroup.ddns.net" ]
   },
+  "Email": {
+    "Host": "smtp.gmail.com",
+    "Port": 587,
+    "UseStartTls": true,
+    "UserName": "${SMTP_USER}",
+    "Password": "${SMTP_PASSWORD}",
+    "FromAddress": "${SMTP_USER}",
+    "FromName": "Sabor Mercado",
+    "SupportToAddress": "${SMTP_USER}"
+  },
+  "GoogleAuth": {
+    "ClientId": "${GOOGLE_CLIENT_ID}"
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
@@ -106,7 +122,8 @@ sed -i 's|<base href="/" />|<base href="/mercado/" />|' "$WEB_ROOT/index.html"
 cat > "$WEB_ROOT/appsettings.json" <<JSON
 {
   "GeminiModel": "gemini-2.0-flash",
-  "ApiBaseUrl": "${PUBLIC_BASE}"
+  "ApiBaseUrl": "${PUBLIC_BASE}",
+  "GoogleClientId": "${GOOGLE_CLIENT_ID}"
 }
 JSON
 

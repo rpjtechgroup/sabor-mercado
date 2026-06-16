@@ -11,3 +11,5 @@ public sealed record AuthResponse(
     Guid PseudonymId);
 
 public sealed record RefreshRequest(string RefreshToken);
+
+public sealed record GoogleLoginRequest(string IdToken);

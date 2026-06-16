@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using SaborMercado.Infrastructure;
 using SaborMercado.Modules.Identity;
 using SaborMercado.Modules.Identity.Data;
 using SaborMercado.Modules.Recognition;
@@ -7,13 +8,16 @@ using SaborMercado.Modules.Rewards;
 using SaborMercado.Modules.Rewards.Data;
 using SaborMercado.Modules.SharedCatalog;
 using SaborMercado.Modules.SharedCatalog.Data;
+using SaborMercado.Modules.Support;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSaborMercadoEmail(builder.Configuration);
 builder.Services.AddRecognitionModule(builder.Configuration);
 builder.Services.AddIdentityModule(builder.Configuration);
 builder.Services.AddSharedCatalogModule(builder.Configuration);
 builder.Services.AddRewardsModule(builder.Configuration);
+builder.Services.AddSupportModule(builder.Configuration);
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<IdentityDbContext>("identity-db", tags: ["ready"])
@@ -51,6 +55,7 @@ app.MapRecognitionModule();
 app.MapIdentityModule();
 app.MapSharedCatalogModule();
 app.MapRewardsModule();
+app.MapSupportModule();
 
 await app.InitializeRecognitionModuleAsync();
 await app.InitializeIdentityModuleAsync();

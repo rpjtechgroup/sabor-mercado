@@ -1,0 +1,66 @@
+@implements IGoogleSignInListener
+@implements IAsyncDisposable
+@inject IGoogleSignInService GoogleSignIn
+@inject IConfiguration Configuration
+@inject AccountService Account
+
+<div id="@_elementId" class="google-signin-host"></div>
+
+@if (!string.IsNullOrEmpty(_error))
+{
+    <p class="text-danger" role="alert">@_error</p>
+}
+
+@code {
+    [Parameter]
+    public EventCallback<string> OnError { get; set; }
+
+    private readonly string _elementId = $"google-btn-{Guid.NewGuid():N}";
+    private bool _rendered;
+    private string? _error;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_rendered)
+        {
+            return;
+        }
+
+        var clientId = Configuration["GoogleClientId"];
+        if (string.IsNullOrWhiteSpace(clientId))
+        {
+            return;
+        }
+
+        _rendered = await GoogleSignIn.RenderButtonAsync(_elementId, clientId, this);
+        if (!_rendered)
+        {
+            _error = "Não foi possível carregar o login com Google.";
+            StateHasChanged();
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnGoogleCredential(string credential)
+    {
+        _error = null;
+        try
+        {
+            await Account.LoginWithGoogleAsync(credential);
+        }
+        catch (AccountException ex)
+        {
+            _error = ex.Message;
+            await OnError.InvokeAsync(ex.Message);
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (GoogleSignIn is IAsyncDisposable disposable)
+        {
+            await disposable.DisposeAsync();
+        }
+    }
+}

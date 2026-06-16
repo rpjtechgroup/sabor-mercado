@@ -30,14 +30,29 @@ jobs:
 
       - name: Deploy on VM
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          SABOR_DB_PASS: ${{ secrets.SABOR_DB_PASS }}
+          SABOR_JWT_KEY: ${{ secrets.SABOR_JWT_KEY }}
+          SABOR_SMTP_PASSWORD: ${{ secrets.SABOR_SMTP_PASSWORD }}
+          SABOR_GOOGLE_CLIENT_ID: ${{ secrets.SABOR_GOOGLE_CLIENT_ID }}
+          SABOR_SMTP_USER: ${{ secrets.SABOR_SMTP_USER }}
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
+          envs: SABOR_DB_PASS,SABOR_JWT_KEY,SABOR_SMTP_PASSWORD,SABOR_GOOGLE_CLIENT_ID,SABOR_SMTP_USER
           script: |
             set -e
             cd /home/ubuntu/deploy
             tar -xzf sabormercado-scripts.tar.gz
+            umask 077
+            cat > sabormercado.secrets <<EOF
+            SABOR_DB_PASS=${SABOR_DB_PASS}
+            SABOR_JWT_KEY=${SABOR_JWT_KEY}
+            SABOR_SMTP_PASSWORD=${SABOR_SMTP_PASSWORD}
+            SABOR_GOOGLE_CLIENT_ID=${SABOR_GOOGLE_CLIENT_ID}
+            SABOR_SMTP_USER=${SABOR_SMTP_USER:-rpjtechgroup@gmail.com}
+            EOF
             set -a
             source sabormercado.secrets
             set +a

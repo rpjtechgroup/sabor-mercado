@@ -52,6 +52,15 @@ public static class RecognitionModule
                         Window = TimeSpan.FromMinutes(1),
                         QueueLimit = 0,
                     }));
+            options.AddPolicy("feedback", httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromHours(1),
+                        QueueLimit = 0,
+                    }));
         });
 
         return services;

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>SaborMercado.Modules.Support</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SaborMercado.Infrastructure\SaborMercado.Infrastructure.csproj" />
+    <ProjectReference Include="..\SaborMercado.Shared\SaborMercado.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

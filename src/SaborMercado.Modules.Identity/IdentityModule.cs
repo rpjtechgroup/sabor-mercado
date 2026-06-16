@@ -19,9 +19,12 @@ public static class IdentityModule
         IConfiguration configuration)
     {
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.SectionName));
+        services.Configure<GoogleAuthOptions>(configuration.GetSection(GoogleAuthOptions.SectionName));
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<JwtTokenService>();
         services.AddScoped<AuthService>();
+        services.AddScoped<GoogleAuthService>();
+        services.AddSingleton<IGoogleIdTokenValidator, GoogleIdTokenValidator>();
 
         services.AddDbContextPool<IdentityDbContext>(options =>
             DatabaseBootstrap.ConfigureDbContext<IdentityDbContext>(

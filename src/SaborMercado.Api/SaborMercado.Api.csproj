@@ -19,6 +19,7 @@
     <ProjectReference Include="..\SaborMercado.Modules.Recognition\SaborMercado.Modules.Recognition.csproj" />
     <ProjectReference Include="..\SaborMercado.Modules.Rewards\SaborMercado.Modules.Rewards.csproj" />
     <ProjectReference Include="..\SaborMercado.Modules.SharedCatalog\SaborMercado.Modules.SharedCatalog.csproj" />
+    <ProjectReference Include="..\SaborMercado.Modules.Support\SaborMercado.Modules.Support.csproj" />
     <ProjectReference Include="..\SaborMercado.Shared\SaborMercado.Shared.csproj" />
   </ItemGroup>
 

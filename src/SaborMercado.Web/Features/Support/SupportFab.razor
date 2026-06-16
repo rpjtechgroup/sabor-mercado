@@ -1,0 +1,18 @@
+@implements IDisposable
+@inject SupportDialogState Dialog
+
+<button type="button"
+        class="support-fab"
+        title="Fale conosco"
+        aria-label="Fale conosco — reportar erros, sugestões ou suporte"
+        @onclick="Dialog.Open">
+  <span aria-hidden="true">@AppIcons.Help</span>
+</button>
+
+@code {
+    protected override void OnInitialized() => Dialog.Changed += OnDialogChanged;
+
+    private void OnDialogChanged() => InvokeAsync(StateHasChanged);
+
+    public void Dispose() => Dialog.Changed -= OnDialogChanged;
+}

@@ -13,3 +13,5 @@ public sealed record AuthResponse(
 public sealed record MeResponse(string? UserId, string? Email, string? PseudonymId);
 
 public sealed record RefreshRequest(string RefreshToken);
+
+public sealed record GoogleLoginRequest(string IdToken);

@@ -1,0 +1,137 @@
+@implements IDisposable
+@inject SupportDialogState Dialog
+@inject AccountService Account
+@inject SupportService Support
+@inject ISupportDiagnosticsInterop ClientEnv
+
+@if (Dialog.IsOpen)
+{
+    <div class="support-overlay" role="presentation" @onclick="CloseAsync"></div>
+    <div class="support-dialog" role="dialog" aria-modal="true" aria-labelledby="support-dialog-title">
+        <header class="support-dialog-header">
+            <h2 id="support-dialog-title">@AppIcons.Help Fale conosco</h2>
+            <button type="button" class="btn btn-outline support-dialog-close" aria-label="Fechar" @onclick="CloseAsync">@AppIcons.Cancel</button>
+        </header>
+
+        <p class="muted">
+            Reporte erros, envie sugestões, críticas ou peça suporte. Incluímos dados técnicos do app
+            (sem senhas nem chaves) para facilitar a análise.
+        </p>
+
+        <div class="form-field">
+            <label for="support-category">Categoria</label>
+            <select id="support-category" class="input" @bind="_category">
+                <option value="bug">Reportar erro</option>
+                <option value="suggestion">Sugestão</option>
+                <option value="criticism">Crítica</option>
+                <option value="support">Suporte</option>
+            </select>
+        </div>
+
+        <div class="form-field">
+            <label for="support-subject">Assunto</label>
+            <input id="support-subject" class="input" maxlength="200" @bind="_subject" />
+        </div>
+
+        <div class="form-field">
+            <label for="support-message">Mensagem</label>
+            <textarea id="support-message" class="input support-message" rows="5" maxlength="8000" @bind="_message"></textarea>
+        </div>
+
+        <div class="form-field">
+            <label for="support-name">Nome (opcional)</label>
+            <input id="support-name" class="input" maxlength="120" @bind="_contactName" />
+        </div>
+
+        <div class="form-field">
+            <label for="support-email">E-mail para resposta (opcional)</label>
+            <input id="support-email" class="input" type="email" maxlength="256" @bind="_contactEmail" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p class="text-danger" role="alert">@_error</p>
+        }
+
+        @if (!string.IsNullOrEmpty(_success))
+        {
+            <p class="success-text" role="status">@_success</p>
+        }
+
+        <IconButton Icon="@AppIcons.Confirm"
+                    Label="@(_busy ? "Enviando…" : "Enviar mensagem")"
+                    CssClass="btn btn-primary btn-block btn-icon"
+                    Disabled="@_busy"
+                    OnClick="SubmitAsync" />
+    </div>
+}
+
+@code {
+    private string _category = "bug";
+    private string _subject = string.Empty;
+    private string _message = string.Empty;
+    private string _contactName = string.Empty;
+    private string _contactEmail = string.Empty;
+    private string? _error;
+    private string? _success;
+    private bool _busy;
+
+    protected override void OnInitialized()
+    {
+        Dialog.Changed += OnDialogChanged;
+        PrefillContact();
+    }
+
+    private void OnDialogChanged()
+    {
+        if (Dialog.IsOpen)
+        {
+            PrefillContact();
+            _error = null;
+            _success = null;
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void PrefillContact()
+    {
+        if (Account.IsLoggedIn && !string.IsNullOrWhiteSpace(Account.Email))
+        {
+            _contactEmail = Account.Email!;
+        }
+    }
+
+    private void CloseAsync() => Dialog.Close();
+
+    private async Task SubmitAsync()
+    {
+        _busy = true;
+        _error = null;
+        _success = null;
+
+        try
+        {
+            if (!await ClientEnv.IsOnlineAsync())
+            {
+                _error = "Conecte-se à internet para enviar sua mensagem.";
+                return;
+            }
+
+            await Support.SendAsync(_category, _subject, _message, _contactName, _contactEmail);
+            _success = "Mensagem enviada. Obrigado pelo feedback!";
+            _subject = string.Empty;
+            _message = string.Empty;
+        }
+        catch (SupportException ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    public void Dispose() => Dialog.Changed -= OnDialogChanged;
+}

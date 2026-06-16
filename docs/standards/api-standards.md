@@ -47,8 +47,10 @@
 | `GET  /api/v1/credits`               | Rewards       | Saldo + extrato                            | requerida |
 | `POST /api/v1/unlocks`               | Rewards       | Gastar créditos em funcionalidade          | requerida |
 | `POST /api/v1/auth/register|login`   | Identity      | Conta leve (email+senha)                   | —         |
+| `POST /api/v1/auth/google`           | Identity      | Login com Google (ID token GIS)            | —         |
 | `POST /api/v1/auth/refresh`          | Identity      | Renovar access token                       | refresh   |
 | `DELETE /api/v1/auth/me`             | Identity      | Excluir conta                              | requerida |
+| `POST /api/v1/feedback`              | Support       | Feedback/suporte por e-mail                | —         |
 
 \* anônimo com rate-limit por IP mais restrito.
 

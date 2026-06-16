@@ -61,6 +61,9 @@ public sealed class AuthService(
         return await IssueTokensAsync(user, cancellationToken);
     }
 
+    public async Task<AuthResponse> SignInAsync(UserAccount user, CancellationToken cancellationToken) =>
+        await IssueTokensAsync(user, cancellationToken);
+
     public async Task<AuthResponse> RefreshAsync(RefreshRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(request.RefreshToken))
