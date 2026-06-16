@@ -2,16 +2,20 @@
 @implements IDisposable
 
 <div class="product-autocomplete">
-    <input id="@InputId"
-           class="input"
-           autocomplete="off"
-           placeholder="@Placeholder"
-           value="@Name"
-           @oninput="OnInputAsync"
-           @onfocus="ShowSuggestions"
-           aria-autocomplete="list"
-           aria-controls="@ListboxId"
-           aria-expanded="@_showList" />
+    <div class="product-autocomplete-row">
+        <input id="@InputId"
+               class="input"
+               autocomplete="off"
+               placeholder="@Placeholder"
+               value="@Name"
+               @oninput="OnInputAsync"
+               @onfocus="ShowSuggestions"
+               aria-autocomplete="list"
+               aria-controls="@ListboxId"
+               aria-expanded="@_showList" />
+        <VoiceInputButton CssClass="btn btn-outline btn-icon voice-input-btn"
+                          OnTranscript="OnVoiceTranscriptAsync" />
+    </div>
 
     @if (_showList && _suggestions.Count > 0)
     {
@@ -70,6 +74,14 @@
     private async Task OnInputAsync(ChangeEventArgs e)
     {
         Name = e.Value?.ToString() ?? string.Empty;
+        await NameChanged.InvokeAsync(Name);
+        await RefreshSuggestionsAsync();
+        _showList = true;
+    }
+
+    private async Task OnVoiceTranscriptAsync(string transcript)
+    {
+        Name = transcript;
         await NameChanged.InvokeAsync(Name);
         await RefreshSuggestionsAsync();
         _showList = true;

@@ -15,4 +15,12 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SaborMercado.Shared\SaborMercado.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\data\starter-catalog.pt-BR.json" Link="wwwroot\data\starter-catalog.pt-BR.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

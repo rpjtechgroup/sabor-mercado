@@ -8,6 +8,8 @@ public sealed class Product
 
     public required string Name { get; set; }
 
+    public string? StarterKey { get; set; }
+
     public string? Brand { get; set; }
 
     public decimal? QuantityValue { get; set; }

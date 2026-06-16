@@ -13,6 +13,7 @@
     {
         <EmptyState Icon="🏪" Message="Cadastre um comércio antes de registrar produtos.">
             <p><IconLink Href="comercios" Icon="@AppIcons.Store" Label="Cadastrar comércio" CssClass="btn btn-primary btn-block btn-icon icon-link" /></p>
+            <p><IconButton Icon="@AppIcons.Refresh" Label="Importar sugestões de catálogo" CssClass="btn btn-outline btn-block btn-icon" OnClick="ImportSuggestionsAsync" /></p>
         </EmptyState>
     }
     else if (_form is not null)
@@ -23,6 +24,7 @@
     {
         <IconButton Icon="@AppIcons.New" Label="Novo produto" CssClass="btn btn-primary btn-block btn-icon" OnClick="OpenForm" />
         <IconLink Href="comercios" Icon="@AppIcons.Store" Label="Gerenciar comércios" CssClass="btn btn-outline btn-block btn-icon icon-link" />
+        <IconButton Icon="@AppIcons.Refresh" Label="Importar sugestões de catálogo" CssClass="btn btn-outline btn-block btn-icon" OnClick="ImportSuggestionsAsync" />
 
         <div class="field catalog-search">
             <input class="input" placeholder="Buscar produto…" aria-label="Buscar produto"
@@ -71,6 +73,9 @@
 
     [Inject]
     public NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
+    public StarterCatalogBootstrapService StarterCatalog { get; set; } = default!;
 
     private IReadOnlyList<Product> FilteredProducts =>
         string.IsNullOrWhiteSpace(_search)
@@ -128,6 +133,14 @@
         var created = await Catalog.CreateProductAsync(product);
         _form = null;
         Navigation.NavigateTo($"catalogo/{created.Id}");
+    }
+
+    private async Task ImportSuggestionsAsync()
+    {
+        await StarterCatalog.ImportAsync();
+        await StoreService.InitializeAsync();
+        await Catalog.InitializeAsync();
+        _lastPrices = await Catalog.GetLastPricesByProductIdAsync();
     }
 
     private void OnStateChanged() => InvokeAsync(async () =>

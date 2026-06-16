@@ -8,6 +8,8 @@ public sealed class Store
 
     public required string Name { get; set; }
 
+    public string? StarterKey { get; set; }
+
     public string? City { get; set; }
 
     public string? State { get; set; }

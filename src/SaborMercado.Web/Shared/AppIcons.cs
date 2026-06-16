@@ -38,12 +38,14 @@ public static class AppIcons
     public const string Report = "🚩";
     public const string Trophy = "🏆";
     public const string Cart = "🧺";
+    public const string Reminder = "📝";
     public const string Party = "🎉";
     public const string Typing = "🔢";
     public const string Ok = "✓";
     public const string Link = "🔗";
     public const string Refresh = "🔄";
     public const string Manual = "✍️";
+    public const string Microphone = "🎤";
     public const string Price = "💰";
     public const string Help = "❓";
     public const string TabSession = "🧾";

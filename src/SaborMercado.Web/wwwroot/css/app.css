@@ -513,6 +513,39 @@ textarea.input {
     position: relative;
 }
 
+.product-autocomplete-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+.product-autocomplete-row .input {
+    flex: 1;
+    min-width: 0;
+}
+
+.voice-input-btn {
+    flex-shrink: 0;
+    min-width: 2.75rem;
+}
+
+.voice-input-error {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+}
+
+.card-header-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.card-header-row .section-icon {
+    flex: 1;
+    min-width: 0;
+}
+
 .autocomplete-list {
     position: absolute;
     z-index: 20;

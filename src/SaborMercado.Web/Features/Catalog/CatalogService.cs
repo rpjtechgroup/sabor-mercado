@@ -43,6 +43,26 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         NotifyStateChanged();
     }
 
+    public async Task ReloadAsync()
+    {
+        await stores.InitializeAsync();
+
+        try
+        {
+            var products = await store.GetAllProductsAsync();
+            _products.Clear();
+            _products.AddRange(products.OrderBy(p => p.Name, StringComparer.Create(MoneyFormat.Culture, ignoreCase: true)));
+            StorageUnavailable = false;
+        }
+        catch
+        {
+            StorageUnavailable = true;
+        }
+
+        _initialized = true;
+        NotifyStateChanged();
+    }
+
     public async Task<Product> CreateProductAsync(Product product)
     {
         await stores.InitializeAsync();

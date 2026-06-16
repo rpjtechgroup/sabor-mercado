@@ -25,7 +25,13 @@ else if (Shopping.CurrentSession is null)
     else
     {
         <PageLayout Icon="@AppIcons.New" Title="Nova compra">
-            <SessionStart SuggestedBudget="@Shopping.SuggestedBudget" OnStart="StartSessionAsync" />
+            <SessionStart SuggestedBudget="@Shopping.SuggestedBudget"
+                          ReminderCount="@_reminderCount"
+                          OnStart="StartSessionAsync" />
+            <IconLink Href="lembretes"
+                      Icon="@AppIcons.Reminder"
+                      Label="@ReminderLinkLabel"
+                      CssClass="btn btn-outline btn-block btn-icon icon-link" />
             <IconLink Href="historico" Icon="@AppIcons.History" Label="Histórico de compras" CssClass="btn btn-outline btn-block btn-icon icon-link history-link" />
         </PageLayout>
     }

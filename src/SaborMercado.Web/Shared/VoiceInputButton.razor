@@ -1,0 +1,128 @@
+@using SaborMercado.Web.Interop
+@implements ISpeechRecognitionListener
+@implements IAsyncDisposable
+
+@if (_supported)
+{
+    <IconButton Icon="@(_listening ? AppIcons.Confirm : AppIcons.Microphone)"
+                Label="@ButtonLabel"
+                CssClass="@CssClass"
+                Disabled="@Disabled"
+                OnClick="ToggleListeningAsync" />
+}
+
+@if (_error is not null)
+{
+    <p class="text-over voice-input-error" role="alert">@_error</p>
+}
+
+@code {
+    private bool _supported;
+    private bool _listening;
+    private string? _error;
+
+    [Parameter]
+    public string CssClass { get; set; } = "btn btn-outline btn-icon voice-input-btn";
+
+    [Parameter]
+    public string ListeningLabel { get; set; } = "Ouvindo… toque para parar";
+
+    [Parameter]
+    public string IdleLabel { get; set; } = "Falar";
+
+    [Parameter]
+    public bool Disabled { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnTranscript { get; set; }
+
+    [Parameter]
+    public EventCallback<VoiceParsedFields> OnParsed { get; set; }
+
+    [Parameter]
+    public bool ParseUtterance { get; set; }
+
+    [Inject]
+    public ISpeechRecognitionService Speech { get; set; } = default!;
+
+    private string ButtonLabel => _listening ? ListeningLabel : IdleLabel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _supported = await Speech.IsSupportedAsync();
+        }
+        catch
+        {
+            _supported = false;
+        }
+    }
+
+    private async Task ToggleListeningAsync()
+    {
+        if (_listening)
+        {
+            await Speech.StopListeningAsync();
+            _listening = false;
+            return;
+        }
+
+        _error = null;
+        try
+        {
+            await Speech.StartListeningAsync(this);
+            _listening = true;
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+            _listening = false;
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnSpeechResult(string transcript, bool isFinal)
+    {
+        if (!isFinal || string.IsNullOrWhiteSpace(transcript))
+        {
+            return;
+        }
+
+        _error = null;
+        await OnTranscript.InvokeAsync(transcript.Trim());
+
+        if (ParseUtterance && OnParsed.HasDelegate)
+        {
+            var parsed = VoiceUtteranceParser.Parse(transcript);
+            await OnParsed.InvokeAsync(parsed);
+        }
+    }
+
+    [JSInvokable]
+    public Task OnSpeechError(string message)
+    {
+        _error = message;
+        _listening = false;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public Task OnSpeechEnd()
+    {
+        _listening = false;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Speech is SpeechRecognitionInterop interop)
+        {
+            await interop.DisposeAsync();
+        }
+        else
+        {
+            await Speech.StopListeningAsync();
+        }
+    }
+}

@@ -6,6 +6,7 @@ using SaborMercado.Infrastructure.EntityFramework;
 using SaborMercado.Modules.SharedCatalog.Data;
 using SaborMercado.Modules.SharedCatalog.Endpoints;
 using SaborMercado.Modules.SharedCatalog.Services;
+using SaborMercado.Shared.StarterCatalog;
 
 namespace SaborMercado.Modules.SharedCatalog;
 
@@ -23,6 +24,7 @@ public static class SharedCatalogModule
         services.AddScoped<ObservationVoteService>();
         services.AddScoped<ContributorReportService>();
         services.AddScoped<SharedObservationQueryService>();
+        services.AddSingleton<StarterCatalogProvider>();
 
         services.AddDbContextPool<SharedCatalogDbContext>(options =>
             DatabaseBootstrap.ConfigureDbContext<SharedCatalogDbContext>(
@@ -38,7 +40,8 @@ public static class SharedCatalogModule
         DatabaseBootstrap.InitializeModuleAsync<SharedCatalogDbContext>(app);
 
     public static IEndpointRouteBuilder MapSharedCatalogModule(this IEndpointRouteBuilder app) =>
-        app.MapContributionEndpoints()
+        app.MapStarterCatalogEndpoints()
+            .MapContributionEndpoints()
             .MapSharedProductEndpoints()
             .MapCommunityEndpoints()
             .MapSharedObservationEndpoints();

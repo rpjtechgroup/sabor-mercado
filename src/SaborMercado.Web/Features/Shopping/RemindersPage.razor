@@ -1,0 +1,220 @@
+@page "/lembretes"
+@implements IDisposable
+
+<PageTitle>Sabor Mercado — Lembretes</PageTitle>
+
+<PageLayout Icon="@AppIcons.Reminder"
+            Title="Lembretes para a próxima compra"
+            Subtitle="Anote o que está acabando em casa. Na compra esporádica, estes itens entram no carrinho automaticamente.">
+@if (!_loaded)
+{
+    <p class="muted">Carregando…</p>
+}
+else
+{
+    @if (_lines.Count == 0)
+    {
+        <EmptyState Icon="📝" Message="Nada anotado ainda. Quando perceber que algo está acabando, registre aqui." />
+    }
+    else
+    {
+        <section class="pattern-list" aria-label="Lembretes">
+            @foreach (var line in _lines)
+            {
+                <div class="card pattern-row" @key="line.Reminder.Id">
+                    <div class="pattern-row-info">
+                        <strong>@line.Reminder.DisplayName</strong>
+                        @if (!string.IsNullOrWhiteSpace(line.Reminder.Note))
+                        {
+                            <span class="muted">@line.Reminder.Note</span>
+                        }
+                        else if (line.Product is not null)
+                        {
+                            <span class="muted">@FormatProductDetails(line.Product)</span>
+                        }
+                    </div>
+                    <div class="pattern-row-meta">
+                        @if (line.LastPrice is { } price)
+                        {
+                            <span class="pattern-price">@MoneyFormat.Format(price)</span>
+                        }
+                        else
+                        {
+                            <span class="pattern-price muted">sem preço</span>
+                        }
+                        <label class="pattern-qty">
+                            Qtd
+                            <input type="number"
+                                   class="input input-compact"
+                                   min="1"
+                                   value="@line.Reminder.Quantity"
+                                   @onchange="e => UpdateQtyAsync(line.Reminder.Id, e)" />
+                        </label>
+                        <button type="button"
+                                class="btn btn-outline btn-compact"
+                                aria-label="Remover @line.Reminder.DisplayName"
+                                @onclick="() => RemoveAsync(line.Reminder.Id)">
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            }
+        </section>
+    }
+
+    <div class="card">
+        <SectionIcon Icon="@AppIcons.New" Title="Adicionar lembrete" />
+
+        <div class="field">
+            <label for="reminder-product">Produto do catálogo</label>
+            <ProductAutocomplete InputId="reminder-product"
+                                 Name="@_searchName"
+                                 NameChanged="OnSearchNameChanged"
+                                 OnProductSelected="SelectProductAsync"
+                                 Placeholder="Buscar no catálogo…" />
+        </div>
+
+        <div class="field">
+            <label for="reminder-note-text">Ou digite uma nota rápida</label>
+            <input id="reminder-note-text" class="input" @bind="_quickNote" placeholder="ex.: papel higiênico" />
+        </div>
+
+        <div class="field">
+            <label for="reminder-extra-note">Observação (opcional)</label>
+            <input id="reminder-extra-note" class="input" @bind="_extraNote" placeholder="ex.: marca preferida" />
+        </div>
+
+        <div class="field">
+            <label for="reminder-qty">Quantidade</label>
+            <input id="reminder-qty" class="input" type="number" min="1" @bind="_quantity" />
+        </div>
+
+        @if (_error is not null)
+        {
+            <p class="text-over" role="alert">@_error</p>
+        }
+
+        <IconButton Icon="@AppIcons.Reminder"
+                    Label="Adicionar lembrete"
+                    CssClass="btn btn-primary btn-block btn-icon"
+                    OnClick="AddReminderAsync" />
+    </div>
+
+    <IconLink Href="" Icon="@AppIcons.Back" Label="Voltar à compra" CssClass="btn btn-outline btn-block btn-icon icon-link icon-back" />
+}
+</PageLayout>
+
+@code {
+    private bool _loaded;
+    private string _searchName = string.Empty;
+    private string _quickNote = string.Empty;
+    private string _extraNote = string.Empty;
+    private int _quantity = 1;
+    private string? _error;
+    private Guid? _selectedProductId;
+    private IReadOnlyList<ReminderLineView> _lines = [];
+
+    [Inject]
+    public ShoppingReminderService Reminders { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Reminders.StateChanged += OnStateChanged;
+        await RefreshAsync();
+        _loaded = true;
+    }
+
+    private async Task RefreshAsync() => _lines = await Reminders.GetLinesAsync();
+
+    private static string FormatProductDetails(Product product)
+    {
+        var parts = new List<string>();
+        if (!string.IsNullOrWhiteSpace(product.Brand))
+        {
+            parts.Add(product.Brand);
+        }
+
+        if (product.QuantityValue is { } value)
+        {
+            parts.Add($"{value.ToString("0.##", MoneyFormat.Culture)}{product.QuantityUnit?.Label()}");
+        }
+
+        return string.Join(" · ", parts);
+    }
+
+    private Task OnSearchNameChanged(string name)
+    {
+        _searchName = name;
+        _selectedProductId = null;
+        return Task.CompletedTask;
+    }
+
+    private Task SelectProductAsync(Product product)
+    {
+        _selectedProductId = product.Id;
+        _searchName = product.Name;
+        _quickNote = string.Empty;
+        return Task.CompletedTask;
+    }
+
+    private async Task AddReminderAsync()
+    {
+        _error = null;
+        try
+        {
+            if (_selectedProductId is { } productId)
+            {
+                await Reminders.AddFromProductAsync(productId, _quantity, _extraNote);
+            }
+            else if (!string.IsNullOrWhiteSpace(_quickNote))
+            {
+                await Reminders.AddFromNoteAsync(_quickNote, _quantity, _extraNote);
+            }
+            else if (!string.IsNullOrWhiteSpace(_searchName))
+            {
+                await Reminders.AddFromNoteAsync(_searchName, _quantity, _extraNote);
+            }
+            else
+            {
+                _error = "Selecione um produto do catálogo ou digite uma nota rápida.";
+                return;
+            }
+
+            _searchName = string.Empty;
+            _quickNote = string.Empty;
+            _extraNote = string.Empty;
+            _quantity = 1;
+            _selectedProductId = null;
+            await RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+    }
+
+    private async Task RemoveAsync(Guid reminderId)
+    {
+        await Reminders.RemoveAsync(reminderId);
+        await RefreshAsync();
+    }
+
+    private async Task UpdateQtyAsync(Guid reminderId, ChangeEventArgs e)
+    {
+        if (!int.TryParse(e.Value?.ToString(), out var qty) || qty < 1)
+        {
+            return;
+        }
+
+        await Reminders.UpdateQuantityAsync(reminderId, qty);
+        await RefreshAsync();
+    }
+
+    private void OnStateChanged() => InvokeAsync(async () =>
+    {
+        await RefreshAsync();
+        StateHasChanged();
+    });
+
+    public void Dispose() => Reminders.StateChanged -= OnStateChanged;
+}

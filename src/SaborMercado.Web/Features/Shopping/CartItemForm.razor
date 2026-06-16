@@ -1,8 +1,14 @@
 @using SaborMercado.Web.Domain.Catalog
 @using SaborMercado.Web.Features.Catalog
+@using SaborMercado.Web.Features.Voice
 
 <div class="card">
-    <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.New)" Title="@(IsEdit ? "Editar item" : "Adicionar item")" />
+    <div class="card-header-row">
+        <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.New)" Title="@(IsEdit ? "Editar item" : "Adicionar item")" />
+        <VoiceInputButton CssClass="btn btn-outline btn-icon voice-input-btn"
+                          ParseUtterance="true"
+                          OnParsed="ApplyVoiceAsync" />
+    </div>
 
     <div class="field">
         <label for="item-name">Produto *</label>
@@ -92,6 +98,41 @@
         {
             Model.UnitPrice = lastPrice.Price;
         }
+    }
+
+    private Task ApplyVoiceAsync(VoiceParsedFields parsed)
+    {
+        if (!string.IsNullOrWhiteSpace(parsed.Name))
+        {
+            Model.Name = parsed.Name;
+        }
+
+        if (!string.IsNullOrWhiteSpace(parsed.Brand))
+        {
+            Model.Brand = parsed.Brand;
+        }
+
+        if (parsed.QuantityValue is > 0m)
+        {
+            Model.QuantityValue = parsed.QuantityValue;
+        }
+
+        if (parsed.QuantityUnit is not null)
+        {
+            Model.QuantityUnit = parsed.QuantityUnit;
+        }
+
+        if (parsed.UnitPrice is >= 0m)
+        {
+            Model.UnitPrice = parsed.UnitPrice;
+        }
+
+        if (parsed.Quantity is > 0)
+        {
+            Model.Quantity = parsed.Quantity.Value;
+        }
+
+        return Task.CompletedTask;
     }
 
     private async Task SaveAsync()

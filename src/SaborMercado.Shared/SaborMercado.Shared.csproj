@@ -6,4 +6,17 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="StarterCatalog\starter-catalog.pt-BR.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>data\starter-catalog.pt-BR.json</TargetPath>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="SyncStarterCatalog" BeforeTargets="BeforeBuild">
+    <Copy SourceFiles="$(MSBuildThisFileDirectory)..\..\data\starter-catalog.pt-BR.json"
+          DestinationFiles="$(MSBuildThisFileDirectory)StarterCatalog\starter-catalog.pt-BR.json"
+          SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

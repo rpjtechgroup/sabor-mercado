@@ -12,6 +12,7 @@ public partial class ShoppingPage : IDisposable
     private bool _showSummary;
     private bool _confirmingAbandon;
     private bool _canExportCsv;
+    private int _reminderCount;
     private CartItemFormModel? _itemForm;
     private Guid? _editingItemId;
 
@@ -24,12 +25,20 @@ public partial class ShoppingPage : IDisposable
     [Inject]
     public DownloadInterop Download { get; set; } = default!;
 
+    [Inject]
+    public ShoppingReminderService Reminders { get; set; } = default!;
+
+    private string ReminderLinkLabel =>
+        _reminderCount > 0 ? $"Lembretes ({_reminderCount})" : "Lembretes";
+
     protected override async Task OnInitializedAsync()
     {
         Shopping.StateChanged += OnStateChanged;
         Account.StateChanged += OnStateChanged;
+        Reminders.StateChanged += OnStateChanged;
         await Shopping.InitializeAsync();
         await Account.InitializeAsync();
+        _reminderCount = await Reminders.GetCountAsync();
         RefreshExportFlag();
         _loaded = true;
     }
@@ -98,6 +107,7 @@ public partial class ShoppingPage : IDisposable
         _showSummary = false;
         CloseItemForm();
         _confirmingAbandon = false;
+        _reminderCount = await Reminders.GetCountAsync();
     }
 
     private void StartNew() => _showSummary = false;
@@ -121,12 +131,17 @@ public partial class ShoppingPage : IDisposable
     private void OnStateChanged()
     {
         RefreshExportFlag();
+        _ = RefreshReminderCountAsync();
         InvokeAsync(StateHasChanged);
     }
+
+    private async Task RefreshReminderCountAsync() =>
+        _reminderCount = await Reminders.GetCountAsync();
 
     public void Dispose()
     {
         Shopping.StateChanged -= OnStateChanged;
         Account.StateChanged -= OnStateChanged;
+        Reminders.StateChanged -= OnStateChanged;
     }
 }

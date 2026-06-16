@@ -40,12 +40,18 @@ builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddScoped<IndexedDbInterop>();
 
 builder.Services.AddScoped<LocalStorageInterop>();
+builder.Services.AddScoped<ILocalStorageInterop>(sp => sp.GetRequiredService<LocalStorageInterop>());
 
 builder.Services.AddScoped<ImageCompressInterop>();
 
 builder.Services.AddScoped<DownloadInterop>();
 
 builder.Services.AddScoped<GeolocationInterop>();
+
+builder.Services.AddScoped<ISpeechRecognitionService, SpeechRecognitionInterop>();
+builder.Services.AddScoped<SpeechRecognitionInterop>();
+
+builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"] ?? "http://localhost:5280";
 
@@ -77,9 +83,15 @@ builder.Services.AddScoped<StoreService>();
 
 builder.Services.AddScoped<CatalogService>();
 
+builder.Services.AddScoped<StarterCatalogBootstrapService>();
+
 builder.Services.AddScoped<IShoppingPatternStore, IndexedDbShoppingPatternStore>();
 
 builder.Services.AddScoped<ShoppingPatternService>();
+
+builder.Services.AddScoped<IShoppingReminderStore, IndexedDbShoppingReminderStore>();
+
+builder.Services.AddScoped<ShoppingReminderService>();
 
 builder.Services.AddScoped<ShoppingService>();
 

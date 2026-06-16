@@ -17,6 +17,8 @@ sabormercado-*.tar.gz
 .env
 appsettings.*.local.json
 *.pfx
+chaves/
+src/SaborMercado.Shared/StarterCatalog/starter-catalog.pt-BR.json
 
 # SO / editores
 .DS_Store

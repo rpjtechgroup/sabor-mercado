@@ -45,6 +45,9 @@ outro módulo.
   `startedAt`, `finishedAt?`, `status (Active|Finished|Abandoned)`.
 - **CartItem**: `id`, `sessionId`, `productSnapshot` (nome, marca, volume,
   unidade), `unitPrice`, `quantity`, `source (Ocr|Manual|Catalog)`, `addedAt`.
+- **ShoppingReminder**: `id`, `productId?`, `displayName`, `note?`, `quantity`,
+  `createdAt`. Notas para a próxima compra esporádica; consumidas ao iniciar a
+  sessão e restauradas se a compra for abandonada.
 - **BudgetAlertState**: último alerta emitido por sessão (evita repetição).
 
 Invariantes:
@@ -53,10 +56,11 @@ Invariantes:
   `status-messages.md`).
 
 ### Catalog (cliente)
-- **Store** (raiz): `id`, `name`, `city?`, `state?`, `address?`,
+- **Store** (raiz): `id`, `name`, `starterKey?`, `city?`, `state?`, `address?`,
   `latitude?`, `longitude?`, `createdAt`. Cadastro prévio obrigatório antes
-  de vincular produtos e preços.
-- **Product** (raiz): `id`, `name`, `brand?`, `quantityValue?`,
+  de vincular produtos e preços. `starterKey` identifica itens importados do
+  catálogo sugerido (`data/starter-catalog.pt-BR.json`).
+- **Product** (raiz): `id`, `name`, `starterKey?`, `brand?`, `quantityValue?`,
   `quantityUnit? (g|kg|ml|l|un)`, `ean?`, `category?`, `notes?`, `storeId`,
   `createdAt`.
 - **PriceRecord**: `productId`, `price`, `storeId`, `marketName?`

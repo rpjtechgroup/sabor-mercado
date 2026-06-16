@@ -2,6 +2,7 @@
 @implements IDisposable
 @inject UiPreferencesState UiPrefs
 @inject IPreferencesStore Preferences
+@inject StarterCatalogBootstrapService StarterCatalog
 
 <div class="app-shell @(UiPrefs.ShowIconLabels ? "app-shell--labels" : "app-shell--icons-only")">
     <ToastHost />
@@ -18,6 +19,7 @@
     {
         await UiPrefs.InitializeAsync(Preferences);
         UiPrefs.Changed += OnUiPrefsChanged;
+        await StarterCatalog.TryImportIfNeededAsync();
     }
 
     private void OnUiPrefsChanged() => InvokeAsync(StateHasChanged);

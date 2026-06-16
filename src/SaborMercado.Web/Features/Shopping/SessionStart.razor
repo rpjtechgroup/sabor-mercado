@@ -27,6 +27,14 @@
     else
     {
         <p class="muted">Defina uma meta para receber alertas durante a compra. Os dois campos são opcionais.</p>
+        <p class="muted">Lembretes anotados serão adicionados ao carrinho ao iniciar a compra.</p>
+        @if (ReminderCount > 0)
+        {
+            <IconLink Href="lembretes"
+                      Icon="@AppIcons.Reminder"
+                      Label="@($"Gerenciar lembretes ({ReminderCount})")"
+                      CssClass="btn btn-outline btn-block btn-icon icon-link" />
+        }
 
         <div class="field">
             <label for="budget">Quanto pretende gastar?</label>
@@ -62,6 +70,9 @@
 
     [Parameter]
     public decimal? SuggestedBudget { get; set; }
+
+    [Parameter]
+    public int ReminderCount { get; set; }
 
     [Parameter]
     public EventCallback<SessionStartRequest> OnStart { get; set; }

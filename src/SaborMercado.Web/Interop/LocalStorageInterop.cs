@@ -2,7 +2,7 @@ using Microsoft.JSInterop;
 
 namespace SaborMercado.Web.Interop;
 
-public sealed class LocalStorageInterop(IJSRuntime jsRuntime)
+public sealed class LocalStorageInterop(IJSRuntime jsRuntime) : ILocalStorageInterop
 {
     public ValueTask SetItemAsync(string key, string value) =>
         jsRuntime.InvokeVoidAsync("localStorage.setItem", key, value);

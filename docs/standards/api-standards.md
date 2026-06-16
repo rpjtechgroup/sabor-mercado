@@ -35,6 +35,7 @@
 | Método/rota                          | Módulo        | Descrição                                  | Auth      |
 |--------------------------------------|---------------|--------------------------------------------|-----------|
 | `POST /api/v1/recognitions`          | Recognition   | Foto → `RecognitionResult`                 | opcional* |
+| `GET  /api/v1/starter-catalog`       | SharedCatalog | Catálogo curado inicial (JSON)               | —         |
 | `POST /api/v1/price-observations`    | SharedCatalog | Contribuição anonimizada → `202 Accepted`  | requerida |
 | `GET  /api/v1/shared-products?query=`| SharedCatalog | Busca no catálogo colaborativo             | premium   |
 | `GET  /api/v1/shared-products/{id}/markets` | SharedCatalog | Comparação de preços por mercado    | premium   |

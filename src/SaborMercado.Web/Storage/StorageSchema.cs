@@ -4,7 +4,7 @@ public static class StorageSchema
 {
     public const string DatabaseName = "sabor-mercado";
 
-    public const int DatabaseVersion = 4;
+    public const int DatabaseVersion = 5;
 
     
     public const int CurrentSchemaVersion = 1;
@@ -19,6 +19,8 @@ public static class StorageSchema
     public const string ShoppingPatternsStore = "shoppingPatterns";
 
     public const string StoresStore = "stores";
+
+    public const string ShoppingRemindersStore = "shoppingReminders";
 
     public static readonly Guid DefaultPatternId = Guid.Parse("00000000-0000-4000-8000-000000000001");
 }

@@ -54,6 +54,12 @@ public sealed class IndexedDbInterop(IJSRuntime jsRuntime) : IAsyncDisposable
         await module.InvokeVoidAsync("removeAllByIndex", storeName, indexName, value);
     }
 
+    public async ValueTask ClearAsync(string storeName)
+    {
+        var module = await GetModuleAsync();
+        await module.InvokeVoidAsync("clear", storeName);
+    }
+
     public async ValueTask DisposeAsync()
     {
         if (_module is not null)

@@ -40,6 +40,24 @@ public sealed class StoreService(IStoreStore store, ICatalogStore catalogStore, 
         NotifyStateChanged();
     }
 
+    public async Task ReloadAsync()
+    {
+        try
+        {
+            var storesList = await store.GetAllStoresAsync();
+            _stores.Clear();
+            _stores.AddRange(storesList.OrderBy(s => s.Name, StringComparer.Create(MoneyFormat.Culture, CompareOptions.IgnoreCase)));
+            StorageUnavailable = false;
+        }
+        catch
+        {
+            StorageUnavailable = true;
+        }
+
+        _initialized = true;
+        NotifyStateChanged();
+    }
+
     public Store? GetStore(Guid storeId) => _stores.FirstOrDefault(s => s.Id == storeId);
 
     public string? GetStoreName(Guid? storeId)

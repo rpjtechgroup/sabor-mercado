@@ -3,6 +3,7 @@ using SaborMercado.Web.Domain.Shopping;
 using SaborMercado.Web.Domain.Status;
 using SaborMercado.Web.Features.Catalog;
 using SaborMercado.Web.Features.Shopping;
+using SaborMercado.Web.Shared;
 using SaborMercado.Web.Storage;
 using SaborMercado.Web.Tests.Fakes;
 
@@ -16,6 +17,7 @@ public class ShoppingServiceTests
     private readonly InMemoryCatalogStore _catalogStore = new();
     private readonly InMemoryStoreStore _storeStore = new();
     private readonly InMemoryShoppingPatternStore _patternStore = new();
+    private readonly InMemoryShoppingReminderStore _reminderStore = new();
     private readonly InMemoryPreferencesStore _preferences = new();
     private readonly FixedTimeProvider _clock = new(T0);
 
@@ -29,7 +31,9 @@ public class ShoppingServiceTests
         var stores = new StoreService(_storeStore, _catalogStore, _clock);
         var catalog = new CatalogService(_catalogStore, stores, _clock);
         var patterns = new ShoppingPatternService(_patternStore, catalog, _clock);
-        return new ShoppingService(_store, _preferences, catalog, stores, patterns, _clock);
+        var reminders = new ShoppingReminderService(_reminderStore, catalog, _clock);
+        var toast = new ToastService(_clock);
+        return new ShoppingService(_store, _preferences, catalog, stores, patterns, reminders, toast, _clock);
     }
 
     private static ProductSnapshot Snapshot(string name = "Óleo de Soja Liza") =>
@@ -276,7 +280,16 @@ public class ShoppingServiceTests
         await catalog.AddPriceRecordAsync(product.Id, 8.50m, CatalogTestStores.StoreAId);
         await patterns.AddProductAsync(product.Id, defaultQuantity: 2);
 
-        var service = new ShoppingService(_store, _preferences, catalog, stores, patterns, _clock);
+        var reminders = new ShoppingReminderService(_reminderStore, catalog, _clock);
+        var service = new ShoppingService(
+            _store,
+            _preferences,
+            catalog,
+            stores,
+            patterns,
+            reminders,
+            new ToastService(_clock),
+            _clock);
         await service.InitializeAsync();
         await service.StartSessionAsync(SessionKind.Monthly, null, CatalogTestStores.StoreAId);
 
@@ -296,6 +309,103 @@ public class ShoppingServiceTests
         Assert.Equal(SessionKind.Sporadic, service.CurrentSession?.Kind);
         Assert.Equal(150m, service.CurrentSession?.BudgetAmount);
         Assert.Equal(StatusCodes.BudgetSet, service.LastMessage?.Code);
+    }
+
+    [Fact]
+    public async Task StartSporadicSession_PrefillsFromReminders()
+    {
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
+        var patterns = new ShoppingPatternService(_patternStore, catalog, _clock);
+        var reminders = new ShoppingReminderService(_reminderStore, catalog, _clock);
+        var toast = new ToastService(_clock);
+        var product = await catalog.CreateProductAsync(new Product
+        {
+            Name = "Arroz",
+            StoreId = CatalogTestStores.StoreAId,
+        });
+        await catalog.AddPriceRecordAsync(product.Id, 12m, CatalogTestStores.StoreAId);
+        await reminders.AddFromProductAsync(product.Id, quantity: 2);
+        await reminders.AddFromNoteAsync("Detergente", quantity: 1);
+
+        var service = new ShoppingService(_store, _preferences, catalog, stores, patterns, reminders, toast, _clock);
+        await service.InitializeAsync();
+        await service.StartSessionAsync(SessionKind.Sporadic, 200m, CatalogTestStores.StoreAId);
+
+        Assert.Equal(2, service.Items.Count);
+        Assert.Contains(service.Items, i => i.ProductSnapshot.Name == "Arroz" && i.Quantity == 2);
+        Assert.Contains(service.Items, i => i.ProductSnapshot.Name == "Detergente");
+        Assert.Empty(await reminders.GetAllAsync());
+    }
+
+    [Fact]
+    public async Task StartMonthlySession_DoesNotConsumeReminders()
+    {
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
+        var patterns = new ShoppingPatternService(_patternStore, catalog, _clock);
+        var reminders = new ShoppingReminderService(_reminderStore, catalog, _clock);
+        var toast = new ToastService(_clock);
+        await reminders.AddFromNoteAsync("Sabão", quantity: 1);
+
+        var service = new ShoppingService(_store, _preferences, catalog, stores, patterns, reminders, toast, _clock);
+        await service.InitializeAsync();
+        await service.StartSessionAsync(SessionKind.Monthly, null, CatalogTestStores.StoreAId);
+
+        Assert.Empty(service.Items);
+        Assert.Single(await reminders.GetAllAsync());
+    }
+
+    [Fact]
+    public async Task AbandonSporadicSession_RestoresConsumedReminders()
+    {
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
+        var reminders = new ShoppingReminderService(_reminderStore, catalog, _clock);
+        await reminders.AddFromNoteAsync("Café", quantity: 1);
+
+        var fullService = new ShoppingService(
+            _store,
+            _preferences,
+            catalog,
+            stores,
+            new ShoppingPatternService(_patternStore, catalog, _clock),
+            reminders,
+            new ToastService(_clock),
+            _clock);
+
+        await fullService.InitializeAsync();
+        await fullService.StartSessionAsync(SessionKind.Sporadic, null, CatalogTestStores.StoreAId);
+        Assert.Empty(await reminders.GetAllAsync());
+
+        await fullService.AbandonSessionAsync();
+
+        Assert.Single(await reminders.GetAllAsync());
+    }
+
+    [Fact]
+    public async Task FinishSporadicSession_DoesNotRestoreReminders()
+    {
+        var stores = new StoreService(_storeStore, _catalogStore, _clock);
+        var catalog = new CatalogService(_catalogStore, stores, _clock);
+        var reminders = new ShoppingReminderService(_reminderStore, catalog, _clock);
+        await reminders.AddFromNoteAsync("Café", quantity: 1);
+
+        var service = new ShoppingService(
+            _store,
+            _preferences,
+            catalog,
+            stores,
+            new ShoppingPatternService(_patternStore, catalog, _clock),
+            reminders,
+            new ToastService(_clock),
+            _clock);
+
+        await service.InitializeAsync();
+        await service.StartSessionAsync(SessionKind.Sporadic, null, CatalogTestStores.StoreAId);
+        await service.FinishSessionAsync();
+
+        Assert.Empty(await reminders.GetAllAsync());
     }
 
     

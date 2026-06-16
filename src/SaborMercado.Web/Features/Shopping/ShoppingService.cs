@@ -2,6 +2,7 @@ using SaborMercado.Web.Domain;
 using SaborMercado.Web.Domain.Shopping;
 using SaborMercado.Web.Domain.Status;
 using SaborMercado.Web.Features.Catalog;
+using SaborMercado.Web.Shared;
 using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Shopping;
@@ -12,9 +13,12 @@ public sealed class ShoppingService(
     CatalogService catalog,
     StoreService stores,
     ShoppingPatternService patterns,
+    ShoppingReminderService reminders,
+    ToastService toast,
     TimeProvider clock)
 {
     private readonly List<CartItem> _items = [];
+    private readonly List<ShoppingReminder> _lastConsumedReminders = [];
     private bool _initialized;
     private TimeSpan? _averageSessionDuration;
 
@@ -128,7 +132,14 @@ public sealed class ShoppingService(
         }
         else
         {
+            var added = await PrefillFromRemindersAsync(session);
             Evaluate(CartMutation.SessionStarted);
+            if (added > 0)
+            {
+                toast.Show(
+                    $"{added} item(ns) dos seus lembretes foram adicionados ao carrinho.",
+                    ToastSeverity.Success);
+            }
         }
 
         await PersistSessionAsync();
@@ -169,6 +180,56 @@ public sealed class ShoppingService(
             _items.Add(item);
             await PersistItemAsync(item);
         }
+    }
+
+    private async Task<int> PrefillFromRemindersAsync(ShoppingSession session)
+    {
+        await catalog.InitializeAsync();
+        var consumed = await reminders.ConsumeAllAsync();
+        _lastConsumedReminders.Clear();
+        _lastConsumedReminders.AddRange(consumed);
+
+        var added = 0;
+        foreach (var reminder in consumed)
+        {
+            ProductSnapshot snapshot;
+            decimal unitPrice;
+            CartItemSource source;
+
+            if (reminder.ProductId is { } productId)
+            {
+                var product = catalog.GetProduct(productId);
+                if (product is null)
+                {
+                    continue;
+                }
+
+                snapshot = ProductSnapshot.FromProduct(product);
+                var lastPrice = await catalog.GetLastKnownPriceAsync(productId);
+                unitPrice = lastPrice?.Price ?? 0m;
+                source = CartItemSource.Catalog;
+            }
+            else
+            {
+                snapshot = new ProductSnapshot(reminder.DisplayName, null, null, null);
+                unitPrice = 0m;
+                source = CartItemSource.Manual;
+            }
+
+            var item = await CreateCartItemAsync(
+                session,
+                snapshot,
+                unitPrice,
+                reminder.Quantity,
+                source,
+                recordPriceInCatalog: unitPrice > 0m);
+
+            _items.Add(item);
+            await PersistItemAsync(item);
+            added++;
+        }
+
+        return added;
     }
 
     public async Task AddItemAsync(
@@ -296,6 +357,7 @@ public sealed class ShoppingService(
         LastFinishedSession = session;
         CurrentSession = null;
         _items.Clear();
+        _lastConsumedReminders.Clear();
         NotifyStateChanged();
     }
 
@@ -306,6 +368,12 @@ public sealed class ShoppingService(
         
         session.Status = SessionStatus.Abandoned;
         session.FinishedAt = clock.GetUtcNow();
+
+        if (_lastConsumedReminders.Count > 0)
+        {
+            await reminders.RestoreAllAsync(_lastConsumedReminders);
+            _lastConsumedReminders.Clear();
+        }
 
         await PersistSessionAsync();
         CurrentSession = null;
