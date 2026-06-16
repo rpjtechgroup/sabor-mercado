@@ -4,12 +4,7 @@
 @inject IConfiguration Configuration
 @inject AccountService Account
 
-<div id="@_elementId" class="google-signin-host"></div>
-
-@if (!string.IsNullOrEmpty(_error))
-{
-    <p class="text-danger" role="alert">@_error</p>
-}
+<div id="@_elementId" class="google-signin-host btn-block"></div>
 
 @code {
     [Parameter]
@@ -17,7 +12,6 @@
 
     private readonly string _elementId = $"google-btn-{Guid.NewGuid():N}";
     private bool _rendered;
-    private string? _error;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -35,24 +29,20 @@
         _rendered = await GoogleSignIn.RenderButtonAsync(_elementId, clientId, this);
         if (!_rendered)
         {
-            _error = "Não foi possível carregar o login com Google.";
-            StateHasChanged();
+            await OnError.InvokeAsync("Não foi possível carregar o login com Google.");
         }
     }
 
     [JSInvokable]
     public async Task OnGoogleCredential(string credential)
     {
-        _error = null;
         try
         {
             await Account.LoginWithGoogleAsync(credential);
         }
         catch (AccountException ex)
         {
-            _error = ex.Message;
             await OnError.InvokeAsync(ex.Message);
-            await InvokeAsync(StateHasChanged);
         }
     }
 

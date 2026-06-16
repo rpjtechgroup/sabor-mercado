@@ -41,6 +41,10 @@
                         OnClick="SubmitAuthAsync" />
             <p class="auth-divider muted">ou</p>
             <GoogleSignInButton OnError="OnGoogleError" />
+            @if (!string.IsNullOrEmpty(_googleError))
+            {
+                <p class="text-danger google-auth-error" role="alert">@_googleError</p>
+            }
             <IconButton Icon="@(_registerMode ? AppIcons.Login : AppIcons.New)"
                         Label="@(_registerMode ? "Já tenho conta" : "Criar conta gratuita")"
                         CssClass="btn btn-outline btn-block btn-icon"
@@ -149,6 +153,7 @@
     private string _email = string.Empty;
     private string _password = string.Empty;
     private string? _error;
+    private string? _googleError;
     private string? _unlockMessage;
     private List<AchievementDto> _achievements = [];
 
@@ -183,9 +188,14 @@
     {
         _registerMode = !_registerMode;
         _error = null;
+        _googleError = null;
     }
 
-    private void OnGoogleError(string message) => _error = message;
+    private void OnGoogleError(string message)
+    {
+        _googleError = message;
+        _error = null;
+    }
 
     private void AskDeleteAccount() => _confirmingDelete = true;
 
@@ -193,6 +203,7 @@
     {
         _busy = true;
         _error = null;
+        _googleError = null;
         try
         {
             if (_registerMode)

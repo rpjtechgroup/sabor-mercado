@@ -86,12 +86,33 @@ public sealed class SaborMercadoApiClient(HttpClient httpClient, IPreferencesSto
         try
         {
             var problem = await ReadJsonAsync<ApiProblemDetails>(response, cancellationToken);
-            return problem?.Detail ?? problem?.Title;
+            if (!string.IsNullOrWhiteSpace(problem?.Detail))
+            {
+                return problem.Detail;
+            }
+
+            if (!string.IsNullOrWhiteSpace(problem?.Title))
+            {
+                return problem.Title;
+            }
         }
         catch
         {
-            return response.ReasonPhrase;
+            // fall through to status-based message
         }
+
+        return response.StatusCode switch
+        {
+            System.Net.HttpStatusCode.NotFound =>
+                "Serviço temporariamente indisponível. Atualize a página e tente novamente.",
+            System.Net.HttpStatusCode.Unauthorized =>
+                "Não foi possível autenticar. Verifique suas credenciais.",
+            System.Net.HttpStatusCode.ServiceUnavailable =>
+                "Serviço indisponível no momento. Tente novamente em instantes.",
+            _ => string.IsNullOrWhiteSpace(response.ReasonPhrase)
+                ? "Erro ao comunicar com o servidor."
+                : response.ReasonPhrase,
+        };
     }
 
     private sealed class ApiProblemDetails

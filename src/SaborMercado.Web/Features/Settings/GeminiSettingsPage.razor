@@ -1,7 +1,6 @@
 @page "/configuracoes"
 @inject IPreferencesStore Preferences
 @inject NavigationManager Navigation
-@inject SupportDialogState SupportDialog
 
 <PageTitle>Sabor Mercado — Configurações</PageTitle>
 
@@ -12,14 +11,6 @@
             e desbloquear exportação CSV e outros recursos premium.
         </p>
         <IconLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-    </SettingsSection>
-
-    <SettingsSection Id="support-heading" Icon="@AppIcons.Help" Title="Ajuda e suporte">
-        <p class="muted">
-            Reporte erros, envie sugestões ou peça ajuda. Usamos o botão flutuante em qualquer tela
-            ou você pode abrir o formulário aqui.
-        </p>
-        <IconButton Icon="@AppIcons.Help" Label="Fale conosco" CssClass="btn btn-secondary btn-block btn-icon" OnClick="OpenSupport" />
     </SettingsSection>
 
     <SettingsSection Id="gemini-heading" Icon="@AppIcons.Photo" Title="Leitura por foto (Gemini)">
@@ -90,6 +81,4 @@
         _hasStoredKey = false;
         _message = "Chave removida.";
     }
-
-    private void OpenSupport() => SupportDialog.Open();
 }

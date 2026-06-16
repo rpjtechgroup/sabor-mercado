@@ -56,15 +56,24 @@ export async function renderButton(container, clientId, dotNetRef) {
         cancel_on_tap_outside: true,
     });
 
-    google.accounts.id.renderButton(element, {
-        type: 'standard',
-        theme: 'outline',
-        size: 'large',
-        text: 'signin_with',
-        shape: 'rectangular',
-        logo_alignment: 'left',
-        width: Math.min(400, element.clientWidth || 320),
-    });
+    const paintButton = () => {
+        const width = Math.floor(
+            element.getBoundingClientRect().width
+            || element.parentElement?.clientWidth
+            || 320);
+
+        google.accounts.id.renderButton(element, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'signin_with',
+            shape: 'pill',
+            logo_alignment: 'left',
+            width: Math.max(240, width),
+        });
+    };
+
+    requestAnimationFrame(() => requestAnimationFrame(paintButton));
 
     return true;
 }

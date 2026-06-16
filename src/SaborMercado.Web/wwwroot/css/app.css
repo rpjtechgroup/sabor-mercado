@@ -863,9 +863,20 @@ textarea.input {
 }
 
 .google-signin-host {
+    width: 100%;
+    display: block;
+    min-height: 3rem;
+    margin: 0.25rem 0 0.5rem;
+}
+
+.google-signin-host > div {
+    width: 100% !important;
     display: flex;
     justify-content: center;
-    min-height: 2.75rem;
+}
+
+.google-auth-error {
+    margin-top: 0.35rem;
 }
 
 .support-fab {
