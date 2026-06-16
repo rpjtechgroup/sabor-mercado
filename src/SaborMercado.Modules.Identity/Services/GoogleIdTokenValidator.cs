@@ -43,5 +43,9 @@ public sealed class GoogleIdTokenValidator(IOptions<GoogleAuthOptions> options) 
         {
             throw new AuthException(AuthErrorCodes.GoogleAuthFailed, "Token do Google inválido ou expirado.");
         }
+        catch (Exception)
+        {
+            throw new AuthException(AuthErrorCodes.GoogleAuthFailed, "Token do Google inválido ou expirado.");
+        }
     }
 }
