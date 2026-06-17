@@ -3,6 +3,7 @@ using SaborMercado.Web.Contracts.Rewards;
 using SaborMercado.Web.Domain.Shopping;
 using SaborMercado.Web.Features.Account;
 using SaborMercado.Web.Interop;
+using SaborMercado.Web.Shared;
 
 namespace SaborMercado.Web.Features.Shopping;
 
@@ -24,6 +25,9 @@ public partial class ShoppingPage : IDisposable
 
     [Inject]
     public DownloadInterop Download { get; set; } = default!;
+
+    [Inject]
+    public ToastService Toast { get; set; } = default!;
 
     [Inject]
     public ShoppingReminderService Reminders { get; set; } = default!;
@@ -73,16 +77,23 @@ public partial class ShoppingPage : IDisposable
 
     private async Task SaveItemAsync(CartItemFormModel model)
     {
-        if (_editingItemId is { } itemId)
+        try
         {
-            await Shopping.UpdateItemAsync(itemId, model.ToSnapshot(), model.UnitPrice!.Value, model.Quantity);
-        }
-        else
-        {
-            await Shopping.AddItemAsync(model.ToSnapshot(), model.UnitPrice!.Value, model.Quantity, CartItemSource.Manual);
-        }
+            if (_editingItemId is { } itemId)
+            {
+                await Shopping.UpdateItemAsync(itemId, model.ToSnapshot(), model.UnitPrice!.Value, model.Quantity);
+            }
+            else
+            {
+                await Shopping.AddItemAsync(model.ToSnapshot(), model.UnitPrice!.Value, model.Quantity, CartItemSource.Manual);
+            }
 
-        CloseItemForm();
+            CloseItemForm();
+        }
+        catch (InvalidOperationException ex)
+        {
+            Toast.Show(ex.Message, ToastSeverity.Danger);
+        }
     }
 
     private Task IncrementAsync(Guid itemId, int delta) => Shopping.IncrementQuantityAsync(itemId, delta);

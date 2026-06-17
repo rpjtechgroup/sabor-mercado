@@ -69,6 +69,7 @@ public sealed class ShoppingService(
 
             if (CurrentSession is not null)
             {
+                await ResolveSessionStoreIdAsync(CurrentSession);
                 var items = await store.GetItemsAsync(CurrentSession.Id);
                 _items.Clear();
                 _items.AddRange(items.OrderBy(i => i.AddedAt));
@@ -282,7 +283,8 @@ public sealed class ShoppingService(
 
         var item = RequireItem(itemId);
         var session = RequireActiveSession();
-        var product = await catalog.EnsureProductAsync(snapshot, session.StoreId);
+        var storeId = await ResolveSessionStoreIdAsync(session);
+        var product = await catalog.EnsureProductAsync(snapshot, storeId);
         item.ProductSnapshot = snapshot;
         item.ProductId = product.Id;
         item.UnitPrice = unitPrice;
@@ -291,7 +293,7 @@ public sealed class ShoppingService(
         await catalog.TouchPriceFromPurchaseAsync(
             product.Id,
             unitPrice,
-            session.StoreId,
+            storeId,
             clock.GetUtcNow());
 
         Evaluate(CartMutation.ItemUpdated);
@@ -483,6 +485,33 @@ public sealed class ShoppingService(
         }
     }
 
+    private async Task<Guid?> ResolveSessionStoreIdAsync(ShoppingSession session)
+    {
+        if (session.StoreId is { } existing && existing != Guid.Empty)
+        {
+            return existing;
+        }
+
+        await stores.InitializeAsync();
+
+        if (string.IsNullOrWhiteSpace(session.MarketName))
+        {
+            return null;
+        }
+
+        var matched = stores.Stores.FirstOrDefault(store =>
+            string.Equals(store.Name, session.MarketName, StringComparison.OrdinalIgnoreCase));
+
+        if (matched is null)
+        {
+            return null;
+        }
+
+        session.StoreId = matched.Id;
+        await PersistSessionAsync();
+        return matched.Id;
+    }
+
     private async Task<CartItem> CreateCartItemAsync(
         ShoppingSession session,
         ProductSnapshot snapshot,
@@ -491,13 +520,14 @@ public sealed class ShoppingService(
         CartItemSource source,
         bool recordPriceInCatalog = true)
     {
-        var product = await catalog.EnsureProductAsync(snapshot, session.StoreId);
+        var storeId = await ResolveSessionStoreIdAsync(session);
+        var product = await catalog.EnsureProductAsync(snapshot, storeId);
         if (recordPriceInCatalog)
         {
             await catalog.TouchPriceFromPurchaseAsync(
                 product.Id,
                 unitPrice,
-                session.StoreId,
+                storeId,
                 clock.GetUtcNow());
         }
 

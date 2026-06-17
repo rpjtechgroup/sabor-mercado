@@ -8,7 +8,7 @@
     }
     else
     {
-        <select id="@_inputId" class="input" @bind="SelectedStoreId">
+        <select id="@_inputId" class="input" value="@SelectedStoreId" @onchange="OnStoreChangedAsync">
             <option value="@Guid.Empty">@Placeholder</option>
             @foreach (var store in StoreService.Stores)
             {
@@ -35,12 +35,43 @@
     [Parameter]
     public EventCallback<Guid> SelectedStoreIdChanged { get; set; }
 
+    [Parameter]
+    public bool AutoSelectSingleStore { get; set; } = true;
+
     [Inject]
     public StoreService StoreService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
         await StoreService.InitializeAsync();
+        await TryAutoSelectSingleStoreAsync();
         _loaded = true;
+    }
+
+    private async Task OnStoreChangedAsync(ChangeEventArgs args)
+    {
+        if (!Guid.TryParse(args.Value?.ToString(), out var storeId))
+        {
+            storeId = Guid.Empty;
+        }
+
+        if (storeId == SelectedStoreId)
+        {
+            return;
+        }
+
+        SelectedStoreId = storeId;
+        await SelectedStoreIdChanged.InvokeAsync(storeId);
+    }
+
+    private async Task TryAutoSelectSingleStoreAsync()
+    {
+        if (!AutoSelectSingleStore || SelectedStoreId != Guid.Empty || StoreService.Stores.Count != 1)
+        {
+            return;
+        }
+
+        SelectedStoreId = StoreService.Stores[0].Id;
+        await SelectedStoreIdChanged.InvokeAsync(SelectedStoreId);
     }
 }

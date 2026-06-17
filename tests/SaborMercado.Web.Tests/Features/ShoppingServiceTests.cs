@@ -411,6 +411,33 @@ public class ShoppingServiceTests
     
 
     [Fact]
+    public async Task AddItem_WithoutStore_ThrowsForNewProduct()
+    {
+        var service = CreateService();
+        await service.InitializeAsync();
+        await service.StartSessionAsync(100m, null);
+
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+            () => service.AddItemAsync(new ProductSnapshot("Produto novo", null, null, null), 5m, 1, CartItemSource.Manual));
+
+        Assert.Contains("comércio", exception.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task AddItem_RestoresStoreIdFromMarketName_WhenMissingOnSession()
+    {
+        var service = CreateService();
+        await service.InitializeAsync();
+        await service.StartSessionAsync(100m, CatalogTestStores.StoreAId);
+        service.CurrentSession!.StoreId = null;
+
+        await service.AddItemAsync(new ProductSnapshot("Produto novo", null, null, null), 5m, 1, CartItemSource.Manual);
+
+        Assert.Equal(CatalogTestStores.StoreAId, service.CurrentSession!.StoreId);
+        Assert.Single(service.Items);
+    }
+
+    [Fact]
     public async Task StorageFailure_KeepsFlowInMemoryAndFlagsUnavailable()
     {
         var service = await StartedAsync(CreateService());

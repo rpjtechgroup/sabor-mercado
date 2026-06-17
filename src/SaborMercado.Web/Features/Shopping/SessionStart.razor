@@ -26,7 +26,8 @@
     }
     else
     {
-        <p class="muted">Defina uma meta para receber alertas durante a compra. Os dois campos são opcionais.</p>
+        <p class="muted">Defina uma meta para receber alertas durante a compra (opcional).</p>
+        <p class="muted">Selecione o comércio para registrar produtos novos no catálogo durante a compra.</p>
         <p class="muted">Lembretes anotados serão adicionados ao carrinho ao iniciar a compra.</p>
         @if (ReminderCount > 0)
         {
@@ -42,7 +43,7 @@
         </div>
     }
 
-    <StorePicker Label="Comércio" Placeholder="Opcional" @bind-SelectedStoreId="_storeId" />
+    <StorePicker Label="Comércio" @bind-SelectedStoreId="_storeId" />
 
     <IconButton Icon="@(_kind == SessionKind.Monthly ? AppIcons.Calendar : AppIcons.Play)"
                 Label="@(_kind == SessionKind.Monthly ? "Iniciar compra mensal" : "Começar compra")"
