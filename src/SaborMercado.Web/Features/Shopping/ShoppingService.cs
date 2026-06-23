@@ -175,8 +175,7 @@ public sealed class ShoppingService(
                 snapshot,
                 unitPrice,
                 patternItem.DefaultQuantity,
-                CartItemSource.Catalog,
-                recordPriceInCatalog: unitPrice > 0m);
+                CartItemSource.Catalog);
 
             _items.Add(item);
             await PersistItemAsync(item);
@@ -222,8 +221,7 @@ public sealed class ShoppingService(
                 snapshot,
                 unitPrice,
                 reminder.Quantity,
-                source,
-                recordPriceInCatalog: unitPrice > 0m);
+                source);
 
             _items.Add(item);
             await PersistItemAsync(item);
@@ -276,25 +274,38 @@ public sealed class ShoppingService(
         NotifyStateChanged();
     }
 
+    public async Task SetSessionStoreAsync(Guid? storeId)
+    {
+        var session = RequireActiveSession();
+        await stores.InitializeAsync();
+
+        if (storeId is null || storeId == Guid.Empty)
+        {
+            session.StoreId = null;
+            session.MarketName = null;
+        }
+        else
+        {
+            stores.RequireStore(storeId.Value);
+            session.StoreId = storeId.Value;
+            session.MarketName = stores.GetStoreName(storeId.Value);
+        }
+
+        await PersistSessionAsync();
+        NotifyStateChanged();
+    }
+
     public async Task UpdateItemAsync(Guid itemId, ProductSnapshot snapshot, decimal unitPrice, int quantity)
     {
         RequireActiveSession();
         ValidateItem(snapshot, unitPrice, quantity);
 
         var item = RequireItem(itemId);
-        var session = RequireActiveSession();
-        var storeId = await ResolveSessionStoreIdAsync(session);
-        var product = await catalog.EnsureProductAsync(snapshot, storeId);
+        var product = await catalog.EnsureProductAsync(snapshot);
         item.ProductSnapshot = snapshot;
         item.ProductId = product.Id;
         item.UnitPrice = unitPrice;
         item.Quantity = quantity;
-
-        await catalog.TouchPriceFromPurchaseAsync(
-            product.Id,
-            unitPrice,
-            storeId,
-            clock.GetUtcNow());
 
         Evaluate(CartMutation.ItemUpdated);
         await PersistItemAsync(item);
@@ -517,19 +528,10 @@ public sealed class ShoppingService(
         ProductSnapshot snapshot,
         decimal unitPrice,
         int quantity,
-        CartItemSource source,
-        bool recordPriceInCatalog = true)
+        CartItemSource source)
     {
-        var storeId = await ResolveSessionStoreIdAsync(session);
-        var product = await catalog.EnsureProductAsync(snapshot, storeId);
-        if (recordPriceInCatalog)
-        {
-            await catalog.TouchPriceFromPurchaseAsync(
-                product.Id,
-                unitPrice,
-                storeId,
-                clock.GetUtcNow());
-        }
+        var (storeId, storeName) = await ResolveStoreStampAsync(session);
+        var product = await catalog.EnsureProductAsync(snapshot);
 
         return new CartItem
         {
@@ -540,8 +542,22 @@ public sealed class ShoppingService(
             UnitPrice = unitPrice,
             Quantity = quantity,
             Source = source,
+            StoreId = storeId,
+            StoreName = storeName,
             AddedAt = clock.GetUtcNow(),
         };
+    }
+
+    private async Task<(Guid? StoreId, string? StoreName)> ResolveStoreStampAsync(ShoppingSession session)
+    {
+        var storeId = await ResolveSessionStoreIdAsync(session);
+        if (storeId is null || storeId == Guid.Empty)
+        {
+            return (null, null);
+        }
+
+        await stores.InitializeAsync();
+        return (storeId, stores.GetStoreName(storeId));
     }
 
     private void NotifyStateChanged() => StateChanged?.Invoke();

@@ -113,7 +113,20 @@ public class ShoppingServiceTests
 
         Assert.NotNull(service.Items[0].ProductId);
         Assert.Single(_catalogStore.Products);
-        Assert.NotEmpty(_catalogStore.PriceRecords);
+        Assert.Empty(_catalogStore.PriceRecords);
+        Assert.Equal(CatalogTestStores.DefaultId, service.Items[0].StoreId);
+        Assert.NotNull(service.Items[0].StoreName);
+    }
+
+    [Fact]
+    public async Task AddItem_StampsStoreOnCartItem_NotOnCatalogProduct()
+    {
+        var service = await StartedAsync(CreateService(), budget: 100m);
+        await service.AddItemAsync(Snapshot("Produto novo"), 5m, 1, CartItemSource.Manual);
+
+        var product = Assert.Single(_catalogStore.Products.Values);
+        Assert.Equal(Guid.Empty, product.StoreId);
+        Assert.Equal(CatalogTestStores.DefaultId, service.Items[0].StoreId);
     }
 
     [Fact]
@@ -411,30 +424,28 @@ public class ShoppingServiceTests
     
 
     [Fact]
-    public async Task AddItem_WithoutStore_ThrowsForNewProduct()
+    public async Task AddItem_WithoutStore_AllowsNewProductWithoutCatalogStore()
     {
         var service = CreateService();
         await service.InitializeAsync();
         await service.StartSessionAsync(100m, null);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => service.AddItemAsync(new ProductSnapshot("Produto novo", null, null, null), 5m, 1, CartItemSource.Manual));
+        await service.AddItemAsync(new ProductSnapshot("Produto novo", null, null, null), 5m, 1, CartItemSource.Manual);
 
-        Assert.Contains("comércio", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Null(service.Items[0].StoreId);
+        Assert.Null(service.Items[0].StoreName);
+        Assert.Equal(Guid.Empty, Assert.Single(_catalogStore.Products.Values).StoreId);
     }
 
     [Fact]
-    public async Task AddItem_RestoresStoreIdFromMarketName_WhenMissingOnSession()
+    public async Task SetSessionStore_UpdatesSessionForNewItems()
     {
-        var service = CreateService();
-        await service.InitializeAsync();
-        await service.StartSessionAsync(100m, CatalogTestStores.StoreAId);
-        service.CurrentSession!.StoreId = null;
+        var service = await StartedAsync(CreateService());
+        await service.SetSessionStoreAsync(CatalogTestStores.StoreBId);
+        await service.AddItemAsync(Snapshot("Item B"), 3m, 1, CartItemSource.Manual);
 
-        await service.AddItemAsync(new ProductSnapshot("Produto novo", null, null, null), 5m, 1, CartItemSource.Manual);
-
-        Assert.Equal(CatalogTestStores.StoreAId, service.CurrentSession!.StoreId);
-        Assert.Single(service.Items);
+        Assert.Equal(CatalogTestStores.StoreBId, service.CurrentSession?.StoreId);
+        Assert.Equal(CatalogTestStores.StoreBId, service.Items[0].StoreId);
     }
 
     [Fact]

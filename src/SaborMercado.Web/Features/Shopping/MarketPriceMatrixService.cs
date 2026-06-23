@@ -21,12 +21,12 @@ public sealed class MarketPriceMatrixService(IShoppingStore store, TimeProvider 
 
         foreach (var session in sessions)
         {
-            var market = string.IsNullOrWhiteSpace(session.MarketName) ? "—" : session.MarketName.Trim();
             var date = DateOnly.FromDateTime(session.FinishedAt!.Value.UtcDateTime);
             var items = await store.GetItemsAsync(session.Id);
 
             foreach (var item in items)
             {
+                var market = ResolveMarketName(item, session);
                 observations.Add((
                     ProductIdentity.GetLineKey(item.ProductId, item.ProductSnapshot),
                     item.ProductSnapshot.Name,
@@ -70,6 +70,16 @@ public sealed class MarketPriceMatrixService(IShoppingStore store, TimeProvider 
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(m => m, StringComparer.Create(MoneyFormat.Culture, CompareOptions.IgnoreCase))
             .ToList();
+
+    private static string ResolveMarketName(CartItem item, ShoppingSession session)
+    {
+        if (!string.IsNullOrWhiteSpace(item.StoreName))
+        {
+            return item.StoreName.Trim();
+        }
+
+        return string.IsNullOrWhiteSpace(session.MarketName) ? "—" : session.MarketName.Trim();
+    }
 
     private static string? FormatUnit(ProductSnapshot snapshot)
     {

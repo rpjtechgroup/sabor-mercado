@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SaborMercado.Api.Tests.Fakes;
+using SaborMercado.Api.Tests.Infrastructure;
 using SaborMercado.Modules.Recognition.Services;
 using SaborMercado.Shared.Auth;
 
@@ -14,18 +15,12 @@ public class PremiumGateEndpointTests : IClassFixture<WebApplicationFactory<Prog
     private readonly WebApplicationFactory<Program> _factory;
 
     public PremiumGateEndpointTests(WebApplicationFactory<Program> factory) =>
-        _factory = factory.WithWebHostBuilder(builder =>
-        {
-            var suffix = Guid.NewGuid().ToString("N");
-            builder.UseSetting("ConnectionStrings:Identity", $"Data Source=premium-id-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:SharedCatalog", $"Data Source=premium-cat-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:Rewards", $"Data Source=premium-rew-{suffix}.db");
+        _factory = factory.WithIsolatedSqlite("premium", builder =>
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<IGeminiVisionClient>();
                 services.AddSingleton<IGeminiVisionClient, StubGeminiVisionClient>();
-            });
-        });
+            }));
 
     [Fact]
     public async Task SearchSharedProducts_WithoutUnlock_ReturnsPremiumRequired()

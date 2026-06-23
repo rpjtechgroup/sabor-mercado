@@ -39,6 +39,10 @@ else if (Shopping.CurrentSession is null)
 else
 {
     <PageLayout Icon="@AppIcons.Shopping" Title="@(Shopping.CurrentSession.MarketName ?? "Compra em andamento")">
+        <StorePicker Label="Comércio desta compra"
+                     SelectedStoreId="_sessionStoreId"
+                     SelectedStoreIdChanged="OnSessionStoreChangedAsync"
+                     AutoSelectSingleStore="false" />
         @if (Shopping.CurrentSession.Kind == SessionKind.Sporadic)
         {
             <BudgetBar Total="@Shopping.Total" Budget="@Shopping.CurrentSession.BudgetAmount" />

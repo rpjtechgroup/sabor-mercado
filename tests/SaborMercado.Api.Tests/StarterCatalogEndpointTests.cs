@@ -1,5 +1,6 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using SaborMercado.Api.Tests.Infrastructure;
 using SaborMercado.Shared.StarterCatalog;
 
 namespace SaborMercado.Api.Tests;
@@ -9,7 +10,7 @@ public class StarterCatalogEndpointTests : IClassFixture<WebApplicationFactory<P
     private readonly WebApplicationFactory<Program> _factory;
 
     public StarterCatalogEndpointTests(WebApplicationFactory<Program> factory) =>
-        _factory = factory;
+        _factory = factory.WithIsolatedSqlite("starter");
 
     [Fact]
     public async Task GetStarterCatalog_ReturnsCuratedJson()

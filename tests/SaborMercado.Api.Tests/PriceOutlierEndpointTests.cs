@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SaborMercado.Api.Tests.Fakes;
+using SaborMercado.Api.Tests.Infrastructure;
 using SaborMercado.Modules.Recognition.Services;
 using SaborMercado.Shared.Auth;
 using SaborMercado.Shared.SharedCatalog;
@@ -16,18 +17,12 @@ public class PriceOutlierEndpointTests : IClassFixture<WebApplicationFactory<Pro
     private readonly WebApplicationFactory<Program> _factory;
 
     public PriceOutlierEndpointTests(WebApplicationFactory<Program> factory) =>
-        _factory = factory.WithWebHostBuilder(builder =>
-        {
-            var suffix = Guid.NewGuid().ToString("N");
-            builder.UseSetting("ConnectionStrings:Identity", $"Data Source=outlier-id-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:SharedCatalog", $"Data Source=outlier-cat-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:Rewards", $"Data Source=outlier-rew-{suffix}.db");
+        _factory = factory.WithIsolatedSqlite("outlier", builder =>
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<IGeminiVisionClient>();
                 services.AddSingleton<IGeminiVisionClient, StubGeminiVisionClient>();
-            });
-        });
+            }));
 
     [Fact]
     public async Task PostObservation_WithExtremePrice_ReturnsPriceOutlier()

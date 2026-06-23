@@ -121,13 +121,16 @@ public sealed class PurchaseHistoryService(IShoppingStore store, TimeProvider cl
         new(
             session.Id,
             purchaseDate,
-            session.MarketName,
+            ResolveMarketName(item, session),
             item.ProductSnapshot.Name,
             FormatUnit(item.ProductSnapshot),
             item.UnitPrice,
             null,
             PriceTrend.None,
             ProductIdentity.GetLineKey(item.ProductId, item.ProductSnapshot));
+
+    private static string? ResolveMarketName(CartItem item, ShoppingSession session) =>
+        !string.IsNullOrWhiteSpace(item.StoreName) ? item.StoreName : session.MarketName;
 
     private static string? FormatUnit(ProductSnapshot snapshot)
     {

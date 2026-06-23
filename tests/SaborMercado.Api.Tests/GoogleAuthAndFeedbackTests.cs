@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SaborMercado.Api.Tests.Fakes;
+using SaborMercado.Api.Tests.Infrastructure;
 using SaborMercado.Infrastructure.Email;
 using SaborMercado.Modules.Identity.Services;
 using SaborMercado.Modules.Recognition.Services;
@@ -17,12 +18,8 @@ public class GoogleAuthEndpointTests : IClassFixture<WebApplicationFactory<Progr
     private readonly WebApplicationFactory<Program> _factory;
 
     public GoogleAuthEndpointTests(WebApplicationFactory<Program> factory) =>
-        _factory = factory.WithWebHostBuilder(builder =>
+        _factory = factory.WithIsolatedSqlite("google", builder =>
         {
-            var suffix = Guid.NewGuid().ToString("N");
-            builder.UseSetting("ConnectionStrings:Identity", $"Data Source=google-id-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:SharedCatalog", $"Data Source=google-cat-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:Rewards", $"Data Source=google-rew-{suffix}.db");
             builder.UseSetting("GoogleAuth:ClientId", "test-client-id.apps.googleusercontent.com");
             builder.ConfigureServices(services =>
             {
@@ -69,12 +66,8 @@ public class FeedbackEndpointTests : IClassFixture<WebApplicationFactory<Program
     private readonly WebApplicationFactory<Program> _factory;
 
     public FeedbackEndpointTests(WebApplicationFactory<Program> factory) =>
-        _factory = factory.WithWebHostBuilder(builder =>
+        _factory = factory.WithIsolatedSqlite("feedback", builder =>
         {
-            var suffix = Guid.NewGuid().ToString("N");
-            builder.UseSetting("ConnectionStrings:Identity", $"Data Source=fb-id-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:SharedCatalog", $"Data Source=fb-cat-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:Rewards", $"Data Source=fb-rew-{suffix}.db");
             builder.UseSetting("Email:Host", "smtp.gmail.com");
             builder.UseSetting("Email:Port", "587");
             builder.UseSetting("Email:UserName", "test@example.com");

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SaborMercado.Api.Tests.Fakes;
+using SaborMercado.Api.Tests.Infrastructure;
 using SaborMercado.Modules.Recognition.Services;
 using SaborMercado.Shared.Auth;
 using SaborMercado.Shared.Community;
@@ -15,21 +16,13 @@ namespace SaborMercado.Api.Tests;
 
 public class CommunityTrustEndpointTests
 {
-    private WebApplicationFactory<Program> CreateFactory()
-    {
-        var suffix = Guid.NewGuid().ToString("N");
-        return new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
-        {
-            builder.UseSetting("ConnectionStrings:Identity", $"Data Source=trust-id-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:SharedCatalog", $"Data Source=trust-cat-{suffix}.db");
-            builder.UseSetting("ConnectionStrings:Rewards", $"Data Source=trust-rew-{suffix}.db");
+    private WebApplicationFactory<Program> CreateFactory() =>
+        ApiIntegrationFactory.Create("trust", builder =>
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<IGeminiVisionClient>();
                 services.AddSingleton<IGeminiVisionClient, StubGeminiVisionClient>();
-            });
-        });
-    }
+            }));
 
     [Fact]
     public async Task Vote_OnOtherUserObservation_UpdatesNetScore()

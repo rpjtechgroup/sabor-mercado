@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SaborMercado.Api.Tests.Fakes;
+using SaborMercado.Api.Tests.Infrastructure;
 using SaborMercado.Modules.Recognition.Services;
 using SaborMercado.Shared.Recognition;
 
@@ -14,7 +15,7 @@ public class RecognitionEndpointTests : IClassFixture<WebApplicationFactory<Prog
     private readonly WebApplicationFactory<Program> _factory;
 
     public RecognitionEndpointTests(WebApplicationFactory<Program> factory) =>
-        _factory = factory.WithWebHostBuilder(builder =>
+        _factory = factory.WithIsolatedSqlite("recognition", builder =>
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<IGeminiVisionClient>();

@@ -119,7 +119,19 @@ public class PurchaseHistoryServiceTests
             Status = SessionStatus.Finished,
         };
 
-    private void AddItem(Guid sessionId, ProductSnapshot snapshot, decimal price, int quantity)
+    [Fact]
+    public async Task GetSessionGrid_PrefersItemStoreSnapshotOverSession()
+    {
+        var session = FinishedSession(Now.AddDays(-1), "Mercado Sessão");
+        _store.Sessions[session.Id] = session;
+        AddItem(session.Id, new ProductSnapshot("Arroz", null, null, null), 5m, 1, storeName: "Mercado Item");
+
+        var row = Assert.Single(await CreateService().GetSessionGridAsync(session.Id));
+
+        Assert.Equal("Mercado Item", row.MarketName);
+    }
+
+    private void AddItem(Guid sessionId, ProductSnapshot snapshot, decimal price, int quantity, string? storeName = null)
     {
         var item = new CartItem
         {
@@ -128,6 +140,7 @@ public class PurchaseHistoryServiceTests
             ProductSnapshot = snapshot,
             UnitPrice = price,
             Quantity = quantity,
+            StoreName = storeName,
             AddedAt = Now,
         };
         _store.Items[item.Id] = item;

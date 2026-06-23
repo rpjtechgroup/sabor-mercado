@@ -198,7 +198,7 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         return history.FirstOrDefault();
     }
 
-    public async Task<Product> EnsureProductAsync(ProductSnapshot snapshot, Guid? storeId = null)
+    public async Task<Product> EnsureProductAsync(ProductSnapshot snapshot)
     {
         if (string.IsNullOrWhiteSpace(snapshot.Name))
         {
@@ -213,22 +213,39 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
             return existing;
         }
 
-        if (storeId is null || storeId == Guid.Empty)
-        {
-            throw new InvalidOperationException("Selecione um comércio para cadastrar o produto.");
-        }
-
         var product = new Product
         {
             Name = snapshot.Name.Trim(),
             Brand = string.IsNullOrWhiteSpace(snapshot.Brand) ? null : snapshot.Brand.Trim(),
             QuantityValue = snapshot.QuantityValue,
             QuantityUnit = snapshot.QuantityUnit,
-            StoreId = storeId.Value,
+            StoreId = Guid.Empty,
             CreatedAt = clock.GetUtcNow(),
         };
 
-        return await CreateProductAsync(product);
+        return await CreateProductFromShoppingAsync(product);
+    }
+
+    private async Task<Product> CreateProductFromShoppingAsync(Product product)
+    {
+        if (string.IsNullOrWhiteSpace(product.Name))
+        {
+            throw new ArgumentException("Nome do produto é obrigatório.", nameof(product));
+        }
+
+        if (product.QuantityValue is <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(product), "Peso/volume deve ser maior que zero.");
+        }
+
+        product.Id = Ids.NewId();
+        product.CreatedAt = clock.GetUtcNow();
+
+        _products.Add(product);
+        SortProducts();
+        await PersistProductAsync(product);
+        NotifyStateChanged();
+        return product;
     }
 
     public async Task<IReadOnlyList<Product>> SearchProductsAsync(string prefix, int limit = 8)

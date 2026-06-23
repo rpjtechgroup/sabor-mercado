@@ -16,6 +16,7 @@ public partial class ShoppingPage : IDisposable
     private int _reminderCount;
     private CartItemFormModel? _itemForm;
     private Guid? _editingItemId;
+    private Guid _sessionStoreId;
 
     [Inject]
     public ShoppingService Shopping { get; set; } = default!;
@@ -42,6 +43,7 @@ public partial class ShoppingPage : IDisposable
         Reminders.StateChanged += OnStateChanged;
         await Shopping.InitializeAsync();
         await Account.InitializeAsync();
+        _sessionStoreId = Shopping.CurrentSession?.StoreId ?? Guid.Empty;
         _reminderCount = await Reminders.GetCountAsync();
         RefreshExportFlag();
         _loaded = true;
@@ -53,8 +55,15 @@ public partial class ShoppingPage : IDisposable
     private async Task StartSessionAsync(SessionStartRequest input)
     {
         await Shopping.StartSessionAsync(input.Kind, input.Budget, input.StoreId);
+        _sessionStoreId = input.StoreId ?? Guid.Empty;
         _showSummary = false;
         _confirmingAbandon = false;
+    }
+
+    private async Task OnSessionStoreChangedAsync(Guid storeId)
+    {
+        _sessionStoreId = storeId;
+        await Shopping.SetSessionStoreAsync(storeId == Guid.Empty ? null : storeId);
     }
 
     private void OpenAddForm()
@@ -141,6 +150,7 @@ public partial class ShoppingPage : IDisposable
 
     private void OnStateChanged()
     {
+        _sessionStoreId = Shopping.CurrentSession?.StoreId ?? Guid.Empty;
         RefreshExportFlag();
         _ = RefreshReminderCountAsync();
         InvokeAsync(StateHasChanged);

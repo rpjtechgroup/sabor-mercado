@@ -162,8 +162,8 @@ public class CatalogServiceTests
         var service = await CreateInitializedAsync();
         var snapshot = new ProductSnapshot("Leite Integral", "Itambé", 1m, QuantityUnit.L);
 
-        var first = await service.EnsureProductAsync(snapshot, CatalogTestStores.StoreAId);
-        var second = await service.EnsureProductAsync(snapshot, CatalogTestStores.StoreAId);
+        var first = await service.EnsureProductAsync(snapshot);
+        var second = await service.EnsureProductAsync(snapshot);
 
         Assert.Equal(first.Id, second.Id);
         Assert.Single(service.Products);

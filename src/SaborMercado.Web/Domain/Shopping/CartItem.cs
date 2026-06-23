@@ -20,6 +20,12 @@ public sealed class CartItem
 
     public DateTimeOffset AddedAt { get; set; }
 
+    /// <summary>Purchase-time snapshot: store where this line was bought (not catalog domain).</summary>
+    public Guid? StoreId { get; set; }
+
+    /// <summary>Denormalized store label at add time for purchase history.</summary>
+    public string? StoreName { get; set; }
+
     public int SchemaVersion { get; set; } = StorageSchema.CurrentSchemaVersion;
 
     public decimal Subtotal => UnitPrice * Quantity;
