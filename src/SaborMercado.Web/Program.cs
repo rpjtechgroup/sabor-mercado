@@ -52,8 +52,9 @@ builder.Services.AddScoped<GeolocationInterop>();
 
 builder.Services.AddScoped<ISpeechRecognitionService, SpeechRecognitionInterop>();
 builder.Services.AddScoped<SpeechRecognitionInterop>();
-builder.Services.AddScoped<IVoiceFieldExtractorInterop, VoiceFieldExtractorInterop>();
-builder.Services.AddScoped<VoiceFieldExtractorInterop>();
+builder.Services.AddScoped(sp => new GeminiVoiceUtteranceClient(
+    new HttpClient { BaseAddress = new Uri("https://generativelanguage.googleapis.com/"), Timeout = TimeSpan.FromSeconds(15) },
+    sp.GetRequiredService<IConfiguration>()));
 builder.Services.AddScoped<VoiceFieldExtractorService>();
 builder.Services.AddScoped<IGoogleSignInService, GoogleSignInInterop>();
 builder.Services.AddScoped<GoogleSignInInterop>();

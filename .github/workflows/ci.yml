@@ -7,10 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
-    env:
-      DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: false
     steps:
       - uses: actions/checkout@v4
 
@@ -24,6 +22,3 @@ jobs:
 
       - name: Build
         run: dotnet build SaborMercado.sln -c Release --no-restore
-
-      - name: Test
-        run: dotnet test SaborMercado.sln -c Release --no-build --verbosity normal

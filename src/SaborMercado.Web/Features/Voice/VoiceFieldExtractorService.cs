@@ -1,24 +1,29 @@
-using SaborMercado.Web.Interop;
+using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Voice;
 
-public sealed class VoiceFieldExtractorService(IVoiceFieldExtractorInterop interop)
+public sealed class VoiceFieldExtractorService(
+    IPreferencesStore preferences,
+    GeminiVoiceUtteranceClient gemini)
 {
-    public async Task<VoiceFieldExtractionResult> ExtractAsync(string transcript)
+    public async Task<VoiceFieldExtractionResult> ExtractAsync(
+        string transcript,
+        CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(transcript))
         {
-            return new(VoiceUtteranceParser.Parse(transcript), VoiceExtractionSource.DeterministicFallback);
+            return Fallback(transcript);
+        }
+
+        var apiKey = await preferences.GetGeminiApiKeyAsync();
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            return Fallback(transcript);
         }
 
         try
         {
-            if (!await interop.IsModelSupportedAsync())
-            {
-                return Fallback(transcript);
-            }
-
-            var modelOutput = await interop.ExtractProductFieldsAsync(transcript.Trim());
+            var modelOutput = await gemini.ExtractProductFieldsAsync(apiKey, transcript.Trim(), cancellationToken);
             return VoiceModelOutputParser.Parse(transcript, modelOutput);
         }
         catch

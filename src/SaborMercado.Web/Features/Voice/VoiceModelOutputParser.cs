@@ -7,7 +7,7 @@ namespace SaborMercado.Web.Features.Voice;
 
 public enum VoiceExtractionSource
 {
-    LocalModel,
+    Gemini,
     DeterministicFallback,
 }
 
@@ -34,7 +34,7 @@ public static partial class VoiceModelOutputParser
             return new(rules, VoiceExtractionSource.DeterministicFallback);
         }
 
-        return new(Merge(fromModel, rules), VoiceExtractionSource.LocalModel);
+        return new(Merge(fromModel, rules), VoiceExtractionSource.Gemini);
     }
 
     private static VoiceParsedFields? TryParseModelJson(string modelOutput)

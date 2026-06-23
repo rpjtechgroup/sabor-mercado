@@ -63,7 +63,7 @@
 
     [Parameter]
     public string Hint { get; set; } =
-        "Revise o texto e toque em Enviar. Na primeira vez, o modelo local quantizado (~300 MB) é baixado no dispositivo.";
+        "Revise o texto e toque em Enviar. A interpretação usa a API Gemini com a chave salva em Configurações (mesma do modo foto).";
 
     [Parameter]
     public string SubmitLabel { get; set; } = "Enviar";
@@ -133,14 +133,14 @@
 
         _processing = true;
         _error = null;
-        _status = "Carregando modelo local e interpretando o texto…";
+        _status = "Interpretando o texto via Gemini…";
 
         try
         {
             var result = await Extractor.ExtractAsync(_transcript.Trim());
-            _status = result.Source == VoiceExtractionSource.LocalModel
-                ? "Campos preenchidos pelo modelo local."
-                : "Campos preenchidos pelo interpretador offline (fallback).";
+            _status = result.Source == VoiceExtractionSource.Gemini
+                ? "Campos preenchidos pelo Gemini."
+                : "Campos preenchidos pelo interpretador offline (sem chave Gemini ou falha na API).";
 
             await OnExtracted.InvokeAsync(result);
         }
