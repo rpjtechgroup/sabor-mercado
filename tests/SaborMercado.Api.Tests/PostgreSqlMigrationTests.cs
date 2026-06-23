@@ -21,7 +21,7 @@ public sealed class PostgreSqlMigrationTests : IAsyncLifetime
                 .Build();
             await _postgres.StartAsync();
         }
-        catch (ArgumentException ex) when (ex.ParamName == "DockerEndpointAuthConfig")
+        catch (Exception ex) when (ex is ArgumentException { ParamName: "DockerEndpointAuthConfig" } or InvalidOperationException)
         {
             _postgres = null;
         }
@@ -44,13 +44,14 @@ public sealed class PostgreSqlMigrationTests : IAsyncLifetime
         }
 
         var connectionString = _postgres.GetConnectionString();
+        var recognitionSqlite = $"Data Source=recognition-pg-test-{Guid.NewGuid():N}.db";
         await using var factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
         {
             builder.UseSetting("Database:Provider", "PostgreSQL");
             builder.UseSetting("ConnectionStrings:Identity", connectionString);
             builder.UseSetting("ConnectionStrings:SharedCatalog", connectionString);
             builder.UseSetting("ConnectionStrings:Rewards", connectionString);
-            builder.UseSetting("ConnectionStrings:Recognition", connectionString);
+            builder.UseSetting("ConnectionStrings:Recognition", recognitionSqlite);
             builder.ConfigureServices(services =>
             {
                 services.RemoveAll<IGeminiVisionClient>();
