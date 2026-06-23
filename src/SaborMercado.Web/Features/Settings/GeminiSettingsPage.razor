@@ -1,5 +1,6 @@
 @page "/configuracoes"
 @inject IPreferencesStore Preferences
+@inject GeminiVoiceUtteranceClient GeminiVoice
 @inject NavigationManager Navigation
 
 <PageTitle>Sabor Mercado — Configurações</PageTitle>
@@ -43,7 +44,18 @@
             <p class="success-text" role="status">@_message</p>
         }
 
+        @if (!string.IsNullOrEmpty(_error))
+        {
+            <p class="text-over" role="alert">@_error</p>
+        }
+
         <IconButton Icon="@AppIcons.Save" Label="Salvar chave" CssClass="btn btn-primary btn-block btn-icon" OnClick="SaveAsync" />
+
+        <IconButton Icon="@AppIcons.Confirm"
+                    Label="@(_testing ? "Testando…" : "Testar chave")"
+                    CssClass="btn btn-secondary btn-block btn-icon"
+                    Disabled="@(_testing || string.IsNullOrWhiteSpace(_apiKey))"
+                    OnClick="TestKeyAsync" />
 
         @if (_hasStoredKey)
         {
@@ -55,7 +67,9 @@
 @code {
     private string _apiKey = string.Empty;
     private bool _hasStoredKey;
+    private bool _testing;
     private string? _message;
+    private string? _error;
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,6 +86,44 @@
         await Preferences.SetGeminiApiKeyAsync(string.IsNullOrWhiteSpace(_apiKey) ? null : _apiKey);
         _hasStoredKey = !string.IsNullOrWhiteSpace(_apiKey);
         _message = "Chave salva neste dispositivo.";
+        _error = null;
+    }
+
+    private async Task TestKeyAsync()
+    {
+        _testing = true;
+        _message = null;
+        _error = null;
+
+        try
+        {
+            await GeminiVoice.ValidateApiKeyAsync(_apiKey.Trim());
+            _message = "Chave válida. Conexão com o Gemini OK.";
+        }
+        catch (HttpRequestException ex)
+        {
+            _error = DescribeHttpError(ex);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _testing = false;
+        }
+    }
+
+    private static string DescribeHttpError(HttpRequestException ex)
+    {
+        var message = ex.Message;
+        if (message.Contains("API_KEY_INVALID", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("API key not valid", StringComparison.OrdinalIgnoreCase))
+        {
+            return "Chave inválida. Gere uma nova no Google AI Studio.";
+        }
+
+        return string.IsNullOrWhiteSpace(message) ? "Falha ao contactar o Gemini." : message;
     }
 
     private async Task RemoveAsync()
@@ -80,5 +132,6 @@
         _apiKey = string.Empty;
         _hasStoredKey = false;
         _message = "Chave removida.";
+        _error = null;
     }
 }

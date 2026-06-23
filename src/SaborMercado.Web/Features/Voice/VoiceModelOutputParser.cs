@@ -11,7 +11,10 @@ public enum VoiceExtractionSource
     DeterministicFallback,
 }
 
-public sealed record VoiceFieldExtractionResult(VoiceParsedFields Fields, VoiceExtractionSource Source);
+public sealed record VoiceFieldExtractionResult(
+    VoiceParsedFields Fields,
+    VoiceExtractionSource Source,
+    string? ErrorMessage = null);
 
 public static partial class VoiceModelOutputParser
 {
@@ -25,13 +28,16 @@ public static partial class VoiceModelOutputParser
         var rules = VoiceUtteranceParser.Parse(transcript);
         if (string.IsNullOrWhiteSpace(modelOutput))
         {
-            return new(rules, VoiceExtractionSource.DeterministicFallback);
+            return new(rules, VoiceExtractionSource.DeterministicFallback, "O Gemini não retornou conteúdo estruturado.");
         }
 
         var fromModel = TryParseModelJson(modelOutput);
         if (fromModel is null)
         {
-            return new(rules, VoiceExtractionSource.DeterministicFallback);
+            return new(
+                rules,
+                VoiceExtractionSource.DeterministicFallback,
+                "Não foi possível interpretar o JSON retornado pelo Gemini.");
         }
 
         return new(Merge(fromModel, rules), VoiceExtractionSource.Gemini);
@@ -39,7 +45,7 @@ public static partial class VoiceModelOutputParser
 
     private static VoiceParsedFields? TryParseModelJson(string modelOutput)
     {
-        var json = ExtractJsonObject(modelOutput);
+        var json = ExtractJsonPayload(modelOutput);
         if (json is null)
         {
             return null;
@@ -53,13 +59,19 @@ public static partial class VoiceModelOutputParser
                 return null;
             }
 
+            var name = NormalizeOptional(dto.Name) ?? NormalizeOptional(dto.ProductName);
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+
             return new VoiceParsedFields
             {
-                Name = dto.Name?.Trim() ?? string.Empty,
+                Name = name,
                 Brand = NormalizeOptional(dto.Brand),
                 UnitPrice = dto.UnitPrice is >= 0 ? (decimal)dto.UnitPrice.Value : null,
                 Quantity = dto.Quantity is > 0 ? dto.Quantity : null,
-                QuantityValue = dto.QuantityValue is > 0 ? (decimal)dto.QuantityValue.Value : null,
+                QuantityValue = dto.QuantityValue is >= 0 ? (decimal)dto.QuantityValue.Value : null,
                 QuantityUnit = ParseUnit(dto.QuantityUnit),
                 Ean = NormalizeEan(dto.Ean),
                 Category = NormalizeOptional(dto.Category),
@@ -113,9 +125,32 @@ public static partial class VoiceModelOutputParser
             _ => null,
         };
 
-    private static string? ExtractJsonObject(string text)
+    private static string? ExtractJsonPayload(string text)
     {
-        var match = JsonObjectRegex().Match(text);
+        var trimmed = text.Trim();
+        if (trimmed.StartsWith("```", StringComparison.Ordinal))
+        {
+            var firstLineEnd = trimmed.IndexOf('\n');
+            if (firstLineEnd >= 0)
+            {
+                trimmed = trimmed[(firstLineEnd + 1)..];
+            }
+
+            var fence = trimmed.LastIndexOf("```", StringComparison.Ordinal);
+            if (fence >= 0)
+            {
+                trimmed = trimmed[..fence];
+            }
+
+            trimmed = trimmed.Trim();
+        }
+
+        if (trimmed.StartsWith("{", StringComparison.Ordinal))
+        {
+            return trimmed;
+        }
+
+        var match = JsonObjectRegex().Match(trimmed);
         return match.Success ? match.Value : null;
     }
 
@@ -125,6 +160,8 @@ public static partial class VoiceModelOutputParser
     private sealed class VoiceModelDto
     {
         public string? Name { get; set; }
+
+        public string? ProductName { get; set; }
 
         public string? Brand { get; set; }
 

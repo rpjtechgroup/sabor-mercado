@@ -84,20 +84,15 @@ internal static class VoiceUtterancePrompt
         type = "object",
         properties = new
         {
-            name = new { type = "string", description = "Nome genérico do produto, sem marca." },
-            brand = new { type = "string", nullable = true, description = "Marca ou fabricante." },
-            quantityValue = new { type = "number", nullable = true, description = "Peso ou volume numérico da embalagem." },
-            quantityUnit = new
-            {
-                type = "string",
-                nullable = true,
-                @enum = new[] { "g", "kg", "ml", "l", "un" },
-                description = "Unidade de peso/volume.",
-            },
-            ean = new { type = "string", nullable = true, description = "Código EAN/GTIN somente dígitos." },
-            category = new { type = "string", nullable = true, description = "Categoria de mercado." },
-            notes = new { type = "string", nullable = true, description = "Observações adicionais." },
+            name = new { type = "string" },
+            brand = new { type = "string", nullable = true },
+            quantityValue = new { type = "number", nullable = true },
+            quantityUnit = new { type = "string", nullable = true },
+            ean = new { type = "string", nullable = true },
+            category = new { type = "string", nullable = true },
+            notes = new { type = "string", nullable = true },
         },
+        required = new[] { "name" },
     };
 
     private static readonly object CartItemSchema = new
@@ -105,17 +100,13 @@ internal static class VoiceUtterancePrompt
         type = "object",
         properties = new
         {
-            name = new { type = "string", description = "Nome do produto." },
+            name = new { type = "string" },
             brand = new { type = "string", nullable = true },
             quantityValue = new { type = "number", nullable = true },
-            quantityUnit = new
-            {
-                type = "string",
-                nullable = true,
-                @enum = new[] { "g", "kg", "ml", "l", "un" },
-            },
-            unitPrice = new { type = "number", nullable = true, description = "Preço unitário em reais." },
-            quantity = new { type = "integer", nullable = true, description = "Quantidade de unidades compradas." },
+            quantityUnit = new { type = "string", nullable = true },
+            unitPrice = new { type = "number", nullable = true },
+            quantity = new { type = "number", nullable = true },
         },
+        required = new[] { "name" },
     };
 }

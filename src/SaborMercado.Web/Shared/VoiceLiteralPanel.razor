@@ -142,9 +142,17 @@
         try
         {
             var result = await Extractor.ExtractAsync(_transcript.Trim(), Target);
-            _status = result.Source == VoiceExtractionSource.Gemini
-                ? "Campos preenchidos pelo Gemini."
-                : "Campos preenchidos pelo interpretador offline (sem chave Gemini ou falha na API).";
+            if (result.Source == VoiceExtractionSource.Gemini)
+            {
+                _status = "Campos preenchidos pelo Gemini.";
+                _error = null;
+            }
+            else
+            {
+                _status = "Usando interpretador offline.";
+                _error = result.ErrorMessage
+                    ?? "Não foi possível usar o Gemini. Revise a chave em Configurações.";
+            }
 
             await OnExtracted.InvokeAsync(result);
         }
