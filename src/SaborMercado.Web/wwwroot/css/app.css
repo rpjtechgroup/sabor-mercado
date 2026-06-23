@@ -534,6 +534,28 @@ textarea.input {
     font-size: 0.875rem;
 }
 
+.voice-literal-panel {
+    margin-bottom: 1rem;
+}
+
+.voice-literal-text {
+    resize: vertical;
+    min-height: 4.5rem;
+}
+
+.voice-literal-hint,
+.voice-literal-status {
+    margin-top: 0.35rem;
+    font-size: 0.875rem;
+}
+
+.voice-literal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
 .card-header-row {
     display: flex;
     align-items: flex-start;

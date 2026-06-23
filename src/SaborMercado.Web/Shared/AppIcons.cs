@@ -46,6 +46,7 @@ public static class AppIcons
     public const string Refresh = "🔄";
     public const string Manual = "✍️";
     public const string Microphone = "🎤";
+    public const string Send = "📨";
     public const string Price = "💰";
     public const string Help = "❓";
     public const string TabSession = "🧾";

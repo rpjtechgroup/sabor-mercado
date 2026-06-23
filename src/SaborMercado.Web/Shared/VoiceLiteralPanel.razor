@@ -1,0 +1,206 @@
+@using SaborMercado.Web.Interop
+@implements ISpeechRecognitionListener
+@implements IAsyncDisposable
+
+<div class="voice-literal-panel">
+    <div class="field">
+        <label for="@_textareaId">@Label</label>
+        <textarea id="@_textareaId"
+                  class="input voice-literal-text"
+                  rows="3"
+                  placeholder="@Placeholder"
+                  @bind="_transcript"
+                  @bind:event="oninput"
+                  disabled="@_processing"></textarea>
+        <p class="muted voice-literal-hint">@Hint</p>
+    </div>
+
+    <div class="voice-literal-actions">
+        @if (_speechSupported)
+        {
+            <IconButton Icon="@(_listening ? AppIcons.Confirm : AppIcons.Microphone)"
+                        Label="@(_listening ? "Parar" : "Falar")"
+                        CssClass="btn btn-outline btn-icon voice-input-btn"
+                        Disabled="@(_processing)"
+                        OnClick="ToggleListeningAsync" />
+        }
+
+        <IconButton Icon="@AppIcons.Send"
+                    Label="@(_processing ? "Processando…" : SubmitLabel)"
+                    CssClass="btn btn-primary btn-icon"
+                    Disabled="@(_processing || string.IsNullOrWhiteSpace(_transcript))"
+                    OnClick="SubmitAsync" />
+    </div>
+
+    @if (_status is not null)
+    {
+        <p class="muted voice-literal-status" role="status">@_status</p>
+    }
+
+    @if (_error is not null)
+    {
+        <p class="text-over voice-input-error" role="alert">@_error</p>
+    }
+</div>
+
+@code {
+    private static int _idCounter;
+    private readonly string _textareaId = $"voice-literal-{Interlocked.Increment(ref _idCounter)}";
+
+    private bool _speechSupported;
+    private bool _listening;
+    private bool _processing;
+    private string _transcript = string.Empty;
+    private string _committedTranscript = string.Empty;
+    private string? _status;
+    private string? _error;
+
+    [Parameter]
+    public string Label { get; set; } = "Texto da fala";
+
+    [Parameter]
+    public string Placeholder { get; set; } = "Fale ou digite o item (ex.: óleo de soja Liza nove e noventa)";
+
+    [Parameter]
+    public string Hint { get; set; } =
+        "Revise o texto e toque em Enviar. Na primeira vez, o modelo local quantizado (~300 MB) é baixado no dispositivo.";
+
+    [Parameter]
+    public string SubmitLabel { get; set; } = "Enviar";
+
+    [Parameter]
+    public string? InitialTranscript { get; set; }
+
+    [Parameter]
+    public EventCallback<VoiceFieldExtractionResult> OnExtracted { get; set; }
+
+    [Inject]
+    public ISpeechRecognitionService Speech { get; set; } = default!;
+
+    [Inject]
+    public VoiceFieldExtractorService Extractor { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(InitialTranscript))
+        {
+            _transcript = InitialTranscript.Trim();
+            _committedTranscript = _transcript;
+        }
+
+        try
+        {
+            _speechSupported = await Speech.IsSupportedAsync();
+        }
+        catch
+        {
+            _speechSupported = false;
+        }
+    }
+
+    private async Task ToggleListeningAsync()
+    {
+        if (_listening)
+        {
+            await Speech.StopListeningAsync();
+            _listening = false;
+            _committedTranscript = _transcript.Trim();
+            return;
+        }
+
+        _error = null;
+        _status = null;
+        _committedTranscript = _transcript.Trim();
+
+        try
+        {
+            await Speech.StartListeningAsync(this);
+            _listening = true;
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+            _listening = false;
+        }
+    }
+
+    private async Task SubmitAsync()
+    {
+        if (string.IsNullOrWhiteSpace(_transcript))
+        {
+            return;
+        }
+
+        _processing = true;
+        _error = null;
+        _status = "Carregando modelo local e interpretando o texto…";
+
+        try
+        {
+            var result = await Extractor.ExtractAsync(_transcript.Trim());
+            _status = result.Source == VoiceExtractionSource.LocalModel
+                ? "Campos preenchidos pelo modelo local."
+                : "Campos preenchidos pelo interpretador offline (fallback).";
+
+            await OnExtracted.InvokeAsync(result);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+            _status = null;
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+
+    [JSInvokable]
+    public Task OnSpeechResult(string transcript, bool isFinal)
+    {
+        if (string.IsNullOrWhiteSpace(transcript))
+        {
+            return Task.CompletedTask;
+        }
+
+        _transcript = isFinal
+            ? $"{_committedTranscript} {transcript}".Trim()
+            : $"{_committedTranscript} {transcript}".Trim();
+
+        if (isFinal)
+        {
+            _committedTranscript = _transcript;
+        }
+
+        _error = null;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public Task OnSpeechError(string message)
+    {
+        _error = message;
+        _listening = false;
+        return InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public Task OnSpeechEnd()
+    {
+        _listening = false;
+        _committedTranscript = _transcript.Trim();
+        return InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (Speech is SpeechRecognitionInterop interop)
+        {
+            await interop.DisposeAsync();
+        }
+        else
+        {
+            await Speech.StopListeningAsync();
+        }
+    }
+}

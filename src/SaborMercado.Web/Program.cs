@@ -15,6 +15,7 @@ using SaborMercado.Web.Features.Recognition;
 
 using SaborMercado.Web.Features.Shopping;
 using SaborMercado.Web.Features.Support;
+using SaborMercado.Web.Features.Voice;
 
 using SaborMercado.Web.Infrastructure;
 
@@ -51,6 +52,9 @@ builder.Services.AddScoped<GeolocationInterop>();
 
 builder.Services.AddScoped<ISpeechRecognitionService, SpeechRecognitionInterop>();
 builder.Services.AddScoped<SpeechRecognitionInterop>();
+builder.Services.AddScoped<IVoiceFieldExtractorInterop, VoiceFieldExtractorInterop>();
+builder.Services.AddScoped<VoiceFieldExtractorInterop>();
+builder.Services.AddScoped<VoiceFieldExtractorService>();
 builder.Services.AddScoped<IGoogleSignInService, GoogleSignInInterop>();
 builder.Services.AddScoped<GoogleSignInInterop>();
 builder.Services.AddScoped<ISupportDiagnosticsInterop, SupportDiagnosticsInterop>();
