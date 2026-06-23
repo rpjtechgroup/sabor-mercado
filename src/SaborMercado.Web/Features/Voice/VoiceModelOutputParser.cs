@@ -61,6 +61,9 @@ public static partial class VoiceModelOutputParser
                 Quantity = dto.Quantity is > 0 ? dto.Quantity : null,
                 QuantityValue = dto.QuantityValue is > 0 ? (decimal)dto.QuantityValue.Value : null,
                 QuantityUnit = ParseUnit(dto.QuantityUnit),
+                Ean = NormalizeEan(dto.Ean),
+                Category = NormalizeOptional(dto.Category),
+                Notes = NormalizeOptional(dto.Notes),
             };
         }
         catch (JsonException)
@@ -80,10 +83,24 @@ public static partial class VoiceModelOutputParser
             Quantity = model.Quantity ?? rules.Quantity,
             QuantityValue = model.QuantityValue ?? rules.QuantityValue,
             QuantityUnit = model.QuantityUnit ?? rules.QuantityUnit,
+            Ean = NormalizeEan(model.Ean) ?? NormalizeEan(rules.Ean),
+            Category = NormalizeOptional(model.Category) ?? NormalizeOptional(rules.Category),
+            Notes = NormalizeOptional(model.Notes) ?? NormalizeOptional(rules.Notes),
         };
 
     private static string? NormalizeOptional(string? value) =>
         string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+
+    private static string? NormalizeEan(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        var digits = new string(value.Where(char.IsDigit).ToArray());
+        return digits.Length is >= 8 and <= 14 ? digits : null;
+    }
 
     private static QuantityUnit? ParseUnit(string? unit) =>
         unit?.Trim().ToLowerInvariant() switch
@@ -118,5 +135,11 @@ public static partial class VoiceModelOutputParser
         public double? QuantityValue { get; set; }
 
         public string? QuantityUnit { get; set; }
+
+        public string? Ean { get; set; }
+
+        public string? Category { get; set; }
+
+        public string? Notes { get; set; }
     }
 }

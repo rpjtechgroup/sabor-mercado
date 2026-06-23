@@ -4,7 +4,7 @@
 <div class="card">
     <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.Catalog)" Title="@(IsEdit ? "Editar produto" : "Novo produto")" />
 
-    <VoiceLiteralPanel OnExtracted="ApplyVoiceExtractionAsync" />
+    <VoiceLiteralPanel Target="VoiceExtractionTarget.ProductCatalog" OnExtracted="ApplyVoiceExtractionAsync" />
 
     <div class="field">
         <label for="product-name">Nome *</label>

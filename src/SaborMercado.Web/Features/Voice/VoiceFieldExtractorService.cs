@@ -8,6 +8,7 @@ public sealed class VoiceFieldExtractorService(
 {
     public async Task<VoiceFieldExtractionResult> ExtractAsync(
         string transcript,
+        VoiceExtractionTarget target = VoiceExtractionTarget.ProductCatalog,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(transcript))
@@ -23,7 +24,11 @@ public sealed class VoiceFieldExtractorService(
 
         try
         {
-            var modelOutput = await gemini.ExtractProductFieldsAsync(apiKey, transcript.Trim(), cancellationToken);
+            var modelOutput = await gemini.ExtractProductFieldsAsync(
+                apiKey,
+                transcript.Trim(),
+                target,
+                cancellationToken);
             return VoiceModelOutputParser.Parse(transcript, modelOutput);
         }
         catch

@@ -17,6 +17,12 @@ public sealed class VoiceParsedFields
     public decimal? QuantityValue { get; set; }
 
     public QuantityUnit? QuantityUnit { get; set; }
+
+    public string? Ean { get; set; }
+
+    public string? Category { get; set; }
+
+    public string? Notes { get; set; }
 }
 
 public static partial class VoiceUtteranceParser

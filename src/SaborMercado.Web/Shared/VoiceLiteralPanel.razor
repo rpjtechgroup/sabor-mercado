@@ -1,3 +1,4 @@
+@using SaborMercado.Web.Features.Voice
 @using SaborMercado.Web.Interop
 @implements ISpeechRecognitionListener
 @implements IAsyncDisposable
@@ -56,14 +57,17 @@
     private string? _error;
 
     [Parameter]
+    public VoiceExtractionTarget Target { get; set; } = VoiceExtractionTarget.ProductCatalog;
+
+    [Parameter]
     public string Label { get; set; } = "Texto da fala";
 
     [Parameter]
-    public string Placeholder { get; set; } = "Fale ou digite o item (ex.: óleo de soja Liza nove e noventa)";
+    public string Placeholder { get; set; } = "Fale ou digite o produto (ex.: óleo de soja Liza novecentos ml mercearia)";
 
     [Parameter]
     public string Hint { get; set; } =
-        "Revise o texto e toque em Enviar. A interpretação usa a API Gemini com a chave salva em Configurações (mesma do modo foto).";
+        "Revise o texto e toque em Enviar. O Gemini preenche os campos do formulário usando a chave em Configurações.";
 
     [Parameter]
     public string SubmitLabel { get; set; } = "Enviar";
@@ -137,7 +141,7 @@
 
         try
         {
-            var result = await Extractor.ExtractAsync(_transcript.Trim());
+            var result = await Extractor.ExtractAsync(_transcript.Trim(), Target);
             _status = result.Source == VoiceExtractionSource.Gemini
                 ? "Campos preenchidos pelo Gemini."
                 : "Campos preenchidos pelo interpretador offline (sem chave Gemini ou falha na API).";

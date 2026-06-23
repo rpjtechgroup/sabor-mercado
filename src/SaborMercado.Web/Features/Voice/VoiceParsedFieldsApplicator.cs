@@ -59,5 +59,20 @@ public static class VoiceParsedFieldsApplicator
         {
             model.QuantityUnit = parsed.QuantityUnit;
         }
+
+        if (!string.IsNullOrWhiteSpace(parsed.Ean))
+        {
+            model.Ean = parsed.Ean;
+        }
+
+        if (!string.IsNullOrWhiteSpace(parsed.Category))
+        {
+            model.Category = parsed.Category;
+        }
+
+        if (!string.IsNullOrWhiteSpace(parsed.Notes))
+        {
+            model.Notes = parsed.Notes;
+        }
     }
 }

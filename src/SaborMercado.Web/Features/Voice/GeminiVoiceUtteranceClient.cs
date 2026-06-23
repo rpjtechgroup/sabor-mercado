@@ -17,6 +17,7 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
     public async Task<string> ExtractProductFieldsAsync(
         string apiKey,
         string transcript,
+        VoiceExtractionTarget target = VoiceExtractionTarget.ProductCatalog,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(apiKey))
@@ -31,10 +32,12 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
             [
                 new GeminiContent(
                 [
-                    new GeminiPart(Text: VoiceUtterancePrompt.Build(transcript.Trim())),
+                    new GeminiPart(Text: VoiceUtterancePrompt.Build(target, transcript.Trim())),
                 ]),
             ],
-            new GeminiGenerationConfig(ResponseMimeType: "application/json", ResponseSchema: BuildSchema()));
+            new GeminiGenerationConfig(
+                ResponseMimeType: "application/json",
+                ResponseSchema: VoiceUtterancePrompt.BuildSchema(target)));
 
         using var response = await httpClient.PostAsJsonAsync(requestUri, body, JsonOptions, cancellationToken);
         var payload = await response.Content.ReadAsStringAsync(cancellationToken);
@@ -56,20 +59,6 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
         return text;
     }
 
-    private static object BuildSchema() => new
-    {
-        type = "object",
-        properties = new
-        {
-            name = new { type = "string", nullable = true },
-            brand = new { type = "string", nullable = true },
-            unitPrice = new { type = "number", nullable = true },
-            quantity = new { type = "integer", nullable = true },
-            quantityValue = new { type = "number", nullable = true },
-            quantityUnit = new { type = "string", nullable = true },
-        },
-    };
-
     private sealed record GeminiRequest(
         GeminiContent[] Contents,
         GeminiGenerationConfig GenerationConfig);
@@ -83,17 +72,4 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
     private sealed record GeminiResponse(GeminiCandidate[]? Candidates);
 
     private sealed record GeminiCandidate(GeminiContent? Content);
-}
-
-internal static class VoiceUtterancePrompt
-{
-    public static string Build(string transcript) =>
-        $"""
-        Você extrai campos de produto de mercado a partir de fala em português do Brasil.
-        Retorne somente JSON válido conforme o schema.
-        Preços falados em reais (ex.: "nove e noventa" = 9.90).
-        Unidades: g, kg, ml, l, un.
-        Texto do usuário:
-        {transcript}
-        """;
 }

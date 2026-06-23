@@ -7,7 +7,9 @@
         <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.New)" Title="@(IsEdit ? "Editar item" : "Adicionar item")" />
     </div>
 
-    <VoiceLiteralPanel OnExtracted="ApplyVoiceExtractionAsync" />
+    <VoiceLiteralPanel Target="VoiceExtractionTarget.CartItem"
+                       Placeholder="Fale ou digite o item (ex.: óleo de soja Liza novecentos ml nove e noventa dois pacotes)"
+                       OnExtracted="ApplyVoiceExtractionAsync" />
 
     <div class="field">
         <label for="item-name">Produto *</label>
