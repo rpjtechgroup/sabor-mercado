@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
+using SaborMercado.Shared.Gemini;
 
 namespace SaborMercado.Web.Features.Voice;
 
@@ -20,14 +21,7 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
         VoiceExtractionTarget target = VoiceExtractionTarget.ProductCatalog,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(apiKey))
-        {
-            throw new InvalidOperationException("Gemini API key is required.");
-        }
-
-        var model = configuration["GeminiModel"] ?? "gemini-2.0-flash";
-        var requestUri = BuildRequestUri(model, apiKey);
-
+        var models = ResolveModels();
         var body = new GeminiRequest(
             [
                 new GeminiContent(
@@ -39,15 +33,15 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
                 ResponseMimeType: "application/json",
                 ResponseSchema: VoiceUtterancePrompt.BuildSchema(target)));
 
-        using var response = await httpClient.PostAsJsonAsync(requestUri, body, JsonOptions, cancellationToken);
-        var payload = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = await GeminiGenerateContentExecutor.PostJsonAsync(
+            httpClient,
+            apiKey,
+            models,
+            body,
+            JsonOptions,
+            cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new HttpRequestException($"Gemini HTTP {(int)response.StatusCode}: {payload}");
-        }
-
-        var gemini = JsonSerializer.Deserialize<GeminiResponse>(payload, JsonOptions)
+        var gemini = JsonSerializer.Deserialize<GeminiResponse>(result.Payload, JsonOptions)
             ?? throw new InvalidOperationException("Resposta vazia do Gemini.");
 
         var candidate = gemini.Candidates?.FirstOrDefault();
@@ -55,7 +49,8 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
         if (string.IsNullOrWhiteSpace(text))
         {
             var reason = candidate?.FinishReason ?? "desconhecido";
-            throw new InvalidOperationException($"Gemini não retornou JSON estruturado (motivo: {reason}).");
+            throw new InvalidOperationException(
+                $"Gemini ({result.ModelUsed}) não retornou JSON estruturado (motivo: {reason}).");
         }
 
         return text;
@@ -63,28 +58,22 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
 
     public async Task ValidateApiKeyAsync(string apiKey, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(apiKey))
-        {
-            throw new InvalidOperationException("Informe a chave da API Gemini.");
-        }
-
-        var model = configuration["GeminiModel"] ?? "gemini-2.0-flash";
-        var requestUri = BuildRequestUri(model, apiKey);
+        var models = ResolveModels();
         var body = new GeminiRequest(
             [new GeminiContent([new GeminiPart(Text: "Responda apenas OK.")])],
             null);
 
-        using var response = await httpClient.PostAsJsonAsync(requestUri, body, JsonOptions, cancellationToken);
-        var payload = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new HttpRequestException($"Gemini HTTP {(int)response.StatusCode}: {payload}");
-        }
+        _ = await GeminiGenerateContentExecutor.PostJsonAsync(
+            httpClient,
+            apiKey,
+            models,
+            body,
+            JsonOptions,
+            cancellationToken);
     }
 
-    private static string BuildRequestUri(string model, string apiKey) =>
-        $"v1beta/models/{model}:generateContent?key={Uri.EscapeDataString(apiKey.Trim())}";
+    private IReadOnlyList<string> ResolveModels() =>
+        GeminiModelChain.Build(configuration["GeminiModel"], configuration["GeminiModelFallbacks"]);
 
     private sealed record GeminiRequest(
         GeminiContent[] Contents,

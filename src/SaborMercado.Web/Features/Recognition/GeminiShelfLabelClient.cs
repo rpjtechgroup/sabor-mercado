@@ -2,6 +2,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Configuration;
+using SaborMercado.Shared.Gemini;
 using SaborMercado.Web.Contracts.Recognition;
 
 namespace SaborMercado.Web.Features.Recognition;
@@ -20,14 +21,7 @@ public sealed class GeminiShelfLabelClient(HttpClient httpClient, IConfiguration
         byte[] jpegBytes,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(apiKey))
-        {
-            throw new InvalidOperationException("Gemini API key is required.");
-        }
-
-        var model = configuration["GeminiModel"] ?? "gemini-2.0-flash";
-        var requestUri = $"v1beta/models/{model}:generateContent?key={Uri.EscapeDataString(apiKey.Trim())}";
-
+        var models = ResolveModels();
         var body = new GeminiRequest(
             [
                 new GeminiContent(
@@ -39,21 +33,21 @@ public sealed class GeminiShelfLabelClient(HttpClient httpClient, IConfiguration
             ],
             new GeminiGenerationConfig(ResponseMimeType: "application/json", ResponseSchema: BuildSchema()));
 
-        using var response = await httpClient.PostAsJsonAsync(requestUri, body, JsonOptions, cancellationToken);
-        var payload = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = await GeminiGenerateContentExecutor.PostJsonAsync(
+            httpClient,
+            apiKey,
+            models,
+            body,
+            JsonOptions,
+            cancellationToken);
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new HttpRequestException($"Gemini HTTP {(int)response.StatusCode}: {payload}");
-        }
-
-        var gemini = JsonSerializer.Deserialize<GeminiResponse>(payload, JsonOptions)
+        var gemini = JsonSerializer.Deserialize<GeminiResponse>(result.Payload, JsonOptions)
             ?? throw new InvalidOperationException("Empty Gemini response");
 
         var text = gemini.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
         if (string.IsNullOrWhiteSpace(text))
         {
-            throw new InvalidOperationException("Gemini returned no structured text");
+            throw new InvalidOperationException($"Gemini ({result.ModelUsed}) returned no structured text");
         }
 
         var raw = JsonSerializer.Deserialize<RecognitionResultDto>(text, JsonOptions)
@@ -61,6 +55,9 @@ public sealed class GeminiShelfLabelClient(HttpClient httpClient, IConfiguration
 
         return RecognitionNormalizer.Normalize(raw);
     }
+
+    private IReadOnlyList<string> ResolveModels() =>
+        GeminiModelChain.Build(configuration["GeminiModel"], configuration["GeminiModelFallbacks"]);
 
     private static object BuildSchema() => new
     {

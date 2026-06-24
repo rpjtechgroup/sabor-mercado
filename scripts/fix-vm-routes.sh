@@ -85,7 +85,8 @@ if [ -f "$MERCADO_WWW/index.html" ]; then
   sed -i 's|<base href="/" />|<base href="/mercado/" />|' "$MERCADO_WWW/index.html"
   cat > "$MERCADO_WWW/appsettings.json" <<JSON
 {
-  "GeminiModel": "gemini-2.0-flash",
+  "GeminiModel": "gemini-2.5-flash",
+  "GeminiModelFallbacks": "gemini-2.5-flash-lite,gemini-3.1-flash-lite,gemini-3-flash,gemini-3.5-flash",
   "ApiBaseUrl": "${PUBLIC_MERCADO}"
 }
 JSON

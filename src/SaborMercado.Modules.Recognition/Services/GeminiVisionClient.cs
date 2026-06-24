@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SaborMercado.Modules.Recognition.Domain;
+using SaborMercado.Shared.Gemini;
 using SaborMercado.Shared.Recognition;
 
 namespace SaborMercado.Modules.Recognition.Services;
@@ -27,15 +28,14 @@ public sealed class GeminiVisionClient(
         string contentType,
         CancellationToken cancellationToken)
     {
-        var apiKey = options.Value.GeminiApiKey;
+        var settings = options.Value;
+        var apiKey = settings.GeminiApiKey;
         if (string.IsNullOrWhiteSpace(apiKey))
         {
             throw new OcrUnavailableException("GEMINI_API_KEY not configured");
         }
 
-        var model = options.Value.GeminiModel;
-        var requestUri = $"v1beta/models/{model}:generateContent?key={Uri.EscapeDataString(apiKey)}";
-
+        var models = GeminiModelChain.Build(settings.GeminiModel, settings.GeminiModelFallbacks);
         var body = new GeminiRequest(
             [
                 new GeminiContent(
@@ -47,22 +47,30 @@ public sealed class GeminiVisionClient(
             ],
             new GeminiGenerationConfig(ResponseMimeType: "application/json", ResponseSchema: BuildSchema()));
 
-        using var response = await httpClient.PostAsJsonAsync(requestUri, body, JsonOptions, cancellationToken);
-        var payload = await response.Content.ReadAsStringAsync(cancellationToken);
-
-        if (!response.IsSuccessStatusCode)
+        GeminiGenerateContentResult result;
+        try
         {
-            logger.LogWarning("Gemini API returned {StatusCode}: {Body}", (int)response.StatusCode, payload);
-            throw new OcrUnavailableException($"Gemini HTTP {(int)response.StatusCode}");
+            result = await GeminiGenerateContentExecutor.PostJsonAsync(
+                httpClient,
+                apiKey,
+                models,
+                body,
+                JsonOptions,
+                cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogWarning(ex, "Gemini API failed after trying {ModelCount} models", models.Count);
+            throw new OcrUnavailableException(ex.Message);
         }
 
-        var gemini = JsonSerializer.Deserialize<GeminiResponse>(payload, JsonOptions)
+        var gemini = JsonSerializer.Deserialize<GeminiResponse>(result.Payload, JsonOptions)
             ?? throw new OcrUnavailableException("Empty Gemini response");
 
         var text = gemini.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
         if (string.IsNullOrWhiteSpace(text))
         {
-            throw new OcrUnavailableException("Gemini returned no structured text");
+            throw new OcrUnavailableException($"Gemini ({result.ModelUsed}) returned no structured text");
         }
 
         var raw = JsonSerializer.Deserialize<RecognitionResultDto>(text, JsonOptions)

@@ -68,9 +68,10 @@ public sealed class VoiceFieldExtractorService(
         }
 
         if (message.Contains("RESOURCE_EXHAUSTED", StringComparison.OrdinalIgnoreCase) ||
-            message.Contains("quota", StringComparison.OrdinalIgnoreCase))
+            message.Contains("quota", StringComparison.OrdinalIgnoreCase) ||
+            message.Contains("RATE_LIMIT", StringComparison.OrdinalIgnoreCase))
         {
-            return "Cota da API Gemini esgotada. Tente novamente mais tarde.";
+            return "Cota do modelo Gemini esgotada. O app tenta modelos alternativos automaticamente; tente de novo em alguns minutos.";
         }
 
         return string.IsNullOrWhiteSpace(message)

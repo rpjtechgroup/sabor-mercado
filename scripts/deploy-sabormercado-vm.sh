@@ -121,7 +121,8 @@ echo "==> PWA base href + ApiBaseUrl"
 sed -i 's|<base href="/" />|<base href="/mercado/" />|' "$WEB_ROOT/index.html"
 cat > "$WEB_ROOT/appsettings.json" <<JSON
 {
-  "GeminiModel": "gemini-2.0-flash",
+  "GeminiModel": "gemini-2.5-flash",
+  "GeminiModelFallbacks": "gemini-2.5-flash-lite,gemini-3.1-flash-lite,gemini-3-flash,gemini-3.5-flash",
   "ApiBaseUrl": "${PUBLIC_BASE}",
   "GoogleClientId": "${GOOGLE_CLIENT_ID}"
 }
