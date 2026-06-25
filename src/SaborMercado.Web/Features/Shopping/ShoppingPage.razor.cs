@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Components;
-using SaborMercado.Web.Contracts.Rewards;
 using SaborMercado.Web.Domain.Shopping;
 using SaborMercado.Web.Features.Account;
 using SaborMercado.Web.Interop;
@@ -12,7 +11,7 @@ public partial class ShoppingPage : IDisposable
     private bool _loaded;
     private bool _showSummary;
     private bool _confirmingAbandon;
-    private bool _canExportCsv;
+    private bool _canExportCsv = true;
     private int _reminderCount;
     private CartItemFormModel? _itemForm;
     private Guid? _editingItemId;
@@ -45,12 +44,15 @@ public partial class ShoppingPage : IDisposable
         await Account.InitializeAsync();
         _sessionStoreId = Shopping.CurrentSession?.StoreId ?? Guid.Empty;
         _reminderCount = await Reminders.GetCountAsync();
-        RefreshExportFlag();
         _loaded = true;
     }
 
-    private void RefreshExportFlag() =>
-        _canExportCsv = Account.HasUnlock(PremiumFeatureCodes.ExportCsv);
+    private void OnStateChanged()
+    {
+        _sessionStoreId = Shopping.CurrentSession?.StoreId ?? Guid.Empty;
+        _ = RefreshReminderCountAsync();
+        InvokeAsync(StateHasChanged);
+    }
 
     private async Task StartSessionAsync(SessionStartRequest input)
     {
@@ -146,14 +148,6 @@ public partial class ShoppingPage : IDisposable
 
         var fileName = $"compra-{DateTime.Now:yyyyMMdd-HHmm}.csv";
         await Download.DownloadTextAsync(fileName, csv);
-    }
-
-    private void OnStateChanged()
-    {
-        _sessionStoreId = Shopping.CurrentSession?.StoreId ?? Guid.Empty;
-        RefreshExportFlag();
-        _ = RefreshReminderCountAsync();
-        InvokeAsync(StateHasChanged);
     }
 
     private async Task RefreshReminderCountAsync() =>

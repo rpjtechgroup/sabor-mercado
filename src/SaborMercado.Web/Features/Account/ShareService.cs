@@ -1,4 +1,4 @@
-using SaborMercado.Web.Contracts.SharedCatalog;
+using SaborMercado.Shared.SharedCatalog;
 using SaborMercado.Web.Domain.Catalog;
 using SaborMercado.Web.Domain.Sharing;
 using SaborMercado.Web.Infrastructure;

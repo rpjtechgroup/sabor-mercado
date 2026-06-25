@@ -6,7 +6,7 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Catalog;
 
-public sealed class StoreService(IStoreStore store, ICatalogStore catalogStore, TimeProvider clock)
+public sealed class StoreService(IStoreStore store, ICatalogStore catalogStore, IMetricsStore metrics, TimeProvider clock)
 {
     private readonly List<Store> _stores = [];
     private bool _initialized;
@@ -79,6 +79,7 @@ public sealed class StoreService(IStoreStore store, ICatalogStore catalogStore, 
         _stores.Add(entity);
         SortStores();
         await PersistStoreAsync(entity);
+        await metrics.IncrementStoreCountAsync();
         NotifyStateChanged();
         return entity;
     }

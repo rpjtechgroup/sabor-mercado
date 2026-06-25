@@ -1,0 +1,132 @@
+@page "/rankings"
+@implements IDisposable
+@using SaborMercado.Shared.Rewards
+@using SaborMercado.Web.Features.Gamification.Components
+@inject AccountService Account
+@inject GamificationRankingService Rankings
+
+<PageTitle>Sabor Mercado — Rankings</PageTitle>
+
+<PageLayout Icon="@AppIcons.Trophy"
+            Title="Rankings"
+            Subtitle="Compare seu progresso com outros usuários (pseudônimos anônimos).">
+    @if (!_loaded)
+    {
+        <p class="muted">Carregando…</p>
+    }
+    else if (!Account.IsLoggedIn)
+    {
+        <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Login" Label="Entre na sua conta" /> para ver os rankings.</p>
+    }
+    else
+    {
+        <div class="ranking-tabs" role="tablist" aria-label="Categorias de ranking">
+            @foreach (var type in _rankingTypes)
+            {
+                <button type="button"
+                        class="btn btn-outline ranking-tab @(_selectedType == type ? "ranking-tab--active" : string.Empty)"
+                        role="tab"
+                        aria-selected="@(_selectedType == type)"
+                        @onclick="() => SelectRankingAsync(type)">
+                    @RankingTypes.Titles[type]
+                </button>
+            }
+        </div>
+
+        @if (_busy)
+        {
+            <p class="muted">Atualizando ranking…</p>
+        }
+        else if (!string.IsNullOrEmpty(_error))
+        {
+            <p class="text-danger" role="alert">@_error</p>
+        }
+        else if (_ranking is not null)
+        {
+            <SettingsSection Id="ranking-heading" Icon="@AppIcons.Trophy" Title="@_ranking.Title">
+                <p class="muted">Atualizado em @_ranking.CalculatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</p>
+                <IconButton Icon="@AppIcons.Refresh"
+                            Label="Atualizar"
+                            CssClass="btn btn-secondary btn-icon"
+                            Disabled="@_busy"
+                            OnClick="RefreshAsync" />
+                <RankingTable Data="_ranking" />
+            </SettingsSection>
+        }
+    }
+
+    <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
+</PageLayout>
+
+@code {
+    private static readonly string[] _rankingTypes =
+    [
+        RankingTypes.Products,
+        RankingTypes.Stores,
+        RankingTypes.Purchases,
+        RankingTypes.LoginStreak,
+        RankingTypes.Achievements,
+    ];
+
+    private bool _loaded;
+    private bool _busy;
+    private string _selectedType = RankingTypes.Products;
+    private RankingListResponse? _ranking;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Account.StateChanged += OnAccountChanged;
+        await Account.InitializeAsync();
+        if (Account.IsLoggedIn)
+        {
+            await LoadRankingAsync();
+        }
+
+        _loaded = true;
+    }
+
+    private async Task SelectRankingAsync(string rankingType)
+    {
+        _selectedType = rankingType;
+        await LoadRankingAsync();
+    }
+
+    private async Task RefreshAsync() => await LoadRankingAsync(forceRefresh: true);
+
+    private async Task LoadRankingAsync(bool forceRefresh = false)
+    {
+        if (!Account.IsLoggedIn)
+        {
+            return;
+        }
+
+        _busy = true;
+        _error = null;
+        try
+        {
+            _ranking = await Rankings.GetRankingAsync(_selectedType, forceRefresh);
+        }
+        catch (GamificationException ex)
+        {
+            _error = ex.Message;
+            _ranking = null;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private void OnAccountChanged() => InvokeAsync(async () =>
+    {
+        if (Account.IsLoggedIn)
+        {
+            await LoadRankingAsync();
+        }
+
+        StateHasChanged();
+    });
+
+    public void Dispose() => Account.StateChanged -= OnAccountChanged;
+}

@@ -1,0 +1,40 @@
+@namespace SaborMercado.Web.Features.Gamification.Components
+
+<div class="achievement-badge @(IsUnlocked ? "achievement-badge--unlocked" : "achievement-badge--locked")" title="@Description">
+    <span class="achievement-badge-title">@Title</span>
+    @if (IsUnlocked && UnlockedAt is not null)
+    {
+        <span class="muted achievement-badge-date">@UnlockedAt.Value.ToLocalTime().ToString("dd/MM/yyyy")</span>
+    }
+    else if (TargetProgress is > 0 && CurrentProgress is not null)
+    {
+        <span class="muted achievement-badge-progress">@CurrentProgress / @TargetProgress</span>
+        <div class="achievement-progress-bar" aria-hidden="true">
+            <div class="achievement-progress-fill" style="width: @(Math.Min(100, CurrentProgress.Value * 100 / TargetProgress.Value))%"></div>
+        </div>
+    }
+    else if (!IsUnlocked)
+    {
+        <span class="muted achievement-badge-progress">Bloqueada</span>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public string Description { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool IsUnlocked { get; set; }
+
+    [Parameter]
+    public DateTimeOffset? UnlockedAt { get; set; }
+
+    [Parameter]
+    public int? CurrentProgress { get; set; }
+
+    [Parameter]
+    public int? TargetProgress { get; set; }
+}

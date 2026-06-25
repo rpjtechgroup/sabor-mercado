@@ -1,0 +1,32 @@
+@using SaborMercado.Shared.Rewards
+@namespace SaborMercado.Web.Features.Gamification.Components
+
+@if (Data.Entries.Count == 0)
+{
+    <p class="muted">Nenhum participante no ranking ainda.</p>
+}
+else
+{
+    <ol class="ranking-list">
+        @foreach (var entry in Data.Entries)
+        {
+            <li class="ranking-row @(entry.IsCurrentUser ? "ranking-row--me" : string.Empty) @(entry.RankPosition <= 3 ? $"ranking-row--top{entry.RankPosition}" : string.Empty)">
+                <span class="ranking-position">#@entry.RankPosition</span>
+                <span class="ranking-name">@entry.PseudonymDisplay</span>
+                <span class="ranking-score">@entry.Score</span>
+            </li>
+        }
+    </ol>
+}
+
+@if (Data.CurrentUserRank is { } myRank && Data.CurrentUserScore is { } myScore)
+{
+    <p class="muted ranking-me-summary" role="status">
+        Sua posição: <strong>#@myRank</strong> com <strong>@myScore</strong> pontos.
+    </p>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public RankingListResponse Data { get; set; } = default!;
+}

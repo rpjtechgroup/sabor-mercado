@@ -1,24 +1,16 @@
 @page "/listas-inteligentes"
-@inject AccountService Account
 @inject SmartListService SmartLists
 
 <PageTitle>Sabor Mercado — Listas inteligentes</PageTitle>
 
-<div class="premium-page">
-    <PageLayout Icon="@AppIcons.List"
-                Title="Listas inteligentes"
-                Subtitle="Sugestões com base nas suas compras finalizadas (dados locais).">
+<PageLayout Icon="@AppIcons.List" Title="Listas inteligentes" Subtitle="Sugestões baseadas no seu histórico de compras local.">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
     }
-    else if (!Account.HasUnlock(PremiumFeatureCodes.SmartLists))
-    {
-        <p class="muted">Desbloqueie em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (30 créditos).</p>
-    }
     else if (_items.Count == 0)
     {
-        <p class="muted">Finalize compras para gerar sugestões.</p>
+        <p class="muted">Finalize algumas compras para gerar sugestões.</p>
     }
     else
     {
@@ -26,14 +18,13 @@
         {
             <div class="card price-row">
                 <strong>@item.ProductName</strong>
-                <span class="muted">@item.TimesBought× comprado</span>
+                <span class="muted">Comprado @item.TimesBought vez(es)</span>
             </div>
         }
     }
 
-    <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
-    </PageLayout>
-</div>
+    <p class="muted"><IconInlineLink Href="configuracoes" Icon="@AppIcons.Back" Label="Configurações" /></p>
+</PageLayout>
 
 @code {
     private bool _loaded;
@@ -41,12 +32,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Account.InitializeAsync();
-        if (Account.HasUnlock(PremiumFeatureCodes.SmartLists))
-        {
-            _items = await SmartLists.GetSuggestionsAsync();
-        }
-
+        _items = await SmartLists.GetSuggestionsAsync();
         _loaded = true;
     }
 }

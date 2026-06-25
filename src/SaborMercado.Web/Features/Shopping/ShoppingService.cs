@@ -14,6 +14,7 @@ public sealed class ShoppingService(
     StoreService stores,
     ShoppingPatternService patterns,
     ShoppingReminderService reminders,
+    IMetricsStore metrics,
     ToastService toast,
     TimeProvider clock)
 {
@@ -262,6 +263,7 @@ public sealed class ShoppingService(
 
         _items.Add(item);
         Evaluate(CartMutation.ItemAddedOcr, confidence, snapshot.Name);
+        await metrics.IncrementOcrCountAsync();
         await PersistItemAsync(item);
         await PersistSessionAsync();
         NotifyStateChanged();
@@ -365,6 +367,11 @@ public sealed class ShoppingService(
         Evaluate(CartMutation.SessionFinished);
         session.Status = SessionStatus.Finished;
         session.FinishedAt = clock.GetUtcNow();
+
+        var budgetRespected = session.BudgetAmount is not { } budget ||
+                              budget <= 0m ||
+                              Total <= budget;
+        await metrics.IncrementPurchaseCountAsync(budgetRespected);
 
         await PersistSessionAsync();
         LastFinishedSession = session;

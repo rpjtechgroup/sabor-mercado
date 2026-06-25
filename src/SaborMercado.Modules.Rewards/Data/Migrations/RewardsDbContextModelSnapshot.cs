@@ -23,62 +23,43 @@ namespace SaborMercado.Modules.Rewards.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SaborMercado.Modules.Rewards.Data.CreditLedgerEntry", b =>
+            modelBuilder.Entity("SaborMercado.Modules.Rewards.Data.RankingSnapshot", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
+                    b.Property<DateTimeOffset>("CalculatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnName("calculated_at");
 
-                    b.Property<int>("Reason")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid?>("ReferenceId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("reference_id");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("rewards_credit_ledger", "rewards");
-                });
-
-            modelBuilder.Entity("SaborMercado.Modules.Rewards.Data.FeatureUnlock", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTimeOffset?>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("expires_at");
-
-                    b.Property<string>("FeatureCode")
+                    b.Property<string>("PseudonymDisplay")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("pseudonym_display");
 
-                    b.Property<DateTimeOffset>("UnlockedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("unlocked_at");
+                    b.Property<int>("RankPosition")
+                        .HasColumnType("integer")
+                        .HasColumnName("rank_position");
+
+                    b.Property<string>("RankingType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("ranking_type");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId", "FeatureCode");
+                    b.HasIndex("RankingType", "RankPosition");
 
-                    b.ToTable("rewards_feature_unlocks", "rewards");
+                    b.HasIndex("RankingType", "UserId");
+
+                    b.ToTable("rewards_ranking_snapshots", "rewards");
                 });
 
             modelBuilder.Entity("SaborMercado.Modules.Rewards.Data.UserAchievement", b =>
@@ -105,6 +86,55 @@ namespace SaborMercado.Modules.Rewards.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("rewards_user_achievements", "rewards");
+                });
+
+            modelBuilder.Entity("SaborMercado.Modules.Rewards.Data.UserGamificationMetrics", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("CurrentLoginStreakDays")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset?>("LastLoginAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("last_login_at");
+
+                    b.Property<int>("LongestLoginStreakDays")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalOcrItemsAdded")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalProductsRegistered")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalProductsWithPriceHistory")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalPurchasesCompleted")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalPurchasesWithBudgetOk")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalStoresRegistered")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("rewards_user_metrics", "rewards");
                 });
 #pragma warning restore 612, 618
         }

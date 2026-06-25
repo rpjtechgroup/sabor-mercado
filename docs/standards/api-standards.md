@@ -9,7 +9,7 @@
   `v1` durante a janela de migração (clientes PWA instalados atualizam com
   atraso).
 - Recursos em inglês, plural, kebab-case: `/api/v1/recognitions`,
-  `/api/v1/price-observations`, `/api/v1/unlocks`.
+  `/api/v1/price-observations`, `/api/v1/rankings`.
 - JSON camelCase; datas ISO 8601 UTC; dinheiro como número decimal
   (`8.99`) + moeda implícita BRL no MVP.
 - Idempotência: POSTs de contribuição aceitam header `Idempotency-Key`.
@@ -37,15 +37,17 @@
 | `POST /api/v1/recognitions`          | Recognition   | Foto → `RecognitionResult`                 | opcional* |
 | `GET  /api/v1/starter-catalog`       | SharedCatalog | Catálogo curado inicial (JSON)               | —         |
 | `POST /api/v1/price-observations`    | SharedCatalog | Contribuição anonimizada → `202 Accepted`  | requerida |
-| `GET  /api/v1/shared-products?query=`| SharedCatalog | Busca no catálogo colaborativo             | premium   |
-| `GET  /api/v1/shared-products/{id}/markets` | SharedCatalog | Comparação de preços por mercado    | premium   |
-| `GET  /api/v1/shared-products/{id}/observations` | SharedCatalog | Observações com reputação e votos | premium   |
+| `GET  /api/v1/shared-products?query=`| SharedCatalog | Busca no catálogo colaborativo             | requerida |
+| `GET  /api/v1/shared-products/{id}/markets` | SharedCatalog | Comparação de preços por mercado    | requerida |
+| `GET  /api/v1/shared-products/{id}/observations` | SharedCatalog | Observações com reputação e votos | requerida |
 | `POST /api/v1/price-observations/{id}/vote` | SharedCatalog | Upvote (+1) ou downvote (−1)       | requerida |
 | `DELETE /api/v1/price-observations/{id}/vote` | SharedCatalog | Remove voto do usuário          | requerida |
 | `POST /api/v1/contributor-reports`   | SharedCatalog | Denúncia de contribuidor/observação        | requerida |
 | `GET  /api/v1/achievements`          | Rewards       | Conquistas desbloqueadas do usuário        | requerida |
-| `GET  /api/v1/credits`               | Rewards       | Saldo + extrato                            | requerida |
-| `POST /api/v1/unlocks`               | Rewards       | Gastar créditos em funcionalidade          | requerida |
+| `GET  /api/v1/achievements/catalog`  | Rewards       | Catálogo de conquistas com progresso       | requerida |
+| `POST /api/v1/metrics/sync`          | Rewards       | Sincronizar métricas de uso do cliente     | requerida |
+| `GET  /api/v1/rankings/{type}`       | Rewards       | Ranking global por categoria               | requerida |
+| `GET  /api/v1/rankings/{type}/me`    | Rewards       | Posição do usuário no ranking              | requerida |
 | `POST /api/v1/auth/register|login`   | Identity      | Conta leve (email+senha)                   | —         |
 | `POST /api/v1/auth/google`           | Identity      | Login com Google (ID token GIS)            | —         |
 | `POST /api/v1/auth/refresh`          | Identity      | Renovar access token                       | refresh   |

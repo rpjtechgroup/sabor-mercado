@@ -7,7 +7,7 @@ using SaborMercado.Web.Storage;
 
 namespace SaborMercado.Web.Features.Catalog;
 
-public sealed class CatalogService(ICatalogStore store, StoreService stores, TimeProvider clock)
+public sealed class CatalogService(ICatalogStore store, StoreService stores, IMetricsStore metrics, TimeProvider clock)
 {
     private readonly List<Product> _products = [];
     private bool _initialized;
@@ -73,6 +73,7 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         _products.Add(product);
         SortProducts();
         await PersistProductAsync(product);
+        await metrics.IncrementProductCountAsync();
         NotifyStateChanged();
         return product;
     }
@@ -164,6 +165,7 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         {
             await store.SavePriceRecordAsync(record);
             StorageUnavailable = false;
+            await RefreshPriceHistoryMetricAsync();
         }
         catch
         {
@@ -244,6 +246,7 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
         _products.Add(product);
         SortProducts();
         await PersistProductAsync(product);
+        await metrics.IncrementProductCountAsync();
         NotifyStateChanged();
         return product;
     }
@@ -343,4 +346,20 @@ public sealed class CatalogService(ICatalogStore store, StoreService stores, Tim
     }
 
     private void NotifyStateChanged() => StateChanged?.Invoke();
+
+    private async Task RefreshPriceHistoryMetricAsync()
+    {
+        var products = await store.GetAllProductsAsync();
+        var count = 0;
+        foreach (var product in products)
+        {
+            var records = await store.GetPriceRecordsAsync(product.Id);
+            if (records.Count > 0)
+            {
+                count++;
+            }
+        }
+
+        await metrics.SetProductsWithPriceHistoryCountAsync(count);
+    }
 }

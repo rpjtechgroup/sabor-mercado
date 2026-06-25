@@ -10,9 +10,13 @@
     {
         <p class="muted">Carregando…</p>
     }
-    else if (!Account.HasUnlock(PremiumFeatureCodes.MarketComparison))
+    else if (!Account.IsLoggedIn)
     {
-        <p class="muted">Desbloqueie em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (20 créditos).</p>
+        <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Login" Label="Entre na sua conta" /> para comparar mercados.</p>
+    }
+    else if (!string.IsNullOrEmpty(_error))
+    {
+        <p class="text-danger" role="alert">@_error</p>
     }
     else if (_comparison is null)
     {
@@ -56,7 +60,7 @@
     protected override async Task OnInitializedAsync()
     {
         await Account.InitializeAsync();
-        if (Account.HasUnlock(PremiumFeatureCodes.MarketComparison))
+        if (Account.IsLoggedIn)
         {
             try
             {

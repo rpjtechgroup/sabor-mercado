@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using SaborMercado.Modules.SharedCatalog.Services;
 using SaborMercado.Shared.Community;
-using SaborMercado.Shared.Rewards;
-
 namespace SaborMercado.Modules.SharedCatalog.Endpoints;
 
 public static class CommunityEndpoints
@@ -94,29 +92,9 @@ public static class CommunityEndpoints
         Guid productId,
         ClaimsPrincipal user,
         SharedObservationQueryService query,
-        IPremiumAccessService premium,
         CancellationToken cancellationToken)
     {
         var accountId = GetAccountId(user);
-        var hasUnlock = await premium.HasActiveUnlockAsync(
-            accountId,
-            PremiumFeatureCodes.CollaborativePriceHistory,
-            cancellationToken);
-
-        if (!hasUnlock)
-        {
-            return Results.Json(
-                new
-                {
-                    type = "https://sabormercado.app/errors/premium-required",
-                    title = "Histórico colaborativo requer desbloqueio premium.",
-                    status = 403,
-                    code = "PREMIUM_REQUIRED",
-                    detail = "Desbloqueie o histórico colaborativo de preços em Minha conta.",
-                },
-                statusCode: StatusCodes.Status403Forbidden);
-        }
-
         var result = await query.ListByProductAsync(
             productId,
             accountId,

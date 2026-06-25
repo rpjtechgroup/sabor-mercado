@@ -46,6 +46,31 @@ public sealed class AchievementService(RewardsDbContext db, TimeProvider clock) 
             cancellationToken);
     }
 
+    public async Task<AchievementListResponse> EvaluateAfterMetricsSyncAsync(
+        Guid userId,
+        UserMetricsValues metrics,
+        CancellationToken cancellationToken = default)
+    {
+        var newlyUnlocked = new List<AchievementDto>();
+
+        foreach (var (code, (metricKey, threshold)) in AchievementCodes.MetricThresholds)
+        {
+            var value = AchievementCodes.GetMetricValue(metricKey, metrics);
+            if (value < threshold)
+            {
+                continue;
+            }
+
+            var unlocked = await UnlockIfMissingAsync(userId, code, condition: true, cancellationToken);
+            if (unlocked is not null)
+            {
+                newlyUnlocked.Add(unlocked);
+            }
+        }
+
+        return new AchievementListResponse(newlyUnlocked);
+    }
+
     public async Task<AchievementListResponse> ListForUserAsync(Guid userId, CancellationToken cancellationToken)
     {
         var items = (await db.UserAchievements
@@ -67,7 +92,51 @@ public sealed class AchievementService(RewardsDbContext db, TimeProvider clock) 
         return new AchievementListResponse(dtos);
     }
 
-    private async Task UnlockIfMissingAsync(
+    public async Task<AchievementCatalogResponse> GetCatalogForUserAsync(
+        Guid userId,
+        UserMetricsValues? localMetrics,
+        CancellationToken cancellationToken)
+    {
+        var unlocked = await db.UserAchievements
+            .AsNoTracking()
+            .Where(a => a.UserId == userId)
+            .ToDictionaryAsync(a => a.AchievementCode, a => a.UnlockedAt, cancellationToken);
+
+        var items = AchievementCodes.Catalog
+            .Select(entry =>
+            {
+                var code = entry.Key;
+                var (title, description) = entry.Value;
+                var isUnlocked = unlocked.ContainsKey(code);
+                int? current = null;
+                int? target = null;
+
+                if (AchievementCodes.MetricThresholds.TryGetValue(code, out var threshold))
+                {
+                    target = threshold.Threshold;
+                    if (localMetrics is not null)
+                    {
+                        current = AchievementCodes.GetMetricValue(threshold.MetricKey, localMetrics);
+                    }
+                }
+
+                return new AchievementProgressDto(
+                    code,
+                    title,
+                    description,
+                    isUnlocked,
+                    isUnlocked ? unlocked[code] : null,
+                    current,
+                    target);
+            })
+            .OrderByDescending(i => i.IsUnlocked)
+            .ThenBy(i => i.Title, StringComparer.Ordinal)
+            .ToList();
+
+        return new AchievementCatalogResponse(items, unlocked.Count, AchievementCodes.Catalog.Count);
+    }
+
+    private async Task<AchievementDto?> UnlockIfMissingAsync(
         Guid userId,
         string code,
         bool condition,
@@ -75,7 +144,7 @@ public sealed class AchievementService(RewardsDbContext db, TimeProvider clock) 
     {
         if (!condition)
         {
-            return;
+            return null;
         }
 
         var exists = await db.UserAchievements.AnyAsync(
@@ -84,17 +153,25 @@ public sealed class AchievementService(RewardsDbContext db, TimeProvider clock) 
 
         if (exists)
         {
-            return;
+            return null;
         }
 
+        var unlockedAt = clock.GetUtcNow();
         db.UserAchievements.Add(new UserAchievement
         {
             Id = Guid.NewGuid(),
             UserId = userId,
             AchievementCode = code,
-            UnlockedAt = clock.GetUtcNow(),
+            UnlockedAt = unlockedAt,
         });
 
         await db.SaveChangesAsync(cancellationToken);
+
+        if (!AchievementCodes.Catalog.TryGetValue(code, out var meta))
+        {
+            return new AchievementDto(code, code, string.Empty, unlockedAt);
+        }
+
+        return new AchievementDto(code, meta.Title, meta.Description, unlockedAt);
     }
 }

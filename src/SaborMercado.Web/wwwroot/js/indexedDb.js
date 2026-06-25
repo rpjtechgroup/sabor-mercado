@@ -22,6 +22,9 @@ function upgrade(db, oldVersion) {
   if (oldVersion < 5) {
     db.createObjectStore('shoppingReminders', { keyPath: 'id' });
   }
+  if (oldVersion < 6) {
+    db.createObjectStore('gamificationMetrics', { keyPath: 'id' });
+  }
 }
 
 export function open(name, version) {

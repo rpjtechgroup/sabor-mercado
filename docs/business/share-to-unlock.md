@@ -1,5 +1,8 @@
 # Modelo Share-to-Unlock
 
+> **Obsoleto** — substituído por [`gamification.md`](gamification.md) (jun/2026).
+> Mantido apenas para histórico de decisões.
+
 > Regras canônicas do modelo de compartilhamento e desbloqueio de
 > funcionalidades premium. Referência: Constitution, princípio IV.
 

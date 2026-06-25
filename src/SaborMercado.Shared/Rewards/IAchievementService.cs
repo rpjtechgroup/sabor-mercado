@@ -1,3 +1,5 @@
+using SaborMercado.Shared.Community;
+
 namespace SaborMercado.Shared.Rewards;
 
 public interface IAchievementService
@@ -15,4 +17,16 @@ public interface IAchievementService
         int totalUpvotesReceived,
         int observationNetScore,
         CancellationToken cancellationToken = default);
+
+    Task<AchievementListResponse> EvaluateAfterMetricsSyncAsync(
+        Guid userId,
+        UserMetricsValues metrics,
+        CancellationToken cancellationToken = default);
+
+    Task<AchievementListResponse> ListForUserAsync(Guid userId, CancellationToken cancellationToken);
+
+    Task<AchievementCatalogResponse> GetCatalogForUserAsync(
+        Guid userId,
+        UserMetricsValues? localMetrics,
+        CancellationToken cancellationToken);
 }

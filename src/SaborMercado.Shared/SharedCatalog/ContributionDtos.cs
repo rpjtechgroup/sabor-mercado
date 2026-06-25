@@ -15,5 +15,4 @@ public sealed record SubmitPriceObservationRequest(
 public sealed record PriceObservationResponse(
     Guid ObservationId,
     string Status,
-    int CreditsGranted,
     bool IsNewProduct);

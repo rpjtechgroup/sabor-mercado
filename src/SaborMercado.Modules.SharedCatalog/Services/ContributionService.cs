@@ -13,7 +13,6 @@ namespace SaborMercado.Modules.SharedCatalog.Services;
 
 public sealed class ContributionService(
     SharedCatalogDbContext db,
-    IContributionRewardService rewards,
     IAchievementService achievements,
     ContributorTrustService trust,
     TimeProvider clock)
@@ -125,12 +124,7 @@ public sealed class ContributionService(
             contributorTrust.TotalUpvotesReceived,
             cancellationToken);
 
-        var credits = await rewards.GrantForAcceptedObservationAsync(
-            accountId,
-            new ContributionRewardContext(observation.Id, isNew, ean is not null),
-            cancellationToken);
-
-        var response = new PriceObservationResponse(observation.Id, "Accepted", credits, isNew);
+        var response = new PriceObservationResponse(observation.Id, "Accepted", isNew);
         await StoreIdempotentResponseAsync(accountId, idempotencyKey, request, response, cancellationToken);
         return response;
     }

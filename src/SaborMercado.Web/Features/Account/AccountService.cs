@@ -1,6 +1,6 @@
 using System.Net;
 using SaborMercado.Web.Contracts.Auth;
-using SaborMercado.Web.Contracts.Rewards;
+using SaborMercado.Web.Features.Gamification;
 using SaborMercado.Web.Infrastructure;
 using SaborMercado.Web.Storage;
 
@@ -10,6 +10,8 @@ public sealed class AccountService(
     SaborMercadoApiClient api,
     IPreferencesStore preferences,
     ShareService share,
+    GamificationMetricsService gamificationMetrics,
+    ClientGamificationSyncService gamificationSync,
     TimeProvider clock)
 {
     public event Action? StateChanged;
@@ -20,14 +22,12 @@ public sealed class AccountService(
 
     public Guid? PseudonymId { get; private set; }
 
-    public int CreditBalance { get; private set; }
-
     public int PendingShareCount { get; private set; }
-
-    public IReadOnlyList<FeatureUnlockDto> ActiveUnlocks { get; private set; } = [];
 
     public async Task InitializeAsync()
     {
+        await gamificationMetrics.InitializeAsync();
+
         var token = await preferences.GetAccessTokenAsync();
         IsLoggedIn = !string.IsNullOrWhiteSpace(token);
         if (!IsLoggedIn)
@@ -48,16 +48,12 @@ public sealed class AccountService(
         }
 
         await RefreshProfileAsync();
-        await RefreshCreditsAsync();
+        await gamificationMetrics.UpdateLoginStreakAsync();
         await FlushPendingSharesAsync();
         PendingShareCount = await share.GetPendingCountAsync();
+        await gamificationSync.TrySyncAsync(force: true);
         Notify();
     }
-
-    public bool HasUnlock(string featureCode) =>
-        ActiveUnlocks.Any(u =>
-            u.FeatureCode.Equals(featureCode, StringComparison.Ordinal) &&
-            (u.ExpiresAt is null || u.ExpiresAt > DateTimeOffset.UtcNow));
 
     public async Task RegisterAsync(string email, string password)
     {
@@ -66,7 +62,9 @@ public sealed class AccountService(
         var auth = await api.ReadJsonAsync<AuthResponse>(response, CancellationToken.None)
             ?? throw new InvalidOperationException("Resposta de autenticação inválida.");
         await StoreSessionAsync(email, auth);
+        await gamificationMetrics.UpdateLoginStreakAsync();
         await FlushPendingSharesAsync();
+        await gamificationSync.TrySyncAsync(force: true);
     }
 
     public async Task LoginAsync(string email, string password)
@@ -82,7 +80,9 @@ public sealed class AccountService(
         var auth = await api.ReadJsonAsync<AuthResponse>(response, CancellationToken.None)
             ?? throw new InvalidOperationException("Resposta de autenticação inválida.");
         await StoreSessionAsync(email, auth);
+        await gamificationMetrics.UpdateLoginStreakAsync();
         await FlushPendingSharesAsync();
+        await gamificationSync.TrySyncAsync(force: true);
     }
 
     public async Task LoginWithGoogleAsync(string idToken)
@@ -98,7 +98,9 @@ public sealed class AccountService(
             ?? throw new InvalidOperationException("Resposta de autenticação inválida.");
 
         await RefreshProfileAfterGoogleAsync(auth);
+        await gamificationMetrics.UpdateLoginStreakAsync();
         await FlushPendingSharesAsync();
+        await gamificationSync.TrySyncAsync(force: true);
     }
 
     public async Task DeleteAccountAsync()
@@ -118,67 +120,6 @@ public sealed class AccountService(
         await preferences.ClearAuthAsync();
         ResetState();
         Notify();
-    }
-
-    public async Task RefreshCreditsAsync()
-    {
-        if (!IsLoggedIn)
-        {
-            return;
-        }
-
-        var response = await api.SendAsync(HttpMethod.Get, "/api/v1/credits", requireAuth: true);
-        if (response.StatusCode == HttpStatusCode.Unauthorized)
-        {
-            if (!await TryRefreshSessionAsync())
-            {
-                await LogoutAsync();
-            }
-
-            return;
-        }
-
-        await EnsureSuccessAsync(response);
-        var credits = await api.ReadJsonAsync<CreditsResponse>(response, CancellationToken.None);
-        if (credits is null)
-        {
-            return;
-        }
-
-        CreditBalance = credits.Balance;
-        ActiveUnlocks = credits.ActiveUnlocks;
-        Notify();
-    }
-
-    public async Task<UnlockResponse> UnlockAsync(string featureCode)
-    {
-        var response = await api.SendAsync(
-            HttpMethod.Post,
-            "/api/v1/unlocks",
-            new UnlockRequest(featureCode),
-            requireAuth: true);
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var detail = await api.ReadErrorDetailAsync(response, CancellationToken.None);
-            throw new AccountException(detail ?? "Não foi possível desbloquear.");
-        }
-
-        var result = await api.ReadJsonAsync<UnlockResponse>(response, CancellationToken.None)
-            ?? throw new InvalidOperationException("Resposta de desbloqueio inválida.");
-
-        CreditBalance = result.NewBalance;
-        await RefreshCreditsAsync();
-        return result;
-    }
-
-    public void ApplyCreditsFromShare(int creditsGranted, int newBalanceHint = 0)
-    {
-        if (creditsGranted > 0)
-        {
-            CreditBalance = Math.Max(CreditBalance + creditsGranted, newBalanceHint);
-            Notify();
-        }
     }
 
     public async Task FlushPendingSharesAsync()
@@ -205,7 +146,6 @@ public sealed class AccountService(
         IsLoggedIn = true;
         PseudonymId = auth.PseudonymId;
         await RefreshProfileAsync();
-        await RefreshCreditsAsync();
         Notify();
     }
 
@@ -220,7 +160,6 @@ public sealed class AccountService(
         IsLoggedIn = true;
         Email = email;
         PseudonymId = auth.PseudonymId;
-        await RefreshCreditsAsync();
         Notify();
     }
 
@@ -294,9 +233,7 @@ public sealed class AccountService(
         IsLoggedIn = false;
         Email = null;
         PseudonymId = null;
-        CreditBalance = 0;
         PendingShareCount = 0;
-        ActiveUnlocks = [];
     }
 
     private static async Task EnsureSuccessAsync(HttpResponseMessage response)

@@ -48,7 +48,6 @@ public sealed class SupportDiagnosticsCollector(
                 ["isLoggedIn"] = account.IsLoggedIn,
                 ["email"] = account.Email,
                 ["pseudonymId"] = account.PseudonymId?.ToString(),
-                ["creditBalance"] = account.CreditBalance,
                 ["pendingShareCount"] = pendingShares,
             },
             ["shopping"] = new Dictionary<string, object?>

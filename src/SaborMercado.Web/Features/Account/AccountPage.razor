@@ -1,14 +1,17 @@
 @page "/conta"
+@using SaborMercado.Web.Contracts.Community
 @implements IDisposable
+@using SaborMercado.Web.Features.Gamification.Components
 @inject AccountService Account
 @inject CommunityService Community
+@inject GamificationMetricsService GamificationMetrics
 @inject NavigationManager Navigation
 
 <PageTitle>Sabor Mercado — Minha conta</PageTitle>
 
 <PageLayout Icon="@AppIcons.Account"
             Title="Minha conta"
-            Subtitle="Compartilhe preços anonimizados para ganhar créditos e desbloquear recursos premium. O fluxo principal continua gratuito e offline.">
+            Subtitle="Acompanhe conquistas e rankings com base no uso do app. Seus dados de compra permanecem no dispositivo.">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -53,80 +56,47 @@
     }
     else
     {
-        <SettingsSection Id="credits-heading" Icon="@AppIcons.Trophy" Title="Créditos">
-            <p class="totals-value">@Account.CreditBalance crédito@(Account.CreditBalance == 1 ? string.Empty : "s")</p>
+        <SettingsSection Id="profile-heading" Icon="@AppIcons.Account" Title="Perfil">
             <p class="muted">Logado como @Account.Email</p>
             @if (Account.PendingShareCount > 0)
             {
                 <p class="muted" role="status">@Account.PendingShareCount compartilhamento(s) aguardando envio.</p>
                 <IconButton Icon="@AppIcons.Refresh" Label="Tentar enviar agora" CssClass="btn btn-secondary btn-block btn-icon" OnClick="FlushPendingAsync" />
             }
-            @if (Account.HasUnlock(PremiumFeatureCodes.CollaborativePriceHistory))
-            {
-                <IconLink Href="catalogo-colaborativo" Icon="@AppIcons.Catalog" Label="Ver catálogo colaborativo" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-            }
-            @if (Account.HasUnlock(PremiumFeatureCodes.AdvancedStats))
-            {
-                <IconLink Href="estatisticas" Icon="@AppIcons.Chart" Label="Estatísticas avançadas" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-            }
-            @if (Account.HasUnlock(PremiumFeatureCodes.SmartLists))
-            {
-                <IconLink Href="listas-inteligentes" Icon="@AppIcons.List" Label="Listas inteligentes" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-            }
+            <IconLink Href="catalogo-colaborativo" Icon="@AppIcons.Catalog" Label="Catálogo colaborativo" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
+            <IconLink Href="estatisticas" Icon="@AppIcons.Chart" Label="Estatísticas de gastos" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
+            <IconLink Href="listas-inteligentes" Icon="@AppIcons.List" Label="Listas inteligentes" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
+            <IconLink Href="rankings" Icon="@AppIcons.Trophy" Label="Rankings" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
             <IconButton Icon="@AppIcons.Logout" Label="Sair" CssClass="btn btn-outline btn-block btn-icon" OnClick="LogoutAsync" />
         </SettingsSection>
 
-        <SettingsSection Id="achievements-heading" Icon="@AppIcons.Trophy" Title="Conquistas">
-            @if (_achievements.Count == 0)
+        <SettingsSection Id="metrics-heading" Icon="@AppIcons.Chart" Title="Seu progresso">
+            @if (GamificationMetrics.Current is { } metrics)
             {
-                <p class="muted">Contribua com preços e vote em observações para desbloquear conquistas.</p>
-            }
-            else
-            {
-                <div class="achievement-grid">
-                    @foreach (var badge in _achievements)
-                    {
-                        <div class="achievement-badge" title="@badge.Description">
-                            <span class="achievement-badge-title">@badge.Title</span>
-                            <span class="muted achievement-badge-date">@badge.UnlockedAt.ToLocalTime().ToString("dd/MM/yyyy")</span>
-                        </div>
-                    }
+                <div class="metrics-grid">
+                    <div class="metric-card"><span class="metric-value">@metrics.TotalProductsRegistered</span><span class="metric-label">Produtos</span></div>
+                    <div class="metric-card"><span class="metric-value">@metrics.TotalStoresRegistered</span><span class="metric-label">Comércios</span></div>
+                    <div class="metric-card"><span class="metric-value">@metrics.TotalPurchasesCompleted</span><span class="metric-label">Compras</span></div>
+                    <div class="metric-card"><span class="metric-value">@metrics.CurrentLoginStreakDays</span><span class="metric-label">Dias seguidos</span></div>
                 </div>
             }
         </SettingsSection>
 
-        <SettingsSection Id="unlocks-heading" Icon="@AppIcons.Unlock" Title="Desbloqueios premium">
-            @foreach (var offer in UnlockOffers.All)
-            {
-                var active = Account.HasUnlock(offer.Code);
-                <div class="unlock-row">
-                    <div>
-                        <strong>@offer.Label</strong>
-                        <p class="muted">@offer.Cost créditos · @offer.DurationLabel</p>
-                    </div>
-                    @if (active)
-                    {
-                        <span class="text-ok">Ativo</span>
-                    }
-                    else
-                    {
-                        <IconButton Icon="@AppIcons.Unlock"
-                                    Label="Desbloquear"
-                                    CssClass="btn btn-secondary btn-icon"
-                                    Disabled="@_busy"
-                                    OnClick="@(() => UnlockAsync(offer.Code))" />
-                    }
-                </div>
-            }
-
-            @if (!string.IsNullOrEmpty(_unlockMessage))
-            {
-                <p class="success-text" role="status">@_unlockMessage</p>
-            }
-            @if (!string.IsNullOrEmpty(_error))
-            {
-                <p class="text-danger" role="alert">@_error</p>
-            }
+        <SettingsSection Id="achievements-heading" Icon="@AppIcons.Trophy" Title="Conquistas">
+            <p class="muted">@_unlockedCount de @_totalCount conquistas desbloqueadas.</p>
+            <div class="achievement-grid">
+                @foreach (var badge in _achievementViews)
+                {
+                    var unlocked = _unlockedCodes.Contains(badge.Code);
+                    var unlockedAt = _achievements.FirstOrDefault(a => a.Code == badge.Code)?.UnlockedAt;
+                    <AchievementBadge Title="@badge.Title"
+                                      Description="@badge.Description"
+                                      IsUnlocked="@unlocked"
+                                      UnlockedAt="@unlockedAt"
+                                      CurrentProgress="@badge.CurrentProgress"
+                                      TargetProgress="@badge.TargetProgress" />
+                }
+            </div>
         </SettingsSection>
 
         <SettingsSection Id="danger-heading" Icon="@AppIcons.Warning" Title="Zona de perigo">
@@ -154,22 +124,32 @@
     private string _password = string.Empty;
     private string? _error;
     private string? _googleError;
-    private string? _unlockMessage;
     private List<AchievementDto> _achievements = [];
+    private List<AchievementProgressView> _achievementViews = [];
+    private HashSet<string> _unlockedCodes = new(StringComparer.Ordinal);
+    private int _unlockedCount;
+    private int _totalCount;
 
     protected override async Task OnInitializedAsync()
     {
         Account.StateChanged += OnStateChanged;
+        GamificationMetrics.StateChanged += OnStateChanged;
         await Account.InitializeAsync();
+        await GamificationMetrics.InitializeAsync();
         await LoadAchievementsAsync();
         _loaded = true;
     }
 
     private async Task LoadAchievementsAsync()
     {
+        _achievementViews = GamificationMetrics.BuildLocalAchievementProgress().ToList();
+        _totalCount = _achievementViews.Count;
+
         if (!Account.IsLoggedIn)
         {
             _achievements = [];
+            _unlockedCodes = [];
+            _unlockedCount = 0;
             return;
         }
 
@@ -177,10 +157,14 @@
         {
             var response = await Community.ListAchievementsAsync();
             _achievements = response.Items.ToList();
+            _unlockedCodes = _achievements.Select(a => a.Code).ToHashSet(StringComparer.Ordinal);
+            _unlockedCount = _achievements.Count;
         }
         catch (CommunityException)
         {
             _achievements = [];
+            _unlockedCodes = [];
+            _unlockedCount = 0;
         }
     }
 
@@ -228,26 +212,6 @@
         }
     }
 
-    private async Task UnlockAsync(string featureCode)
-    {
-        _busy = true;
-        _error = null;
-        _unlockMessage = null;
-        try
-        {
-            await Account.UnlockAsync(featureCode);
-            _unlockMessage = "Funcionalidade desbloqueada.";
-        }
-        catch (AccountException ex)
-        {
-            _error = ex.Message;
-        }
-        finally
-        {
-            _busy = false;
-        }
-    }
-
     private async Task FlushPendingAsync()
     {
         _busy = true;
@@ -258,9 +222,9 @@
     private async Task LogoutAsync()
     {
         await Account.LogoutAsync();
-        _unlockMessage = null;
         _error = null;
         _confirmingDelete = false;
+        await LoadAchievementsAsync();
     }
 
     private async Task DeleteAccountAsync()
@@ -271,6 +235,7 @@
         {
             await Account.DeleteAccountAsync();
             _confirmingDelete = false;
+            await LoadAchievementsAsync();
         }
         catch (AccountException ex)
         {
@@ -288,5 +253,9 @@
         StateHasChanged();
     });
 
-    public void Dispose() => Account.StateChanged -= OnStateChanged;
+    public void Dispose()
+    {
+        Account.StateChanged -= OnStateChanged;
+        GamificationMetrics.StateChanged -= OnStateChanged;
+    }
 }

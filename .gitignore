@@ -18,6 +18,7 @@ sabormercado-*.tar.gz
 appsettings.*.local.json
 *.pfx
 chaves/
+*.csv
 src/SaborMercado.Shared/StarterCatalog/starter-catalog.pt-BR.json
 
 # SO / editores

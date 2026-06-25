@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaborMercado.Infrastructure
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaborMercado.Modules.Support", "src\SaborMercado.Modules.Support\SaborMercado.Modules.Support.csproj", "{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D8E3A53B-C15F-4C20-8B50-F43AC5276734}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaborMercado.Modules.Rewards.Tests", "tests\SaborMercado.Modules.Rewards.Tests\SaborMercado.Modules.Rewards.Tests.csproj", "{ECE17471-2316-4CEA-86DA-49F0CDE343A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +145,18 @@ Global
 		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x64.Build.0 = Release|Any CPU
 		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x86.ActiveCfg = Release|Any CPU
 		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5}.Release|x86.Build.0 = Release|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Debug|x64.Build.0 = Debug|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Debug|x86.Build.0 = Debug|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Release|x64.ActiveCfg = Release|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Release|x64.Build.0 = Release|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Release|x86.ActiveCfg = Release|Any CPU
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,5 +171,6 @@ Global
 		{3C063705-6C31-4C39-9FCF-D26846A42B21} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{8C4A45C0-EC32-4943-92EC-B9FE75DEFDE2} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{3E120F1E-D76A-4EA1-AACB-FFB7422F56E5} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{ECE17471-2316-4CEA-86DA-49F0CDE343A6} = {D8E3A53B-C15F-4C20-8B50-F43AC5276734}
 	EndGlobalSection
 EndGlobal

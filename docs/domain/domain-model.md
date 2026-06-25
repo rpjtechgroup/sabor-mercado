@@ -31,7 +31,7 @@ flowchart LR
 | **Catalog**    | Cliente (local)  | Cadastro pessoal de produtos e histórico de preços (F5)   |
 | **Recognition**| Servidor         | Proxy OCR (Gemini), parsing, rate-limit, fallback (F1)    |
 | **SharedCatalog**| Servidor       | Catálogo colaborativo, validação, anti-fraude             |
-| **Rewards**    | Servidor         | Créditos, desbloqueios premium (share-to-unlock)          |
+| **Rewards**    | Servidor         | Conquistas, métricas de uso e rankings                    |
 | **Identity**   | Servidor         | Conta leve, autenticação, pseudônimo                      |
 
 Regra: contextos só se comunicam pelos contratos definidos em
@@ -90,12 +90,14 @@ Invariantes:
 Regras: [`docs/business/community-trust.md`](../business/community-trust.md).
 
 ### Rewards (servidor)
-- **CreditLedgerEntry**: `userId`, `amount (+/−)`, `reason
-  (ContributionAccepted|NewProductBonus|EanBonus|UnlockSpend)`, `refId`,
-  `createdAt`. Saldo = soma do ledger (nunca campo mutável).
-- **FeatureUnlock**: `userId`, `featureCode`, `expiresAt?`.
 - **UserAchievement**: `userId`, `achievementCode`, `unlockedAt` — permanente,
   vinculado à conta (não ao pseudônimo público).
+- **UserGamificationMetrics**: métricas sincronizadas do cliente (`totalProducts`,
+  `totalStores`, `totalPurchases`, `loginStreak`, etc.).
+- **RankingSnapshot**: posição pré-calculada por categoria (`products`, `stores`,
+  `purchases`, `login-streak`, `achievements`).
+
+Regras: [`docs/business/gamification.md`](../business/gamification.md).
 
 ### Identity (servidor)
 - **User**: `id`, `email`, `passwordHash`, `pseudonymId (GUID estável)`,
@@ -111,8 +113,8 @@ Regras: [`docs/business/community-trust.md`](../business/community-trust.md).
 | Etiqueta de prateleira  | shelf label (entrada do OCR) |
 | Observação de preço     | `PriceObservation`      |
 | Catálogo colaborativo   | `SharedCatalog`         |
-| Crédito                 | `CreditLedgerEntry`     |
-| Desbloqueio             | `FeatureUnlock`         |
+| Conquista               | `UserAchievement`       |
+| Ranking                 | `RankingSnapshot`       |
 
 ## Sincronização cliente ↔ servidor
 

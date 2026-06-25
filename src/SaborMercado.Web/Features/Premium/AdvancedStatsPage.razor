@@ -1,18 +1,13 @@
 @page "/estatisticas"
-@inject AccountService Account
 @inject PremiumStatsService Stats
 
 <PageTitle>Sabor Mercado — Estatísticas</PageTitle>
 
 <div class="premium-page">
-    <PageLayout Icon="@AppIcons.Chart" Title="Estatísticas avançadas">
+    <PageLayout Icon="@AppIcons.Chart" Title="Estatísticas de gastos">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
-    }
-    else if (!Account.HasUnlock(PremiumFeatureCodes.AdvancedStats))
-    {
-        <p class="muted">Desbloqueie em <IconInlineLink Href="conta" Icon="@AppIcons.Account" Label="Minha conta" /> (25 créditos).</p>
     }
     else if (_stats is null || _stats.FinishedTrips == 0)
     {
@@ -37,7 +32,7 @@
         }
     }
 
-    <p class="muted"><IconInlineLink Href="conta" Icon="@AppIcons.Back" Label="Minha conta" /></p>
+    <p class="muted"><IconInlineLink Href="configuracoes" Icon="@AppIcons.Back" Label="Configurações" /></p>
     </PageLayout>
 </div>
 
@@ -47,12 +42,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await Account.InitializeAsync();
-        if (Account.HasUnlock(PremiumFeatureCodes.AdvancedStats))
-        {
-            _stats = await Stats.GetStatsAsync();
-        }
-
+        _stats = await Stats.GetStatsAsync();
         _loaded = true;
     }
 }

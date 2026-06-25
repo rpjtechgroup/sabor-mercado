@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using SaborMercado.Web;
 
 using SaborMercado.Web.Features.Account;
+using SaborMercado.Web.Features.Gamification;
 using SaborMercado.Web.Features.Premium;
 
 using SaborMercado.Web.Features.Catalog;
@@ -89,6 +90,8 @@ builder.Services.AddScoped<StatusMessageLocalizer>();
 
 builder.Services.AddScoped<ToastService>();
 
+builder.Services.AddScoped<IMetricsStore, IndexedDbMetricsStore>();
+
 builder.Services.AddScoped<StoreService>();
 
 builder.Services.AddScoped<CatalogService>();
@@ -110,6 +113,11 @@ builder.Services.AddScoped<PurchaseHistoryService>();
 builder.Services.AddScoped<MarketPriceMatrixService>();
 
 builder.Services.AddScoped<AccountService>();
+
+builder.Services.AddScoped<GamificationMetricsService>();
+builder.Services.AddScoped<ClientGamificationSyncService>();
+builder.Services.AddScoped<GamificationRankingService>();
+builder.Services.AddScoped<AchievementNotificationService>();
 
 builder.Services.AddScoped<ShareService>();
 builder.Services.AddScoped<CollaborativeCatalogService>();

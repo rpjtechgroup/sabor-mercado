@@ -166,10 +166,9 @@ public partial class ProductDetail : IDisposable
             }
 
             var response = result.Response!;
-            Account.ApplyCreditsFromShare(response.CreditsGranted);
             _shareMessage = response.IsNewProduct
-                ? $"Compartilhado! +{response.CreditsGranted} créditos (produto novo no catálogo colaborativo)."
-                : $"Compartilhado! +{response.CreditsGranted} crédito(s).";
+                ? "Compartilhado! Produto novo no catálogo colaborativo."
+                : "Preço compartilhado com sucesso.";
         }
         catch (ShareException ex)
         {

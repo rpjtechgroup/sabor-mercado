@@ -17,11 +17,10 @@ public static class RewardsModule
         IConfiguration configuration)
     {
         services.AddSingleton(TimeProvider.System);
-        services.AddScoped<RewardsService>();
-        services.AddScoped<IContributionRewardService, ContributionRewardService>();
         services.AddScoped<IAchievementService, AchievementService>();
         services.AddScoped<AchievementService>();
-        services.AddScoped<IPremiumAccessService, PremiumAccessService>();
+        services.AddScoped<MetricsSyncService>();
+        services.AddScoped<RankingService>();
 
         services.AddDbContextPool<RewardsDbContext>(options =>
             DatabaseBootstrap.ConfigureDbContext<RewardsDbContext>(
