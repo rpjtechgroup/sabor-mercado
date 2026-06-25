@@ -1,81 +1,2664 @@
 {
-  "version": 1,
+  "version": 2,
   "locale": "pt-BR",
   "stores": [
-    { "key": "carrefour", "name": "Carrefour" },
-    { "key": "atacadao", "name": "Atacadão" },
-    { "key": "pao-de-acucar", "name": "Pão de Açúcar" },
-    { "key": "assai", "name": "Assaí" },
-    { "key": "extra", "name": "Extra" },
-    { "key": "sams-club", "name": "Sam's Club" }
+    {
+      "key": "carrefour",
+      "name": "Carrefour"
+    },
+    {
+      "key": "atacadao",
+      "name": "Atacadão"
+    },
+    {
+      "key": "pao-de-acucar",
+      "name": "Pão de Açúcar"
+    },
+    {
+      "key": "assai",
+      "name": "Assaí"
+    },
+    {
+      "key": "extra",
+      "name": "Extra"
+    },
+    {
+      "key": "sams-club",
+      "name": "Sam's Club"
+    }
   ],
   "products": [
-    { "key": "arroz-branco", "name": "Arroz Branco", "category": "Mercearia", "quantityValue": 5, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "arroz-integral", "name": "Arroz Integral", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "feijao-carioca", "name": "Feijão Carioca", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "feijao-preto", "name": "Feijão Preto", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "oleo-soja", "name": "Óleo de Soja", "category": "Mercearia", "quantityValue": 900, "quantityUnit": "ml", "defaultStoreKey": "carrefour" },
-    { "key": "oleo-girassol", "name": "Óleo de Girassol", "category": "Mercearia", "quantityValue": 900, "quantityUnit": "ml", "defaultStoreKey": "carrefour" },
-    { "key": "acucar-cristal", "name": "Açúcar Cristal", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "acucar-refinado", "name": "Açúcar Refinado", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "cafe-torrado", "name": "Café Torrado e Moído", "category": "Mercearia", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "pao-de-acucar" },
-    { "key": "leite-uht", "name": "Leite UHT Integral", "category": "Laticínios", "quantityValue": 1, "quantityUnit": "l", "defaultStoreKey": "carrefour" },
-    { "key": "leite-desnatado", "name": "Leite UHT Desnatado", "category": "Laticínios", "quantityValue": 1, "quantityUnit": "l", "defaultStoreKey": "carrefour" },
-    { "key": "macarrao-espaguete", "name": "Macarrão Espaguete", "category": "Mercearia", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "atacadao" },
-    { "key": "macarrao-parafuso", "name": "Macarrão Parafuso", "category": "Mercearia", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "atacadao" },
-    { "key": "farinha-trigo", "name": "Farinha de Trigo", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "farinha-mandioca", "name": "Farinha de Mandioca", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "sal-refinado", "name": "Sal Refinado", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "acucar-demerara", "name": "Açúcar Demerara", "category": "Mercearia", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "extrato-tomate", "name": "Extrato de Tomate", "category": "Mercearia", "quantityValue": 340, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "molho-tomate", "name": "Molho de Tomate", "category": "Mercearia", "quantityValue": 340, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "milho-verde-lata", "name": "Milho Verde em Conserva", "category": "Mercearia", "quantityValue": 200, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "ervilha-lata", "name": "Ervilha em Conserva", "category": "Mercearia", "quantityValue": 200, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "atum-lata", "name": "Atum em Conserva", "category": "Mercearia", "quantityValue": 170, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "sardinha-lata", "name": "Sardinha em Conserva", "category": "Mercearia", "quantityValue": 125, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "biscoito-cream-cracker", "name": "Biscoito Cream Cracker", "category": "Mercearia", "quantityValue": 400, "quantityUnit": "g", "defaultStoreKey": "pao-de-acucar" },
-    { "key": "biscoito-maisena", "name": "Biscoito Maisena", "category": "Mercearia", "quantityValue": 400, "quantityUnit": "g", "defaultStoreKey": "pao-de-acucar" },
-    { "key": "aveia-flocos", "name": "Aveia em Flocos", "category": "Mercearia", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "pao-de-acucar" },
-    { "key": "granola", "name": "Granola", "category": "Mercearia", "quantityValue": 300, "quantityUnit": "g", "defaultStoreKey": "pao-de-acucar" },
-    { "key": "achocolatado-po", "name": "Achocolatado em Pó", "category": "Mercearia", "quantityValue": 400, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "leite-condensado", "name": "Leite Condensado", "category": "Laticínios", "quantityValue": 395, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "creme-leite", "name": "Creme de Leite", "category": "Laticínios", "quantityValue": 200, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "manteiga", "name": "Manteiga", "category": "Laticínios", "quantityValue": 200, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "margarina", "name": "Margarina", "category": "Laticínios", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "queijo-mussarela", "name": "Queijo Mussarela", "category": "Laticínios", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "iogurte-natural", "name": "Iogurte Natural", "category": "Laticínios", "quantityValue": 170, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "ovos-brancos", "name": "Ovos Brancos", "category": "Frios", "quantityValue": 12, "quantityUnit": "un", "defaultStoreKey": "carrefour" },
-    { "key": "pao-forma", "name": "Pão de Forma", "category": "Padaria", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "pao-de-acucar" },
-    { "key": "batata-inglesa", "name": "Batata Inglesa", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "cebola", "name": "Cebola", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "tomate", "name": "Tomate", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "banana", "name": "Banana", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "maca", "name": "Maçã", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "laranja", "name": "Laranja", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "alface", "name": "Alface", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "un", "defaultStoreKey": "extra" },
-    { "key": "cenoura", "name": "Cenoura", "category": "Hortifruti", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "extra" },
-    { "key": "frango-inteiro", "name": "Frango Inteiro", "category": "Açougue", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "assai" },
-    { "key": "carne-moida", "name": "Carne Moída", "category": "Açougue", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "assai" },
-    { "key": "file-peito-frango", "name": "Filé de Peito de Frango", "category": "Açougue", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "assai" },
-    { "key": "linguica-calabresa", "name": "Linguiça Calabresa", "category": "Frios", "quantityValue": 500, "quantityUnit": "g", "defaultStoreKey": "assai" },
-    { "key": "sabonete", "name": "Sabonete", "category": "Higiene", "quantityValue": 90, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "shampoo", "name": "Shampoo", "category": "Higiene", "quantityValue": 350, "quantityUnit": "ml", "defaultStoreKey": "carrefour" },
-    { "key": "condicionador", "name": "Condicionador", "category": "Higiene", "quantityValue": 350, "quantityUnit": "ml", "defaultStoreKey": "carrefour" },
-    { "key": "pasta-dente", "name": "Pasta de Dente", "category": "Higiene", "quantityValue": 90, "quantityUnit": "g", "defaultStoreKey": "carrefour" },
-    { "key": "escova-dente", "name": "Escova de Dente", "category": "Higiene", "quantityValue": 1, "quantityUnit": "un", "defaultStoreKey": "carrefour" },
-    { "key": "papel-higienico", "name": "Papel Higiênico", "category": "Limpeza", "quantityValue": 12, "quantityUnit": "un", "defaultStoreKey": "atacadao" },
-    { "key": "detergente-louca", "name": "Detergente para Louça", "category": "Limpeza", "quantityValue": 500, "quantityUnit": "ml", "defaultStoreKey": "atacadao" },
-    { "key": "sabao-po", "name": "Sabão em Pó", "category": "Limpeza", "quantityValue": 1, "quantityUnit": "kg", "defaultStoreKey": "atacadao" },
-    { "key": "amaciante", "name": "Amaciante", "category": "Limpeza", "quantityValue": 2, "quantityUnit": "l", "defaultStoreKey": "atacadao" },
-    { "key": "agua-sanitaria", "name": "Água Sanitária", "category": "Limpeza", "quantityValue": 1, "quantityUnit": "l", "defaultStoreKey": "atacadao" },
-    { "key": "desinfetante", "name": "Desinfetante", "category": "Limpeza", "quantityValue": 2, "quantityUnit": "l", "defaultStoreKey": "atacadao" },
-    { "key": "esponja-louca", "name": "Esponja de Louça", "category": "Limpeza", "quantityValue": 1, "quantityUnit": "un", "defaultStoreKey": "atacadao" },
-    { "key": "saco-lixo", "name": "Saco de Lixo", "category": "Limpeza", "quantityValue": 30, "quantityUnit": "un", "defaultStoreKey": "atacadao" },
-    { "key": "agua-mineral", "name": "Água Mineral", "category": "Bebidas", "quantityValue": 1.5, "quantityUnit": "l", "defaultStoreKey": "extra" },
-    { "key": "refrigerante-cola", "name": "Refrigerante Cola", "category": "Bebidas", "quantityValue": 2, "quantityUnit": "l", "defaultStoreKey": "extra" },
-    { "key": "suco-laranja", "name": "Suco de Laranja", "category": "Bebidas", "quantityValue": 1, "quantityUnit": "l", "defaultStoreKey": "extra" },
-    { "key": "cafe-capsula", "name": "Café em Cápsula", "category": "Mercearia", "quantityValue": 10, "quantityUnit": "un", "defaultStoreKey": "sams-club" },
-    { "key": "papel-aluminio", "name": "Papel Alumínio", "category": "Limpeza", "quantityValue": 1, "quantityUnit": "un", "defaultStoreKey": "sams-club" },
-    { "key": "filme-pvc", "name": "Filme PVC", "category": "Limpeza", "quantityValue": 1, "quantityUnit": "un", "defaultStoreKey": "sams-club" }
+    {
+      "key": "arroz-branco-5kg",
+      "name": "Arroz Branco",
+      "category": "Mercearia > Grãos e Cereais > Arroz",
+      "quantityValue": 5,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "arroz-integral-1kg",
+      "name": "Arroz Integral",
+      "category": "Mercearia > Grãos e Cereais > Arroz",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "arroz-parborizado-1kg",
+      "name": "Arroz Parborizado",
+      "category": "Mercearia > Grãos e Cereais > Arroz",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "arroz-japones-1kg",
+      "name": "Arroz Japonês",
+      "category": "Mercearia > Grãos e Cereais > Arroz",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "feijao-carioca-1kg",
+      "name": "Feijão Carioca",
+      "category": "Mercearia > Grãos e Cereais > Feijão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "feijao-preto-1kg",
+      "name": "Feijão Preto",
+      "category": "Mercearia > Grãos e Cereais > Feijão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "feijao-fradinho-500g",
+      "name": "Feijão Fradinho",
+      "category": "Mercearia > Grãos e Cereais > Feijão",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "lentilha-vermelha-500g",
+      "name": "Lentilha Vermelha",
+      "category": "Mercearia > Grãos e Cereais > Lentilha",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "graodebico-500g",
+      "name": "Grão-de-Bico",
+      "category": "Mercearia > Grãos e Cereais > Grão-de-Bico",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "milho-pipoca-500g",
+      "name": "Milho para Pipoca",
+      "category": "Mercearia > Grãos e Cereais > Milho",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "quinoa-branca-250g",
+      "name": "Quinoa Branca",
+      "category": "Mercearia > Grãos e Cereais > Quinoa",
+      "quantityValue": 250,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "aveia-flocos-500g",
+      "name": "Aveia em Flocos",
+      "category": "Mercearia > Grãos e Cereais > Aveia",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "farinha-trigo-1kg",
+      "name": "Farinha de Trigo",
+      "category": "Mercearia > Farinhas e Amidos > Farinha de Trigo",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "farinha-mandioca-500g",
+      "name": "Farinha de Mandioca",
+      "category": "Mercearia > Farinhas e Amidos > Farinha de Mandioca",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "fuba-mimoso-500g",
+      "name": "Fubá Mimoso",
+      "category": "Mercearia > Farinhas e Amidos > Fubá",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "polvilho-doce-500g",
+      "name": "Polvilho Doce",
+      "category": "Mercearia > Farinhas e Amidos > Polvilho",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "polvilho-azedo-500g",
+      "name": "Polvilho Azedo",
+      "category": "Mercearia > Farinhas e Amidos > Polvilho",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "amido-milho-200g",
+      "name": "Amido de Milho",
+      "category": "Mercearia > Farinhas e Amidos > Amido de Milho",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "farinha-rosca-500g",
+      "name": "Farinha de Roscas",
+      "category": "Mercearia > Farinhas e Amidos > Farinha de Roscas",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "macarrao-espaguete-500g",
+      "name": "Macarrão Espaguete",
+      "category": "Mercearia > Massas > Espaguete",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "macarrao-parafuso-500g",
+      "name": "Macarrão Parafuso",
+      "category": "Mercearia > Massas > Parafuso",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "macarrao-penne-500g",
+      "name": "Macarrão Penne",
+      "category": "Mercearia > Massas > Penne",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "macarrao-fusilli-500g",
+      "name": "Macarrão Fusilli",
+      "category": "Mercearia > Massas > Fusilli",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "macarrao-talharim-500g",
+      "name": "Macarrão Talharim",
+      "category": "Mercearia > Massas > Talharim",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "macarrao-lasanha-500g",
+      "name": "Massa para Lasanha",
+      "category": "Mercearia > Massas > Lasanha",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "nhoque-batata-500g",
+      "name": "Nhoque de Batata",
+      "category": "Mercearia > Massas > Massas Recheadas",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "capeletti-frango-400g",
+      "name": "Capeletti de Frango",
+      "category": "Mercearia > Massas > Massas Recheadas",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "oleo-soja-900ml",
+      "name": "Óleo de Soja",
+      "category": "Mercearia > Óleos e Azeites > Óleo de Soja",
+      "quantityValue": 900,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "oleo-girassol-900ml",
+      "name": "Óleo de Girassol",
+      "category": "Mercearia > Óleos e Azeites > Óleo de Girassol",
+      "quantityValue": 900,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "oleo-canola-900ml",
+      "name": "Óleo de Canola",
+      "category": "Mercearia > Óleos e Azeites > Óleo de Canola",
+      "quantityValue": 900,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "azeite-extra-virgem-500ml",
+      "name": "Azeite de Oliva Extra Virgem",
+      "category": "Mercearia > Óleos e Azeites > Azeite de Oliva",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "azeite-dende-200ml",
+      "name": "Azeite de Dendê",
+      "category": "Mercearia > Óleos e Azeites > Azeite de Dendê",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "acucar-refinado-1kg",
+      "name": "Açúcar Refinado",
+      "category": "Mercearia > Açúcares e Adoçantes > Açúcar Refinado",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "acucar-cristal-1kg",
+      "name": "Açúcar Cristal",
+      "category": "Mercearia > Açúcares e Adoçantes > Açúcar Cristal",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "acucar-mascavo-500g",
+      "name": "Açúcar Mascavo",
+      "category": "Mercearia > Açúcares e Adoçantes > Açúcar Mascavo",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "acucar-demerara-1kg",
+      "name": "Açúcar Demerara",
+      "category": "Mercearia > Açúcares e Adoçantes > Açúcar Demerara",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "adocante-liquido-100ml",
+      "name": "Adoçante Líquido",
+      "category": "Mercearia > Açúcares e Adoçantes > Adoçante",
+      "quantityValue": 100,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "cafe-torrado-500g",
+      "name": "Café Torrado e Moído",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Café Torrado",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "cafe-soluvel-200g",
+      "name": "Café Solúvel",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Café Solúvel",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "cafe-capsula-10un",
+      "name": "Café em Cápsula",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Café em Cápsula",
+      "quantityValue": 10,
+      "quantityUnit": "un",
+      "defaultStoreKey": "sams-club"
+    },
+    {
+      "key": "cha-preto-20saches",
+      "name": "Chá Preto",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Chás",
+      "quantityValue": 20,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "cha-verde-20saches",
+      "name": "Chá Verde",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Chás",
+      "quantityValue": 20,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "cha-camomila-15saches",
+      "name": "Chá de Camomila",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Chás",
+      "quantityValue": 15,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "achocolatado-po-400g",
+      "name": "Achocolatado em Pó",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Achocolatado",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "chocolate-po-200g",
+      "name": "Chocolate em Pó",
+      "category": "Mercearia > Café, Chás e Bebidas Quentes > Chocolate em Pó",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-po-integral-400g",
+      "name": "Leite em Pó Integral",
+      "category": "Mercearia > Leites em Pó e Cremers > Leite em Pó",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-po-desnatado-400g",
+      "name": "Leite em Pó Desnatado",
+      "category": "Mercearia > Leites em Pó e Cremers > Leite em Pó",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-coco-200ml",
+      "name": "Leite de Coco",
+      "category": "Mercearia > Leites em Pó e Cremers > Leite de Coco",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "milho-verde-lata-200g",
+      "name": "Milho Verde em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Milho Verde",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "ervilha-lata-200g",
+      "name": "Ervilha em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Ervilha",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "palmito-conserva-300g",
+      "name": "Palmito em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Palmito",
+      "quantityValue": 300,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "azeitona-verde-200g",
+      "name": "Azeitona Verde",
+      "category": "Mercearia > Conservas e Enlatados > Azeitona",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "azeitona-preta-200g",
+      "name": "Azeitona Preta",
+      "category": "Mercearia > Conservas e Enlatados > Azeitona",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "pepino-conserva-300g",
+      "name": "Pepino em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Pepino",
+      "quantityValue": 300,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "atum-lata-170g",
+      "name": "Atum em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Peixes Enlatados",
+      "quantityValue": 170,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "sardinha-lata-125g",
+      "name": "Sardinha em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Peixes Enlatados",
+      "quantityValue": 125,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "salmao-lata-170g",
+      "name": "Salmão em Conserva",
+      "category": "Mercearia > Conservas e Enlatados > Peixes Enlatados",
+      "quantityValue": 170,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "seleta-legumes-200g",
+      "name": "Seleta de Legumes",
+      "category": "Mercearia > Conservas e Enlatados > Seleta de Legumes",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "molho-tomate-340g",
+      "name": "Molho de Tomate",
+      "category": "Mercearia > Molhos e Condimentos > Molho de Tomate",
+      "quantityValue": 340,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "extrato-tomate-340g",
+      "name": "Extrato de Tomate",
+      "category": "Mercearia > Molhos e Condimentos > Extrato de Tomate",
+      "quantityValue": 340,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "molho-shoyu-150ml",
+      "name": "Molho Shoyu",
+      "category": "Mercearia > Molhos e Condimentos > Shoyu",
+      "quantityValue": 150,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "mostarda-255g",
+      "name": "Mostarda",
+      "category": "Mercearia > Molhos e Condimentos > Mostarda",
+      "quantityValue": 255,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "maionese-500g",
+      "name": "Maionese",
+      "category": "Mercearia > Molhos e Condimentos > Maionese",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "ketchup-397g",
+      "name": "Ketchup",
+      "category": "Mercearia > Molhos e Condimentos > Ketchup",
+      "quantityValue": 397,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "vinagre-alcool-750ml",
+      "name": "Vinagre de Álcool",
+      "category": "Mercearia > Molhos e Condimentos > Vinagre",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "vinagre-balsamico-250ml",
+      "name": "Vinagre Balsâmico",
+      "category": "Mercearia > Molhos e Condimentos > Vinagre",
+      "quantityValue": 250,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "sal-refinado-1kg",
+      "name": "Sal Refinado",
+      "category": "Mercearia > Temperos e Especiarias > Sal",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "sal-grosso-1kg",
+      "name": "Sal Grosso",
+      "category": "Mercearia > Temperos e Especiarias > Sal",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "pimenta-reino-50g",
+      "name": "Pimenta do Reino",
+      "category": "Mercearia > Temperos e Especiarias > Pimenta",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "paprica-doce-50g",
+      "name": "Páprica Doce",
+      "category": "Mercearia > Temperos e Especiarias > Páprica",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "curcuma-po-50g",
+      "name": "Cúrcuma em Pó",
+      "category": "Mercearia > Temperos e Especiarias > Cúrcuma",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "canela-po-50g",
+      "name": "Canela em Pó",
+      "category": "Mercearia > Temperos e Especiarias > Canela",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "oregano-15g",
+      "name": "Orégano Desidratado",
+      "category": "Mercearia > Temperos e Especiarias > Orégano",
+      "quantityValue": 15,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "caldo-galinha-50g",
+      "name": "Caldo de Galinha em Pó",
+      "category": "Mercearia > Temperos e Especiarias > Caldo em Pó",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "caldo-carne-50g",
+      "name": "Caldo de Carne em Pó",
+      "category": "Mercearia > Temperos e Especiarias > Caldo em Pó",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "tempero-completo-60g",
+      "name": "Tempero Completo",
+      "category": "Mercearia > Temperos e Especiarias > Tempero Completo",
+      "quantityValue": 60,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "biscoito-cream-cracker-400g",
+      "name": "Biscoito Cream Cracker",
+      "category": "Mercearia > Biscoitos e Bolachas > Cream Cracker",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "biscoito-maisena-400g",
+      "name": "Biscoito Maisena",
+      "category": "Mercearia > Biscoitos e Bolachas > Maisena",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "biscoito-recheado-chocolate-130g",
+      "name": "Biscoito Recheado Chocolate",
+      "category": "Mercearia > Biscoitos e Bolachas > Recheado",
+      "quantityValue": 130,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "biscoito-recheado-morango-126g",
+      "name": "Biscoito Recheado Morango",
+      "category": "Mercearia > Biscoitos e Bolachas > Recheado",
+      "quantityValue": 126,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "biscoito-wafer-140g",
+      "name": "Biscoito Wafer",
+      "category": "Mercearia > Biscoitos e Bolachas > Wafer",
+      "quantityValue": 140,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "biscoito-rosquinha-350g",
+      "name": "Biscoito Rosquinha",
+      "category": "Mercearia > Biscoitos e Bolachas > Rosquinha",
+      "quantityValue": 350,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "biscoito-agua-sal-350g",
+      "name": "Biscoito Água e Sal",
+      "category": "Mercearia > Biscoitos e Bolachas > Água e Sal",
+      "quantityValue": 350,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "cookies-chocolate-150g",
+      "name": "Cookies com Chocolate",
+      "category": "Mercearia > Biscoitos e Bolachas > Cookies",
+      "quantityValue": 150,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "cereal-milho-flakes-250g",
+      "name": "Cereal de Milho",
+      "category": "Mercearia > Cereais e Barras > Cereal Matinal",
+      "quantityValue": 250,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "granola-300g",
+      "name": "Granola",
+      "category": "Mercearia > Cereais e Barras > Granola",
+      "quantityValue": 300,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "barra-cereal-3un",
+      "name": "Barra de Cereal",
+      "category": "Mercearia > Cereais e Barras > Barra de Cereal",
+      "quantityValue": 3,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "muesli-300g",
+      "name": "Muesli",
+      "category": "Mercearia > Cereais e Barras > Muesli",
+      "quantityValue": 300,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "gelatina-morango-20g",
+      "name": "Gelatina Morango",
+      "category": "Mercearia > Sobremesas e Preparos > Gelatina",
+      "quantityValue": 20,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "pudim-chocolate-100g",
+      "name": "Pudim de Chocolate",
+      "category": "Mercearia > Sobremesas e Preparos > Pudim",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "mousse-chocolate-50g",
+      "name": "Mousse de Chocolate",
+      "category": "Mercearia > Sobremesas e Preparos > Mousse",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "manjar-po-100g",
+      "name": "Manjar em Pó",
+      "category": "Mercearia > Sobremesas e Preparos > Manjar",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "brigadeiro-po-100g",
+      "name": "Brigadeiro em Pó",
+      "category": "Mercearia > Sobremesas e Preparos > Brigadeiro",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-uht-integral-1l",
+      "name": "Leite UHT Integral",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite UHT Integral",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-uht-desnatado-1l",
+      "name": "Leite UHT Desnatado",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite UHT Desnatado",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-uht-semi-1l",
+      "name": "Leite UHT Semi-Desnatado",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite UHT Integral",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-sem-lactose-1l",
+      "name": "Leite Sem Lactose",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite Sem Lactose",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-amendoa-1l",
+      "name": "Leite de Amêndoa",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite Vegetal",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "leite-soja-1l",
+      "name": "Leite de Soja",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite Vegetal",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "leite-condensado-395g",
+      "name": "Leite Condensado",
+      "category": "Frios e Laticínios > Leites e Cremes > Leite Condensado",
+      "quantityValue": 395,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "creme-leite-200g",
+      "name": "Creme de Leite",
+      "category": "Frios e Laticínios > Leites e Cremes > Creme de Leite",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "creme-leite-light-200g",
+      "name": "Creme de Leite Light",
+      "category": "Frios e Laticínios > Leites e Cremes > Creme de Leite",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "chantilly-lata-200g",
+      "name": "Chantilly em Lata",
+      "category": "Frios e Laticínios > Leites e Cremes > Chantilly",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "queijo-mussarela-500g",
+      "name": "Queijo Mussarela",
+      "category": "Frios e Laticínios > Queijos > Mussarela",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "queijo-prato-200g",
+      "name": "Queijo Prato",
+      "category": "Frios e Laticínios > Queijos > Prato",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "queijo-parmesao-100g",
+      "name": "Queijo Parmesão Ralado",
+      "category": "Frios e Laticínios > Queijos > Parmesão",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "queijo-coalho-500g",
+      "name": "Queijo Coalho",
+      "category": "Frios e Laticínios > Queijos > Coalho",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "queijo-cottage-200g",
+      "name": "Queijo Cottage",
+      "category": "Frios e Laticínios > Queijos > Cottage",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "cream-cheese-150g",
+      "name": "Cream Cheese",
+      "category": "Frios e Laticínios > Queijos > Cream Cheese",
+      "quantityValue": 150,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "queijo-ricota-300g",
+      "name": "Ricota Fresca",
+      "category": "Frios e Laticínios > Queijos > Ricota",
+      "quantityValue": 300,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "queijo-minas-frescal-500g",
+      "name": "Queijo Minas Frescal",
+      "category": "Frios e Laticínios > Queijos > Minas",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "requeijao-cremoso-200g",
+      "name": "Requeijão Cremoso",
+      "category": "Frios e Laticínios > Queijos > Requeijão",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "manteiga-com-sal-200g",
+      "name": "Manteiga com Sal",
+      "category": "Frios e Laticínios > Manteigas e Margarinas > Manteiga com Sal",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "manteiga-sem-sal-200g",
+      "name": "Manteiga sem Sal",
+      "category": "Frios e Laticínios > Manteigas e Margarinas > Manteiga sem Sal",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "margarina-500g",
+      "name": "Margarina",
+      "category": "Frios e Laticínios > Manteigas e Margarinas > Margarina",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "margarina-light-500g",
+      "name": "Margarina Light",
+      "category": "Frios e Laticínios > Manteigas e Margarinas > Margarina",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "manteiga-garrafa-200ml",
+      "name": "Manteiga de Garrafa",
+      "category": "Frios e Laticínios > Manteigas e Margarinas > Manteiga de Garrafa",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "iogurte-natural-170g",
+      "name": "Iogurte Natural",
+      "category": "Frios e Laticínios > Iogurtes > Iogurte Natural",
+      "quantityValue": 170,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "iogurte-desnatado-170g",
+      "name": "Iogurte Natural Desnatado",
+      "category": "Frios e Laticínios > Iogurtes > Iogurte Natural",
+      "quantityValue": 170,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "iogurte-grego-100g",
+      "name": "Iogurte Grego",
+      "category": "Frios e Laticínios > Iogurtes > Iogurte Grego",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "iogurte-grego-light-100g",
+      "name": "Iogurte Grego Light",
+      "category": "Frios e Laticínios > Iogurtes > Iogurte Grego",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "iogurte-bebivel-morango-170g",
+      "name": "Iogurte Bebível Morango",
+      "category": "Frios e Laticínios > Iogurtes > Iogurte Bebível",
+      "quantityValue": 170,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "iogurte-infantil-100g",
+      "name": "Iogurte Infantil",
+      "category": "Frios e Laticínios > Iogurtes > Iogurte Infantil",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "ovos-vermelhos-dz",
+      "name": "Ovos Vermelhos",
+      "category": "Frios e Laticínios > Ovos > Ovos Vermelhos",
+      "quantityValue": 12,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "ovos-brancos-dz",
+      "name": "Ovos Brancos",
+      "category": "Frios e Laticínios > Ovos > Ovos Brancos",
+      "quantityValue": 12,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "ovos-caipira-dz",
+      "name": "Ovos Caipira",
+      "category": "Frios e Laticínios > Ovos > Ovos Caipira",
+      "quantityValue": 12,
+      "quantityUnit": "un",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "ovos-codorna-18un",
+      "name": "Ovos de Codorna",
+      "category": "Frios e Laticínios > Ovos > Ovos de Codorna",
+      "quantityValue": 18,
+      "quantityUnit": "un",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "presunto-cozido-200g",
+      "name": "Presunto Cozido",
+      "category": "Frios e Laticínios > Embutidos > Presunto",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "presunto-cru-100g",
+      "name": "Presunto Cru",
+      "category": "Frios e Laticínios > Embutidos > Presunto",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "peito-peru-200g",
+      "name": "Peito de Peru",
+      "category": "Frios e Laticínios > Embutidos > Peito de Peru",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "mortadela-200g",
+      "name": "Mortadela",
+      "category": "Frios e Laticínios > Embutidos > Mortadela",
+      "quantityValue": 200,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "salame-100g",
+      "name": "Salame",
+      "category": "Frios e Laticínios > Embutidos > Salame",
+      "quantityValue": 100,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "linguica-calabresa-500g",
+      "name": "Linguiça Calabresa",
+      "category": "Frios e Laticínios > Embutidos > Linguiça",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "bacon-fatias-150g",
+      "name": "Bacon em Fatias",
+      "category": "Frios e Laticínios > Embutidos > Bacon",
+      "quantityValue": 150,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "pate-frango-150g",
+      "name": "Patê de Frango",
+      "category": "Frios e Laticínios > Embutidos > Patê",
+      "quantityValue": 150,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "refrigerante-cola-2l",
+      "name": "Refrigerante Cola",
+      "category": "Bebidas > Refrigerantes > Cola",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-cola-zero-2l",
+      "name": "Refrigerante Cola Zero",
+      "category": "Bebidas > Refrigerantes > Cola",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-guarana-2l",
+      "name": "Refrigerante Guaraná",
+      "category": "Bebidas > Refrigerantes > Guaraná",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-guarana-diet-2l",
+      "name": "Refrigerante Guaraná Diet",
+      "category": "Bebidas > Refrigerantes > Guaraná",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-laranja-2l",
+      "name": "Refrigerante Laranja",
+      "category": "Bebidas > Refrigerantes > Laranja",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-limao-2l",
+      "name": "Refrigerante Limão",
+      "category": "Bebidas > Refrigerantes > Limão",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-uva-2l",
+      "name": "Refrigerante Uva",
+      "category": "Bebidas > Refrigerantes > Uva",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-tonica-350ml",
+      "name": "Refrigerante Tônica",
+      "category": "Bebidas > Refrigerantes > Tônica",
+      "quantityValue": 350,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "refrigerante-citrus-500ml",
+      "name": "Refrigerante Citrus",
+      "category": "Bebidas > Refrigerantes > Citrus",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "suco-laranja-integral-1l",
+      "name": "Suco de Laranja Integral",
+      "category": "Bebidas > Sucos e Néctares > Suco de Laranja",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "nectar-laranja-1l",
+      "name": "Néctar de Laranja",
+      "category": "Bebidas > Sucos e Néctares > Néctar de Frutas",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "nectar-uva-1l",
+      "name": "Néctar de Uva",
+      "category": "Bebidas > Sucos e Néctares > Néctar de Frutas",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "nectar-maca-1l",
+      "name": "Néctar de Maçã",
+      "category": "Bebidas > Sucos e Néctares > Néctar de Frutas",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "nectar-maracuja-1l",
+      "name": "Néctar de Maracujá",
+      "category": "Bebidas > Sucos e Néctares > Néctar de Frutas",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "suco-caixa-200ml",
+      "name": "Suco de Caixa",
+      "category": "Bebidas > Sucos e Néctares > Suco de Caixa",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "agua-coco-1l",
+      "name": "Água de Coco",
+      "category": "Bebidas > Sucos e Néctares > Água de Coco",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "agua-mineral-1-5l",
+      "name": "Água Mineral",
+      "category": "Bebidas > Águas > Água Mineral sem Gás",
+      "quantityValue": 1.5,
+      "quantityUnit": "l",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "agua-com-gas-500ml",
+      "name": "Água Mineral com Gás",
+      "category": "Bebidas > Águas > Água Mineral com Gás",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "agua-saborizada-limao-500ml",
+      "name": "Água Saborizada Limão",
+      "category": "Bebidas > Águas > Água Saborizada",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "agua-saborizada-frutas-500ml",
+      "name": "Água Saborizada Frutas",
+      "category": "Bebidas > Águas > Água Saborizada",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cerveja-pilsen-350ml",
+      "name": "Cerveja Pilsen",
+      "category": "Bebidas > Cervejas > Pilsen",
+      "quantityValue": 350,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cerveja-premium-330ml",
+      "name": "Cerveja Premium",
+      "category": "Bebidas > Cervejas > Premium",
+      "quantityValue": 330,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cerveja-sem-alcool-350ml",
+      "name": "Cerveja Sem Álcool",
+      "category": "Bebidas > Cervejas > Sem Álcool",
+      "quantityValue": 350,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cerveja-artesanal-500ml",
+      "name": "Cerveja Artesanal",
+      "category": "Bebidas > Cervejas > Artesanal",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "vinho-tinto-seco-750ml",
+      "name": "Vinho Tinto Seco",
+      "category": "Bebidas > Vinhos e Destilados > Vinho Tinto",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "vinho-tinto-suave-750ml",
+      "name": "Vinho Tinto Suave",
+      "category": "Bebidas > Vinhos e Destilados > Vinho Tinto",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "vinho-branco-seco-750ml",
+      "name": "Vinho Branco Seco",
+      "category": "Bebidas > Vinhos e Destilados > Vinho Branco",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "vinho-rose-750ml",
+      "name": "Vinho Rosé",
+      "category": "Bebidas > Vinhos e Destilados > Vinho Rosé",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "espumante-750ml",
+      "name": "Espumante",
+      "category": "Bebidas > Vinhos e Destilados > Espumante",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "cachaca-700ml",
+      "name": "Cachaça",
+      "category": "Bebidas > Vinhos e Destilados > Cachaça",
+      "quantityValue": 700,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "vodka-700ml",
+      "name": "Vodka",
+      "category": "Bebidas > Vinhos e Destilados > Vodka",
+      "quantityValue": 700,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "uisque-1l",
+      "name": "Uísque",
+      "category": "Bebidas > Vinhos e Destilados > Uísque",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "sams-club"
+    },
+    {
+      "key": "gin-750ml",
+      "name": "Gin",
+      "category": "Bebidas > Vinhos e Destilados > Gin",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "isotonico-500ml",
+      "name": "Isotônico",
+      "category": "Bebidas > Isotônicos e Energéticos > Isotônico",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "energetico-250ml",
+      "name": "Energético",
+      "category": "Bebidas > Isotônicos e Energéticos > Energético",
+      "quantityValue": 250,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "banana-prata-kg",
+      "name": "Banana Prata",
+      "category": "Hortifruti > Frutas > Banana",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "banana-nanica-kg",
+      "name": "Banana Nanica",
+      "category": "Hortifruti > Frutas > Banana",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "maca-gala-kg",
+      "name": "Maçã Gala",
+      "category": "Hortifruti > Frutas > Maçã",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "maca-fuji-kg",
+      "name": "Maçã Fuji",
+      "category": "Hortifruti > Frutas > Maçã",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "laranja-pera-kg",
+      "name": "Laranja Pera",
+      "category": "Hortifruti > Frutas > Laranja",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "limao-tahiti-kg",
+      "name": "Limão Tahiti",
+      "category": "Hortifruti > Frutas > Limão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "manga-tommy-kg",
+      "name": "Manga Tommy",
+      "category": "Hortifruti > Frutas > Manga",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "uva-verde-500g",
+      "name": "Uva Verde",
+      "category": "Hortifruti > Frutas > Uva",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "uva-roxa-500g",
+      "name": "Uva Roxa",
+      "category": "Hortifruti > Frutas > Uva",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "melancia-fatia",
+      "name": "Melancia",
+      "category": "Hortifruti > Frutas > Melancia",
+      "quantityValue": 3,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "melao-amarelo-un",
+      "name": "Melão Amarelo",
+      "category": "Hortifruti > Frutas > Melão",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "mamao-formosa-kg",
+      "name": "Mamão Formosa",
+      "category": "Hortifruti > Frutas > Mamão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "morango-bandeja-250g",
+      "name": "Morango",
+      "category": "Hortifruti > Frutas > Morango",
+      "quantityValue": 250,
+      "quantityUnit": "g",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "abacaxi-perola-un",
+      "name": "Abacaxi Pérola",
+      "category": "Hortifruti > Frutas > Abacaxi",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "abacate-kg",
+      "name": "Abacate",
+      "category": "Hortifruti > Frutas > Abacate",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "maracuja-kg",
+      "name": "Maracujá",
+      "category": "Hortifruti > Frutas > Maracujá",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "kiwi-bandeja-4un",
+      "name": "Kiwi",
+      "category": "Hortifruti > Frutas > Kiwi",
+      "quantityValue": 4,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "batata-inglesa-kg",
+      "name": "Batata Inglesa",
+      "category": "Hortifruti > Legumes > Batata",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "batata-doce-kg",
+      "name": "Batata Doce",
+      "category": "Hortifruti > Legumes > Batata",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cenoura-kg",
+      "name": "Cenoura",
+      "category": "Hortifruti > Legumes > Cenoura",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "tomate-salada-kg",
+      "name": "Tomate",
+      "category": "Hortifruti > Legumes > Tomate",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "tomate-cereja-250g",
+      "name": "Tomate Cereja",
+      "category": "Hortifruti > Legumes > Tomate",
+      "quantityValue": 250,
+      "quantityUnit": "g",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cebola-kg",
+      "name": "Cebola",
+      "category": "Hortifruti > Legumes > Cebola",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "alho-kg",
+      "name": "Alho",
+      "category": "Hortifruti > Legumes > Alho",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "mandioca-kg",
+      "name": "Mandioca",
+      "category": "Hortifruti > Legumes > Mandioca",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "berinjela-kg",
+      "name": "Berinjela",
+      "category": "Hortifruti > Legumes > Berinjela",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pepino-japones-kg",
+      "name": "Pepino Japonês",
+      "category": "Hortifruti > Legumes > Pepino",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pimentao-verde-kg",
+      "name": "Pimentão Verde",
+      "category": "Hortifruti > Legumes > Pimentão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pimentao-vermelho-kg",
+      "name": "Pimentão Vermelho",
+      "category": "Hortifruti > Legumes > Pimentão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "abobrinha-italiana-kg",
+      "name": "Abobrinha Italiana",
+      "category": "Hortifruti > Legumes > Abobrinha",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "vagem-kg",
+      "name": "Vagem",
+      "category": "Hortifruti > Legumes > Vagem",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "milho-verde-espiga-un",
+      "name": "Milho Verde",
+      "category": "Hortifruti > Legumes > Milho Verde",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "alface-crespa-un",
+      "name": "Alface Crespa",
+      "category": "Hortifruti > Verduras > Alface",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "alface-romana-un",
+      "name": "Alface Romana",
+      "category": "Hortifruti > Verduras > Alface",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "couve-manteiga-maco",
+      "name": "Couve Manteiga",
+      "category": "Hortifruti > Verduras > Couve",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "brocolis-un",
+      "name": "Brócolis",
+      "category": "Hortifruti > Verduras > Brócolis",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "couve-flor-un",
+      "name": "Couve-Flor",
+      "category": "Hortifruti > Verduras > Couve-Flor",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "repolho-verde-un",
+      "name": "Repolho Verde",
+      "category": "Hortifruti > Verduras > Repolho",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "espinafre-maco",
+      "name": "Espinafre",
+      "category": "Hortifruti > Verduras > Espinafre",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "rucula-maco",
+      "name": "Rúcula",
+      "category": "Hortifruti > Verduras > Rúcula",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "agriao-maco",
+      "name": "Agrião",
+      "category": "Hortifruti > Verduras > Agrião",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cheiro-verde-maco",
+      "name": "Cheiro-Verde",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Cheiro-Verde",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "manjericao-fresco-maco",
+      "name": "Manjericão Fresco",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Manjericão",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "hortela-fresca-maco",
+      "name": "Hortelã Fresca",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Hortelã",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "salsinha-maco",
+      "name": "Salsinha",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Salsinha",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cebolinha-maco",
+      "name": "Cebolinha",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Cebolinha",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "coentro-maco",
+      "name": "Coentro",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Coentro",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "gengibre-kg",
+      "name": "Gengibre",
+      "category": "Hortifruti > Ervas e Temperos Frescos > Gengibre",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "acem-bovino-kg",
+      "name": "Acém Bovino",
+      "category": "Açougue > Carnes Bovinas > Acém",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "alcatra-bovina-kg",
+      "name": "Alcatra Bovina",
+      "category": "Açougue > Carnes Bovinas > Alcatra",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "contrafile-bovino-kg",
+      "name": "Contra-Filé Bovino",
+      "category": "Açougue > Carnes Bovinas > Contra-Filé",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "coxao-mole-kg",
+      "name": "Coxão Mole",
+      "category": "Açougue > Carnes Bovinas > Coxão Mole",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "cupim-kg",
+      "name": "Cupim",
+      "category": "Açougue > Carnes Bovinas > Cupim",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "file-mignon-kg",
+      "name": "Filé Mignon",
+      "category": "Açougue > Carnes Bovinas > Filé Mignon",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "fraldinha-kg",
+      "name": "Fraldinha",
+      "category": "Açougue > Carnes Bovinas > Fraldinha",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "lagarto-bovino-kg",
+      "name": "Lagarto Bovino",
+      "category": "Açougue > Carnes Bovinas > Lagarto",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "maminha-kg",
+      "name": "Maminha",
+      "category": "Açougue > Carnes Bovinas > Maminha",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "patinho-kg",
+      "name": "Patinho",
+      "category": "Açougue > Carnes Bovinas > Patinho",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "picanha-kg",
+      "name": "Picanha",
+      "category": "Açougue > Carnes Bovinas > Picanha",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "carne-moida-kg",
+      "name": "Carne Moída",
+      "category": "Açougue > Carnes Bovinas > Carne Moída",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "pernil-suino-kg",
+      "name": "Pernil Suíno",
+      "category": "Açougue > Carnes Suínas > Pernil",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "lombo-suino-kg",
+      "name": "Lombo Suíno",
+      "category": "Açougue > Carnes Suínas > Lombo",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "costela-suina-kg",
+      "name": "Costela Suína",
+      "category": "Açougue > Carnes Suínas > Costela",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "file-suino-kg",
+      "name": "Filé Suíno",
+      "category": "Açougue > Carnes Suínas > Filé Suíno",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "frango-inteiro-kg",
+      "name": "Frango Inteiro",
+      "category": "Açougue > Aves > Frango Inteiro",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "file-peito-frango-kg",
+      "name": "Filé de Peito de Frango",
+      "category": "Açougue > Aves > Filé de Peito",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "sobrecoxa-frango-kg",
+      "name": "Sobrecoxa de Frango",
+      "category": "Açougue > Aves > Sobrecoxa",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "coxinha-asa-frango-kg",
+      "name": "Coxinha da Asa",
+      "category": "Açougue > Aves > Coxinha da Asa",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "asa-frango-kg",
+      "name": "Asa de Frango",
+      "category": "Açougue > Aves > Asa",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "coracao-frango-kg",
+      "name": "Coração de Frango",
+      "category": "Açougue > Aves > Coração",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "moela-frango-kg",
+      "name": "Moela de Frango",
+      "category": "Açougue > Aves > Moela",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "file-tilapia-kg",
+      "name": "Filé de Tilápia",
+      "category": "Açougue > Peixes e Frutos do Mar > Tilápia",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "file-salmao-kg",
+      "name": "Filé de Salmão",
+      "category": "Açougue > Peixes e Frutos do Mar > Salmão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "bacalhau-postas-kg",
+      "name": "Bacalhau",
+      "category": "Açougue > Peixes e Frutos do Mar > Bacalhau",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "sardinha-fresca-kg",
+      "name": "Sardinha Fresca",
+      "category": "Açougue > Peixes e Frutos do Mar > Sardinha Fresca",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "camarao-7barbas-kg",
+      "name": "Camarão 7 Barbas",
+      "category": "Açougue > Peixes e Frutos do Mar > Camarão",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "lula-kg",
+      "name": "Lula",
+      "category": "Açougue > Peixes e Frutos do Mar > Lula",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "almondegas-bovinas-500g",
+      "name": "Almôndegas Bovinas",
+      "category": "Açougue > Processados e Embutidos > Almôndegas",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "hamburguer-bovino-4un",
+      "name": "Hambúrguer Bovino",
+      "category": "Açougue > Processados e Embutidos > Hambúrguer",
+      "quantityValue": 4,
+      "quantityUnit": "un",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "kibe-500g",
+      "name": "Kibe",
+      "category": "Açougue > Processados e Embutidos > Kibe",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "linguica-toscana-kg",
+      "name": "Linguiça Toscana",
+      "category": "Açougue > Processados e Embutidos > Linguiça",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "salsicha-fresca-kg",
+      "name": "Salsicha Fresca",
+      "category": "Açougue > Processados e Embutidos > Salsicha",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "assai"
+    },
+    {
+      "key": "pao-forma-branco-500g",
+      "name": "Pão de Forma Branco",
+      "category": "Padaria e Confeitaria > Pães > Pão de Forma",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "pao-forma-integral-500g",
+      "name": "Pão de Forma Integral",
+      "category": "Padaria e Confeitaria > Pães > Pão Integral",
+      "quantityValue": 500,
+      "quantityUnit": "g",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "pao-frances-un",
+      "name": "Pão Francês",
+      "category": "Padaria e Confeitaria > Pães > Pão Francês",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pao-leite-6un",
+      "name": "Pão de Leite",
+      "category": "Padaria e Confeitaria > Pães > Pão de Leite",
+      "quantityValue": 6,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pao-queijo-congelado-400g",
+      "name": "Pão de Queijo Congelado",
+      "category": "Padaria e Confeitaria > Pães > Pão de Queijo",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "baguete-un",
+      "name": "Baguete",
+      "category": "Padaria e Confeitaria > Pães > Baguete",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "pao-de-acucar"
+    },
+    {
+      "key": "pao-hamburguer-6un",
+      "name": "Pão de Hambúrguer",
+      "category": "Padaria e Confeitaria > Pães > Pão de Hambúrguer",
+      "quantityValue": 6,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "bolo-milho-400g",
+      "name": "Bolo de Milho",
+      "category": "Padaria e Confeitaria > Bolos e Tortas > Bolo Simples",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "bolo-chocolate-400g",
+      "name": "Bolo de Chocolate",
+      "category": "Padaria e Confeitaria > Bolos e Tortas > Bolo Simples",
+      "quantityValue": 400,
+      "quantityUnit": "g",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "torta-limao-un",
+      "name": "Torta de Limão",
+      "category": "Padaria e Confeitaria > Bolos e Tortas > Torta",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "brownie-un",
+      "name": "Brownie",
+      "category": "Padaria e Confeitaria > Bolos e Tortas > Brownie",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "muffin-chocolate-4un",
+      "name": "Muffin de Chocolate",
+      "category": "Padaria e Confeitaria > Bolos e Tortas > Muffin",
+      "quantityValue": 4,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "brigadeiro-un",
+      "name": "Brigadeiro",
+      "category": "Padaria e Confeitaria > Doces e Confeitos > Brigadeiro",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "beijinho-un",
+      "name": "Beijinho",
+      "category": "Padaria e Confeitaria > Doces e Confeitos > Beijinho",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "cocada-un",
+      "name": "Cocada",
+      "category": "Padaria e Confeitaria > Doces e Confeitos > Cocada",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pudim-leite-un",
+      "name": "Pudim de Leite",
+      "category": "Padaria e Confeitaria > Doces e Confeitos > Pudim Pronto",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "coxinha-un",
+      "name": "Coxinha",
+      "category": "Padaria e Confeitaria > Salgados > Coxinha",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "esfiha-un",
+      "name": "Esfiha",
+      "category": "Padaria e Confeitaria > Salgados > Esfiha",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "pastel-un",
+      "name": "Pastel",
+      "category": "Padaria e Confeitaria > Salgados > Pastel",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "empada-frango-un",
+      "name": "Empada de Frango",
+      "category": "Padaria e Confeitaria > Salgados > Empada",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "quibe-frito-un",
+      "name": "Quibe Frito",
+      "category": "Padaria e Confeitaria > Salgados > Quibe Frito",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "extra"
+    },
+    {
+      "key": "shampoo-350ml",
+      "name": "Shampoo",
+      "category": "Higiene e Beleza > Cuidados com o Cabelo > Shampoo",
+      "quantityValue": 350,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "shampoo-anticaspa-350ml",
+      "name": "Shampoo Anticaspa",
+      "category": "Higiene e Beleza > Cuidados com o Cabelo > Shampoo",
+      "quantityValue": 350,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "condicionador-350ml",
+      "name": "Condicionador",
+      "category": "Higiene e Beleza > Cuidados com o Cabelo > Condicionador",
+      "quantityValue": 350,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "mascara-capilar-300g",
+      "name": "Máscara Capilar",
+      "category": "Higiene e Beleza > Cuidados com o Cabelo > Máscara Capilar",
+      "quantityValue": 300,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "creme-pentear-300ml",
+      "name": "Creme para Pentear",
+      "category": "Higiene e Beleza > Cuidados com o Cabelo > Creme para Pentear",
+      "quantityValue": 300,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "finalizador-capilar-200ml",
+      "name": "Finalizador Capilar",
+      "category": "Higiene e Beleza > Cuidados com o Cabelo > Finalizador",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "sabonete-90g",
+      "name": "Sabonete",
+      "category": "Higiene e Beleza > Cuidados com a Pele > Sabonete",
+      "quantityValue": 90,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "sabonete-liquido-200ml",
+      "name": "Sabonete Líquido",
+      "category": "Higiene e Beleza > Cuidados com a Pele > Sabonete Líquido",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "hidratante-corporal-400ml",
+      "name": "Hidratante Corporal",
+      "category": "Higiene e Beleza > Cuidados com a Pele > Hidratante Corporal",
+      "quantityValue": 400,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "protetor-solar-fps50-200ml",
+      "name": "Protetor Solar FPS 50",
+      "category": "Higiene e Beleza > Cuidados com a Pele > Protetor Solar",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "desodorante-aerosol-150ml",
+      "name": "Desodorante Aerosol",
+      "category": "Higiene e Beleza > Cuidados com a Pele > Desodorante",
+      "quantityValue": 150,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "desodorante-rollon-50ml",
+      "name": "Desodorante Roll-on",
+      "category": "Higiene e Beleza > Cuidados com a Pele > Desodorante",
+      "quantityValue": 50,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "pasta-dente-90g",
+      "name": "Pasta de Dente",
+      "category": "Higiene e Beleza > Higiene Oral > Pasta de Dente",
+      "quantityValue": 90,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "pasta-dente-sensibilidade-90g",
+      "name": "Pasta de Dente Sensibilidade",
+      "category": "Higiene e Beleza > Higiene Oral > Pasta de Dente",
+      "quantityValue": 90,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "escova-dente-un",
+      "name": "Escova de Dente",
+      "category": "Higiene e Beleza > Higiene Oral > Escova de Dente",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "fio-dental-50m",
+      "name": "Fio Dental",
+      "category": "Higiene e Beleza > Higiene Oral > Fio Dental",
+      "quantityValue": 50,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "enxaguante-bucal-500ml",
+      "name": "Enxaguante Bucal",
+      "category": "Higiene e Beleza > Higiene Oral > Enxaguante Bucal",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "papel-higienico-12rolos",
+      "name": "Papel Higiênico",
+      "category": "Higiene e Beleza > Higiene Corporal > Papel Higiênico",
+      "quantityValue": 12,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "papel-higienico-4rolos",
+      "name": "Papel Higiênico Folha Dupla",
+      "category": "Higiene e Beleza > Higiene Corporal > Papel Higiênico",
+      "quantityValue": 4,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "lencos-umedecidos-48un",
+      "name": "Lenços Umedecidos",
+      "category": "Higiene e Beleza > Higiene Corporal > Lenços Umedecidos",
+      "quantityValue": 48,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "absorvente-noturno-8un",
+      "name": "Absorvente Noturno",
+      "category": "Higiene e Beleza > Higiene Corporal > Absorvente",
+      "quantityValue": 8,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "creme-barbear-75g",
+      "name": "Creme de Barbear",
+      "category": "Higiene e Beleza > Higiene Corporal > Barbear",
+      "quantityValue": 75,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "lamina-barbear-4un",
+      "name": "Lâmina de Barbear",
+      "category": "Higiene e Beleza > Higiene Corporal > Barbear",
+      "quantityValue": 4,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "algodao-50g",
+      "name": "Algodão",
+      "category": "Higiene e Beleza > Primeiros Socorros > Algodão",
+      "quantityValue": 50,
+      "quantityUnit": "g",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "curativos-20un",
+      "name": "Curativos",
+      "category": "Higiene e Beleza > Primeiros Socorros > Curativos",
+      "quantityValue": 20,
+      "quantityUnit": "un",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "alcool-gel-500ml",
+      "name": "Álcool em Gel",
+      "category": "Higiene e Beleza > Primeiros Socorros > Álcool em Gel",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "repelente-200ml",
+      "name": "Repelente de Insetos",
+      "category": "Higiene e Beleza > Primeiros Socorros > Repelente",
+      "quantityValue": 200,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "carrefour"
+    },
+    {
+      "key": "detergente-louca-500ml",
+      "name": "Detergente para Louça",
+      "category": "Limpeza > Cozinha > Detergente",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "detergente-louca-coco-500ml",
+      "name": "Detergente Coco",
+      "category": "Limpeza > Cozinha > Detergente",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "esponja-louca-un",
+      "name": "Esponja de Louça",
+      "category": "Limpeza > Cozinha > Esponja",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "esponja-magica-2un",
+      "name": "Esponja Mágica",
+      "category": "Limpeza > Cozinha > Esponja",
+      "quantityValue": 2,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "papel-toalha-2rolos",
+      "name": "Papel Toalha",
+      "category": "Limpeza > Cozinha > Papel Toalha",
+      "quantityValue": 2,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "guardanapo-50un",
+      "name": "Guardanapo",
+      "category": "Limpeza > Cozinha > Guardanapo",
+      "quantityValue": 50,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "papel-aluminio-un",
+      "name": "Papel Alumínio",
+      "category": "Limpeza > Cozinha > Papel Alumínio",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "sams-club"
+    },
+    {
+      "key": "filme-pvc-un",
+      "name": "Filme PVC",
+      "category": "Limpeza > Cozinha > Filme PVC",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "sams-club"
+    },
+    {
+      "key": "sacos-freezer-100un",
+      "name": "Sacos para Freezer",
+      "category": "Limpeza > Cozinha > Sacos Plásticos",
+      "quantityValue": 100,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "sabao-po-1kg",
+      "name": "Sabão em Pó",
+      "category": "Limpeza > Lavanderia > Sabão em Pó",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "sabao-po-multiacao-1kg",
+      "name": "Sabão em Pó Multiação",
+      "category": "Limpeza > Lavanderia > Sabão em Pó",
+      "quantityValue": 1,
+      "quantityUnit": "kg",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "sabao-liquido-3l",
+      "name": "Sabão Líquido",
+      "category": "Limpeza > Lavanderia > Sabão Líquido",
+      "quantityValue": 3,
+      "quantityUnit": "l",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "amaciante-2l",
+      "name": "Amaciante",
+      "category": "Limpeza > Lavanderia > Amaciante",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "amaciante-concentrado-1l",
+      "name": "Amaciante Concentrado",
+      "category": "Limpeza > Lavanderia > Amaciante",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "tira-manchas-500ml",
+      "name": "Tira-Manchas",
+      "category": "Limpeza > Lavanderia > Tira-Manchas",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "alvejante-sem-cloro-1l",
+      "name": "Alvejante sem Cloro",
+      "category": "Limpeza > Lavanderia > Alvejante",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "limpador-sanitario-750ml",
+      "name": "Limpador Sanitário",
+      "category": "Limpeza > Banheiro > Limpador Sanitário",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "desinfetante-2l",
+      "name": "Desinfetante",
+      "category": "Limpeza > Banheiro > Desinfetante",
+      "quantityValue": 2,
+      "quantityUnit": "l",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "agua-sanitaria-1l",
+      "name": "Água Sanitária",
+      "category": "Limpeza > Banheiro > Água Sanitária",
+      "quantityValue": 1,
+      "quantityUnit": "l",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "aromatizador-spray-360ml",
+      "name": "Aromatizador",
+      "category": "Limpeza > Banheiro > Aromatizador",
+      "quantityValue": 360,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "saco-lixo-30un",
+      "name": "Saco de Lixo",
+      "category": "Limpeza > Banheiro > Saco de Lixo",
+      "quantityValue": 30,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "saco-lixo-50l-30un",
+      "name": "Saco de Lixo 50L",
+      "category": "Limpeza > Banheiro > Saco de Lixo",
+      "quantityValue": 30,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "cera-incolor-750ml",
+      "name": "Cera Líquida Incolor",
+      "category": "Limpeza > Pisos e Superfícies > Cera",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "cera-amarela-750ml",
+      "name": "Cera Líquida Amarela",
+      "category": "Limpeza > Pisos e Superfícies > Cera",
+      "quantityValue": 750,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "limpador-multiuso-500ml",
+      "name": "Limpador Multiuso",
+      "category": "Limpeza > Pisos e Superfícies > Multiuso",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "limpa-vidros-500ml",
+      "name": "Limpa Vidros",
+      "category": "Limpeza > Pisos e Superfícies > Limpa Vidros",
+      "quantityValue": 500,
+      "quantityUnit": "ml",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "vassoura-un",
+      "name": "Vassoura",
+      "category": "Limpeza > Pisos e Superfícies > Vassoura",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "rodo-un",
+      "name": "Rodo",
+      "category": "Limpeza > Pisos e Superfícies > Rodo",
+      "quantityValue": 1,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    },
+    {
+      "key": "pano-limpeza-3un",
+      "name": "Pano de Limpeza",
+      "category": "Limpeza > Pisos e Superfícies > Pano de Limpeza",
+      "quantityValue": 3,
+      "quantityUnit": "un",
+      "defaultStoreKey": "atacadao"
+    }
   ]
 }

@@ -1,0 +1,290 @@
+{
+  "version": 1,
+  "locale": "pt-BR",
+  "separator": " > ",
+  "departments": [
+    {
+      "key": "mercearia",
+      "name": "Mercearia",
+      "categories": [
+        {
+          "key": "graos-cereais",
+          "name": "Grãos e Cereais",
+          "subcategories": ["Arroz", "Feijão", "Lentilha", "Grão-de-Bico", "Milho", "Quinoa", "Aveia"]
+        },
+        {
+          "key": "farinhas-amidos",
+          "name": "Farinhas e Amidos",
+          "subcategories": ["Farinha de Trigo", "Farinha de Mandioca", "Fubá", "Polvilho", "Amido de Milho", "Farinha de Roscas"]
+        },
+        {
+          "key": "massas",
+          "name": "Massas",
+          "subcategories": ["Espaguete", "Parafuso", "Penne", "Fusilli", "Talharim", "Lasanha", "Massas Recheadas"]
+        },
+        {
+          "key": "oleos-azeites",
+          "name": "Óleos e Azeites",
+          "subcategories": ["Óleo de Soja", "Óleo de Girassol", "Óleo de Canola", "Azeite de Oliva", "Azeite de Dendê"]
+        },
+        {
+          "key": "acucares-adocantes",
+          "name": "Açúcares e Adoçantes",
+          "subcategories": ["Açúcar Refinado", "Açúcar Cristal", "Açúcar Mascavo", "Açúcar Demerara", "Adoçante"]
+        },
+        {
+          "key": "cafe-chas",
+          "name": "Café, Chás e Bebidas Quentes",
+          "subcategories": ["Café Torrado", "Café Solúvel", "Café em Cápsula", "Chás", "Achocolatado", "Chocolate em Pó"]
+        },
+        {
+          "key": "leites-po",
+          "name": "Leites em Pó e Cremers",
+          "subcategories": ["Leite em Pó", "Leite de Coco", "Creme de Leite", "Leite Condensado"]
+        },
+        {
+          "key": "conservas",
+          "name": "Conservas e Enlatados",
+          "subcategories": ["Milho Verde", "Ervilha", "Palmito", "Azeitona", "Pepino", "Peixes Enlatados", "Seleta de Legumes"]
+        },
+        {
+          "key": "molhos-condimentos",
+          "name": "Molhos e Condimentos",
+          "subcategories": ["Molho de Tomate", "Extrato de Tomate", "Shoyu", "Mostarda", "Maionese", "Ketchup", "Vinagre"]
+        },
+        {
+          "key": "temperos",
+          "name": "Temperos e Especiarias",
+          "subcategories": ["Sal", "Pimenta", "Páprica", "Cúrcuma", "Canela", "Orégano", "Caldo em Pó", "Tempero Completo"]
+        },
+        {
+          "key": "biscoitos",
+          "name": "Biscoitos e Bolachas",
+          "subcategories": ["Cream Cracker", "Maisena", "Recheado", "Wafer", "Rosquinha", "Água e Sal", "Cookies"]
+        },
+        {
+          "key": "cereais-barras",
+          "name": "Cereais e Barras",
+          "subcategories": ["Cereal Matinal", "Granola", "Aveia", "Barra de Cereal", "Muesli"]
+        },
+        {
+          "key": "sobremesas-preparos",
+          "name": "Sobremesas e Preparos",
+          "subcategories": ["Gelatina", "Pudim", "Mousse", "Manjar", "Brigadeiro"]
+        }
+      ]
+    },
+    {
+      "key": "frios-laticinios",
+      "name": "Frios e Laticínios",
+      "categories": [
+        {
+          "key": "leites-cremes",
+          "name": "Leites e Cremes",
+          "subcategories": ["Leite UHT Integral", "Leite UHT Desnatado", "Leite Sem Lactose", "Leite Vegetal", "Leite Condensado", "Creme de Leite", "Chantilly"]
+        },
+        {
+          "key": "queijos",
+          "name": "Queijos",
+          "subcategories": ["Mussarela", "Prato", "Parmesão", "Coalho", "Cottage", "Cream Cheese", "Ricota", "Minas", "Requeijão"]
+        },
+        {
+          "key": "manteigas-margarinas",
+          "name": "Manteigas e Margarinas",
+          "subcategories": ["Manteiga com Sal", "Manteiga sem Sal", "Margarina", "Manteiga de Garrafa"]
+        },
+        {
+          "key": "iogurtes",
+          "name": "Iogurtes",
+          "subcategories": ["Iogurte Natural", "Iogurte Grego", "Iogurte Bebível", "Iogurte Infantil"]
+        },
+        {
+          "key": "ovos",
+          "name": "Ovos",
+          "subcategories": ["Ovos Vermelhos", "Ovos Brancos", "Ovos Caipira", "Ovos de Codorna"]
+        },
+        {
+          "key": "embutidos",
+          "name": "Embutidos",
+          "subcategories": ["Presunto", "Peito de Peru", "Mortadela", "Salame", "Linguiça", "Bacon", "Patê"]
+        }
+      ]
+    },
+    {
+      "key": "bebidas",
+      "name": "Bebidas",
+      "categories": [
+        {
+          "key": "refrigerantes",
+          "name": "Refrigerantes",
+          "subcategories": ["Cola", "Guaraná", "Laranja", "Limão", "Uva", "Tônica", "Citrus"]
+        },
+        {
+          "key": "sucos",
+          "name": "Sucos e Néctares",
+          "subcategories": ["Suco de Laranja", "Néctar de Frutas", "Suco de Caixa", "Água de Coco"]
+        },
+        {
+          "key": "aguas",
+          "name": "Águas",
+          "subcategories": ["Água Mineral sem Gás", "Água Mineral com Gás", "Água Saborizada"]
+        },
+        {
+          "key": "cervejas",
+          "name": "Cervejas",
+          "subcategories": ["Pilsen", "Premium", "Sem Álcool", "Artesanal"]
+        },
+        {
+          "key": "vinhos-destilados",
+          "name": "Vinhos e Destilados",
+          "subcategories": ["Vinho Tinto", "Vinho Branco", "Vinho Rosé", "Espumante", "Cachaça", "Vodka", "Uísque", "Gin"]
+        },
+        {
+          "key": "isotonicos-energeticos",
+          "name": "Isotônicos e Energéticos",
+          "subcategories": ["Isotônico", "Energético"]
+        }
+      ]
+    },
+    {
+      "key": "hortifruti",
+      "name": "Hortifruti",
+      "categories": [
+        {
+          "key": "frutas",
+          "name": "Frutas",
+          "subcategories": ["Banana", "Maçã", "Laranja", "Limão", "Manga", "Uva", "Melancia", "Melão", "Mamão", "Morango", "Abacaxi", "Abacate", "Maracujá", "Kiwi"]
+        },
+        {
+          "key": "legumes",
+          "name": "Legumes",
+          "subcategories": ["Batata", "Cenoura", "Tomate", "Cebola", "Alho", "Mandioca", "Berinjela", "Pepino", "Pimentão", "Abobrinha", "Vagem", "Milho Verde"]
+        },
+        {
+          "key": "verduras",
+          "name": "Verduras",
+          "subcategories": ["Alface", "Couve", "Brócolis", "Couve-Flor", "Repolho", "Espinafre", "Rúcula", "Agrião"]
+        },
+        {
+          "key": "ervas-frescas",
+          "name": "Ervas e Temperos Frescos",
+          "subcategories": ["Cheiro-Verde", "Manjericão", "Hortelã", "Salsinha", "Cebolinha", "Coentro", "Gengibre"]
+        }
+      ]
+    },
+    {
+      "key": "acougue",
+      "name": "Açougue",
+      "categories": [
+        {
+          "key": "carnes-bovinas",
+          "name": "Carnes Bovinas",
+          "subcategories": ["Acém", "Alcatra", "Contra-Filé", "Coxão Mole", "Cupim", "Filé Mignon", "Fraldinha", "Lagarto", "Maminha", "Patinho", "Picanha", "Carne Moída"]
+        },
+        {
+          "key": "carnes-suinas",
+          "name": "Carnes Suínas",
+          "subcategories": ["Pernil", "Lombo", "Costela", "Filé Suíno", "Bacon"]
+        },
+        {
+          "key": "aves",
+          "name": "Aves",
+          "subcategories": ["Frango Inteiro", "Filé de Peito", "Sobrecoxa", "Coxinha da Asa", "Asa", "Coração", "Moela"]
+        },
+        {
+          "key": "peixes-frutos-mar",
+          "name": "Peixes e Frutos do Mar",
+          "subcategories": ["Tilápia", "Salmão", "Bacalhau", "Sardinha Fresca", "Camarão", "Lula"]
+        },
+        {
+          "key": "processados-acougue",
+          "name": "Processados e Embutidos",
+          "subcategories": ["Almôndegas", "Hambúrguer", "Kibe", "Linguiça", "Salsicha"]
+        }
+      ]
+    },
+    {
+      "key": "padaria",
+      "name": "Padaria e Confeitaria",
+      "categories": [
+        {
+          "key": "paes",
+          "name": "Pães",
+          "subcategories": ["Pão de Forma", "Pão Francês", "Pão de Leite", "Pão de Queijo", "Baguete", "Pão de Hambúrguer", "Pão Integral"]
+        },
+        {
+          "key": "bolos-tortas",
+          "name": "Bolos e Tortas",
+          "subcategories": ["Bolo Simples", "Torta", "Brownie", "Muffin", "Cheesecake"]
+        },
+        {
+          "key": "doces",
+          "name": "Doces e Confeitos",
+          "subcategories": ["Brigadeiro", "Beijinho", "Cocada", "Alfajor", "Pudim Pronto"]
+        },
+        {
+          "key": "salgados",
+          "name": "Salgados",
+          "subcategories": ["Coxinha", "Esfiha", "Pastel", "Empada", "Quibe Frito"]
+        }
+      ]
+    },
+    {
+      "key": "higiene",
+      "name": "Higiene e Beleza",
+      "categories": [
+        {
+          "key": "cabelo",
+          "name": "Cuidados com o Cabelo",
+          "subcategories": ["Shampoo", "Condicionador", "Máscara Capilar", "Creme para Pentear", "Finalizador"]
+        },
+        {
+          "key": "pele",
+          "name": "Cuidados com a Pele",
+          "subcategories": ["Sabonete", "Sabonete Líquido", "Hidratante Corporal", "Protetor Solar", "Desodorante"]
+        },
+        {
+          "key": "oral",
+          "name": "Higiene Oral",
+          "subcategories": ["Pasta de Dente", "Escova de Dente", "Fio Dental", "Enxaguante Bucal"]
+        },
+        {
+          "key": "corporal",
+          "name": "Higiene Corporal",
+          "subcategories": ["Papel Higiênico", "Lenços Umedecidos", "Absorvente", "Barbear"]
+        },
+        {
+          "key": "primeiros-socorros",
+          "name": "Primeiros Socorros",
+          "subcategories": ["Algodão", "Curativos", "Álcool em Gel", "Repelente"]
+        }
+      ]
+    },
+    {
+      "key": "limpeza",
+      "name": "Limpeza",
+      "categories": [
+        {
+          "key": "cozinha",
+          "name": "Cozinha",
+          "subcategories": ["Detergente", "Esponja", "Papel Toalha", "Guardanapo", "Papel Alumínio", "Filme PVC", "Sacos Plásticos"]
+        },
+        {
+          "key": "lavanderia",
+          "name": "Lavanderia",
+          "subcategories": ["Sabão em Pó", "Sabão Líquido", "Amaciante", "Tira-Manchas", "Alvejante"]
+        },
+        {
+          "key": "banheiro",
+          "name": "Banheiro",
+          "subcategories": ["Limpador Sanitário", "Desinfetante", "Água Sanitária", "Aromatizador", "Saco de Lixo"]
+        },
+        {
+          "key": "pisos-superficies",
+          "name": "Pisos e Superfícies",
+          "subcategories": ["Cera", "Multiuso", "Limpa Vidros", "Vassoura", "Rodo", "Pano de Limpeza"]
+        }
+      ]
+    }
+  ]
+}
