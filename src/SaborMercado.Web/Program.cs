@@ -106,9 +106,7 @@ builder.Services.AddScoped<ShoppingReminderService>();
 
 builder.Services.AddScoped<ShoppingService>();
 
-builder.Services.AddScoped<PurchaseHistoryService>();
-
-builder.Services.AddScoped<MarketPriceMatrixService>();
+builder.Services.AddScoped<ProductPriceComparisonService>();
 
 builder.Services.AddScoped<AccountService>();
 

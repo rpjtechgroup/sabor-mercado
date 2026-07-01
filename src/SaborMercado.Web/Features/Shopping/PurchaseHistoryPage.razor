@@ -6,132 +6,59 @@
 
 <PageLayout Icon="@AppIcons.Compare"
             Title="Comparador de compras"
-            Subtitle="Últimos 3 meses · escolha o melhor mercado por produto">
+            Subtitle="Últimos 3 meses · melhor e pior preço por produto">
 @if (!_loaded)
 {
     <p class="muted">Carregando…</p>
 }
-else if (SessionId is { } detailId)
-{
-    <IconLink Href="historico" Icon="@AppIcons.Back" Label="Voltar" CssClass="muted history-back icon-link icon-back" />
-
-    @if (_sessionRows.Count == 0)
-    {
-        <p class="muted">Compra não encontrada ou fora do período de 3 meses.</p>
-    }
-    else
-    {
-        @if (_sessionSummary is { } summary)
-        {
-            <div class="card">
-                <strong>@summary.PurchaseDate.ToString("dd/MM/yyyy")</strong>
-                <span class="muted"> · @(summary.MarketName ?? "Mercado não informado")</span>
-                <p>Total: <strong>@MoneyFormat.Format(summary.Total)</strong> · @summary.ItemCount item(ns)</p>
-            </div>
-        }
-        <PurchaseHistoryGrid Rows="@_sessionRows" />
-    }
-}
 else
 {
-    <div class="history-tabs" role="tablist">
-        <IconTabButton Icon="@AppIcons.Compare"
-                       Label="Comparador"
-                       Active="@(_tab == HistoryTab.Comparator)"
-                       OnClick="@(() => SelectTab(HistoryTab.Comparator))" />
-        <IconTabButton Icon="@AppIcons.History"
-                       Label="Histórico"
-                       Active="@(_tab == HistoryTab.History)"
-                       OnClick="@(() => SelectTab(HistoryTab.History))" />
-        <IconTabButton Icon="@AppIcons.TabSession"
-                       Label="Por compra"
-                       Active="@(_tab == HistoryTab.BySession)"
-                       OnClick="@(() => SelectTab(HistoryTab.BySession))" />
-    </div>
-
-    @switch (_tab)
-    {
-        case HistoryTab.Comparator:
-            <MarketComparisonMatrix Rows="@_matrixRows" MarketColumns="@_marketColumns" />
-            break;
-        case HistoryTab.History:
-            <PurchaseHistoryGrid Rows="@_consolidatedRows" ShowDate="true" />
-            break;
-        case HistoryTab.BySession:
-            @if (_sessions.Count == 0)
-            {
-                <EmptyState Icon="🧾" Message="Nenhuma compra finalizada nos últimos 3 meses.">
-                    <p><IconInlineLink Href="" Icon="@AppIcons.Shopping" Label="Iniciar uma compra" /></p>
-                </EmptyState>
-            }
-            else
-            {
-                <section aria-label="Compras recentes">
-                    @foreach (var session in _sessions)
-                    {
-                        <a class="card history-session-row" href="historico/@session.SessionId">
-                            <div>
-                                <strong>@session.PurchaseDate.ToString("dd/MM/yyyy")</strong>
-                                <span class="muted"> · @(session.MarketName ?? "Mercado não informado")</span>
-                            </div>
-                            <div class="history-session-meta">
-                                <span>@session.ItemCount item(ns)</span>
-                                <strong>@MoneyFormat.Format(session.Total)</strong>
-                            </div>
-                        </a>
-                    }
-                </section>
-            }
-            break;
-    }
+    <ProductPriceComparisonGrid Rows="@_rows"
+                                ColumnOrder="@_columnOrder"
+                                OnColumnOrderChanged="OnColumnOrderChangedAsync" />
 }
 </PageLayout>
 
 @code {
-    private enum HistoryTab { Comparator, History, BySession }
-
     private bool _loaded;
-    private HistoryTab _tab = HistoryTab.Comparator;
-    private List<FinishedSessionSummary> _sessions = [];
-    private List<PurchaseLineRow> _sessionRows = [];
-    private List<PurchaseLineRow> _consolidatedRows = [];
-    private List<MarketMatrixRow> _matrixRows = [];
-    private List<string> _marketColumns = [];
-    private FinishedSessionSummary? _sessionSummary;
+    private List<ProductComparisonRow> _rows = [];
+    private List<ComparatorColumnId> _columnOrder = ComparatorColumnOrder.DefaultOrder.ToList();
 
     [Parameter]
     public Guid? SessionId { get; set; }
 
     [Inject]
-    public PurchaseHistoryService History { get; set; } = default!;
+    public ProductPriceComparisonService Comparison { get; set; } = default!;
 
     [Inject]
-    public MarketPriceMatrixService Matrix { get; set; } = default!;
+    public IPreferencesStore Preferences { get; set; } = default!;
 
-    protected override async Task OnParametersSetAsync() => await LoadAsync();
+    [Inject]
+    public NavigationManager Navigation { get; set; } = default!;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (SessionId is not null)
+        {
+            Navigation.NavigateTo("historico", replace: true);
+            return;
+        }
+
+        await LoadAsync();
+    }
 
     private async Task LoadAsync()
     {
-        _sessions = (await History.GetRecentSessionsAsync()).ToList();
-        _consolidatedRows = (await History.GetConsolidatedGridAsync()).ToList();
-        _matrixRows = (await Matrix.GetMatrixAsync()).ToList();
-        _marketColumns = MarketPriceMatrixService.GetMarketColumns(_matrixRows).ToList();
-
-        if (SessionId is { } id)
-        {
-            _sessionSummary = _sessions.FirstOrDefault(s => s.SessionId == id);
-            _sessionRows = (await History.GetSessionGridAsync(id)).ToList();
-        }
-        else
-        {
-            _sessionRows = [];
-            _sessionSummary = null;
-        }
-
+        _rows = (await Comparison.GetComparisonRowsAsync()).ToList();
+        _columnOrder = (await Preferences.GetComparatorColumnOrderAsync()).ToList();
         _loaded = true;
     }
 
-    private void SelectTab(HistoryTab tab) => _tab = tab;
+    private async Task OnColumnOrderChangedAsync(IReadOnlyList<ComparatorColumnId> order)
+    {
+        _columnOrder = order.ToList();
+        await Preferences.SetComparatorColumnOrderAsync(_columnOrder);
+    }
 
     public void Dispose() { }
 }

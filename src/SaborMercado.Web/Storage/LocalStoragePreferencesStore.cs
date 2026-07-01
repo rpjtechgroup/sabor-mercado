@@ -1,4 +1,5 @@
 using System.Globalization;
+using SaborMercado.Web.Domain.Shopping;
 using SaborMercado.Web.Interop;
 
 namespace SaborMercado.Web.Storage;
@@ -13,6 +14,7 @@ public sealed class LocalStoragePreferencesStore(LocalStorageInterop localStorag
     private const string AccountEmailKey = "saborMercado.preferences.accountEmail";
     private const string PseudonymIdKey = "saborMercado.preferences.pseudonymId";
     private const string ShowIconLabelsKey = "saborMercado.preferences.showIconLabels";
+    private const string ComparatorColumnOrderKey = "saborMercado.preferences.comparatorColumnOrder";
 
     public async Task<decimal?> GetBudgetDefaultAsync()
     {
@@ -108,4 +110,20 @@ public sealed class LocalStoragePreferencesStore(LocalStorageInterop localStorag
 
     public async Task SetShowIconLabelsAsync(bool value) =>
         await localStorage.SetItemAsync(ShowIconLabelsKey, value ? "1" : "0");
+
+    public async Task<IReadOnlyList<ComparatorColumnId>> GetComparatorColumnOrderAsync()
+    {
+        var raw = await localStorage.GetItemAsync(ComparatorColumnOrderKey);
+        return ComparatorColumnOrder.TryParse(raw, out var order)
+            ? order
+            : ComparatorColumnOrder.DefaultOrder;
+    }
+
+    public async Task SetComparatorColumnOrderAsync(IReadOnlyList<ComparatorColumnId> order)
+    {
+        var normalized = ComparatorColumnOrder.Normalize(order);
+        await localStorage.SetItemAsync(
+            ComparatorColumnOrderKey,
+            ComparatorColumnOrder.ToStorageString(normalized));
+    }
 }

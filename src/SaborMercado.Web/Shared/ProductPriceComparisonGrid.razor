@@ -1,0 +1,127 @@
+@using SaborMercado.Web.Domain.Shopping
+
+@if (Rows.Count == 0)
+{
+    <p class="muted">Sem dados para comparar nos últimos 3 meses.</p>
+}
+else
+{
+    <div class="excel-scroll">
+        <table class="excel-table comparison-grid" aria-label="Comparador de preços por produto">
+            <thead>
+                <tr>
+                    @foreach (var column in ColumnOrder)
+                    {
+                        <th scope="col"
+                            draggable="true"
+                            class="comparison-grid-header @(IsDragging(column) ? "comparison-grid-header-dragging" : null)"
+                            aria-grabbed="@IsDragging(column)"
+                            @ondragstart="e => OnDragStart(e, column)"
+                            @ondragend="OnDragEnd"
+                            @ondragover:preventDefault="true"
+                            @ondrop="e => OnDrop(e, column)">
+                            @ColumnLabel(column)
+                        </th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Rows)
+                {
+                    <tr>
+                        @foreach (var column in ColumnOrder)
+                        {
+                            <td class="@CellClass(column, row)">
+                                @switch (column)
+                                {
+                                    case ComparatorColumnId.Product:
+                                        <strong>@row.ProductName</strong>
+                                        break;
+                                    case ComparatorColumnId.Store:
+                                        @row.BestMarketName
+                                        break;
+                                    case ComparatorColumnId.BestPrice:
+                                        @MoneyFormat.Format(row.BestPrice)
+                                        break;
+                                    case ComparatorColumnId.WorstPrice:
+                                        @MoneyFormat.Format(row.WorstPrice)
+                                        break;
+                                    case ComparatorColumnId.When:
+                                        @row.BestPriceDate.ToString("dd/MM/yyyy")
+                                        break;
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private ComparatorColumnId? _draggedColumn;
+
+    [Parameter]
+    public IReadOnlyList<ProductComparisonRow> Rows { get; set; } = [];
+
+    [Parameter]
+    public IReadOnlyList<ComparatorColumnId> ColumnOrder { get; set; } = ComparatorColumnOrder.DefaultOrder;
+
+    [Parameter]
+    public EventCallback<IReadOnlyList<ComparatorColumnId>> OnColumnOrderChanged { get; set; }
+
+    private static string ColumnLabel(ComparatorColumnId column) => column switch
+    {
+        ComparatorColumnId.Product => "Produto",
+        ComparatorColumnId.Store => "Comércio",
+        ComparatorColumnId.BestPrice => "Melhor",
+        ComparatorColumnId.WorstPrice => "Pior",
+        ComparatorColumnId.When => "Quando",
+        _ => column.ToString()
+    };
+
+    private static string? CellClass(ComparatorColumnId column, ProductComparisonRow row)
+    {
+        if (row.BestPrice == row.WorstPrice)
+        {
+            return "price-neutral";
+        }
+
+        return column switch
+        {
+            ComparatorColumnId.BestPrice => "price-cheaper",
+            ComparatorColumnId.WorstPrice => "price-higher",
+            _ => null
+        };
+    }
+
+    private bool IsDragging(ComparatorColumnId column) => _draggedColumn == column;
+
+    private void OnDragStart(DragEventArgs _, ComparatorColumnId column) => _draggedColumn = column;
+
+    private void OnDragEnd() => _draggedColumn = null;
+
+    private async Task OnDrop(DragEventArgs _, ComparatorColumnId targetColumn)
+    {
+        if (_draggedColumn is not { } source || source == targetColumn)
+        {
+            _draggedColumn = null;
+            return;
+        }
+
+        var order = ColumnOrder.ToList();
+        var sourceIndex = order.IndexOf(source);
+        var targetIndex = order.IndexOf(targetColumn);
+        if (sourceIndex < 0 || targetIndex < 0)
+        {
+            _draggedColumn = null;
+            return;
+        }
+
+        order.RemoveAt(sourceIndex);
+        order.Insert(targetIndex, source);
+        _draggedColumn = null;
+        await OnColumnOrderChanged.InvokeAsync(order);
+    }
+}

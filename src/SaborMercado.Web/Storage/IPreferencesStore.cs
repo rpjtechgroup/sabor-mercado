@@ -1,3 +1,5 @@
+using SaborMercado.Web.Domain.Shopping;
+
 namespace SaborMercado.Web.Storage;
 
 public interface IPreferencesStore
@@ -34,4 +36,8 @@ public interface IPreferencesStore
     Task<bool> GetShowIconLabelsAsync();
 
     Task SetShowIconLabelsAsync(bool value);
+
+    Task<IReadOnlyList<ComparatorColumnId>> GetComparatorColumnOrderAsync();
+
+    Task SetComparatorColumnOrderAsync(IReadOnlyList<ComparatorColumnId> order);
 }

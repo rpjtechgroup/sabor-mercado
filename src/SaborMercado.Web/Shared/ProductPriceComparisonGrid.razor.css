@@ -1,0 +1,31 @@
+.comparison-grid-header {
+    cursor: grab;
+    min-height: 2.75rem;
+    user-select: none;
+    touch-action: none;
+}
+
+.comparison-grid-header:active,
+.comparison-grid-header-dragging {
+    cursor: grabbing;
+    opacity: 0.65;
+}
+
+.comparison-grid .price-cheaper {
+    color: var(--budget-ok);
+    font-weight: 600;
+}
+
+.comparison-grid .price-higher {
+    color: var(--budget-over);
+    font-weight: 600;
+}
+
+.comparison-grid .price-neutral {
+    color: inherit;
+}
+
+.comparison-grid td:first-child,
+.comparison-grid th:first-child {
+    font-weight: 600;
+}
