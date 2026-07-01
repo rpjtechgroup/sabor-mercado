@@ -1,0 +1,49 @@
+.reminder-form-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.reminder-form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    min-height: 3.5rem;
+}
+
+.reminder-form-header .section-icon-title {
+    margin: 0;
+    flex: 1;
+}
+
+.reminder-form-chevron {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+    color: var(--muted, #6b7280);
+    transition: transform 0.15s ease;
+}
+
+.reminder-form-chevron::before {
+    content: "▸";
+}
+
+.reminder-form-chevron.is-expanded::before {
+    content: "▾";
+}
+
+.reminder-form-body {
+    padding: 0 1rem 1rem;
+    border-top: 1px dashed var(--border);
+}
+
+.reminder-list-section {
+    margin-top: 1rem;
+}

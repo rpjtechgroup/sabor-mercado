@@ -12,100 +12,114 @@
 }
 else
 {
-    @if (_lines.Count == 0)
-    {
-        <EmptyState Icon="📝" Message="Nada anotado ainda. Quando perceber que algo está acabando, registre aqui." />
-    }
-    else
-    {
-        <section class="pattern-list" aria-label="Lembretes">
-            @foreach (var line in _lines)
-            {
-                <div class="card pattern-row" @key="line.Reminder.Id">
-                    <div class="pattern-row-info">
-                        <strong>@line.Reminder.DisplayName</strong>
-                        @if (!string.IsNullOrWhiteSpace(line.Reminder.Note))
-                        {
-                            <span class="muted">@line.Reminder.Note</span>
-                        }
-                        else if (line.Product is not null)
-                        {
-                            <span class="muted">@FormatProductDetails(line.Product)</span>
-                        }
-                    </div>
-                    <div class="pattern-row-meta">
-                        @if (line.LastPrice is { } price)
-                        {
-                            <span class="pattern-price">@MoneyFormat.Format(price)</span>
-                        }
-                        else
-                        {
-                            <span class="pattern-price muted">sem preço</span>
-                        }
-                        <label class="pattern-qty">
-                            Qtd
-                            <input type="number"
-                                   class="input input-compact"
-                                   min="1"
-                                   value="@line.Reminder.Quantity"
-                                   @onchange="e => UpdateQtyAsync(line.Reminder.Id, e)" />
-                        </label>
-                        <button type="button"
-                                class="btn btn-outline btn-compact"
-                                aria-label="Remover @line.Reminder.DisplayName"
-                                @onclick="() => RemoveAsync(line.Reminder.Id)">
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            }
-        </section>
-    }
+    <div class="card reminder-form-card">
+        <button type="button"
+                class="reminder-form-header"
+                aria-expanded="@_formExpanded"
+                aria-controls="reminder-form-panel"
+                @onclick="ToggleFormExpanded">
+            <SectionIcon Icon="@AppIcons.New" Title="Adicionar lembrete" />
+            <span class="reminder-form-chevron @(_formExpanded ? "is-expanded" : null)"
+                  aria-hidden="true"></span>
+        </button>
 
-    <div class="card">
-        <SectionIcon Icon="@AppIcons.New" Title="Adicionar lembrete" />
-
-        <div class="field">
-            <label for="reminder-product">Produto do catálogo</label>
-            <ProductAutocomplete InputId="reminder-product"
-                                 Name="@_searchName"
-                                 NameChanged="OnSearchNameChanged"
-                                 OnProductSelected="SelectProductAsync"
-                                 Placeholder="Buscar no catálogo…" />
-        </div>
-
-        <div class="field">
-            <label for="reminder-note-text">Ou digite uma nota rápida</label>
-            <input id="reminder-note-text" class="input" @bind="_quickNote" placeholder="ex.: papel higiênico" />
-        </div>
-
-        <div class="field">
-            <label for="reminder-extra-note">Observação (opcional)</label>
-            <input id="reminder-extra-note" class="input" @bind="_extraNote" placeholder="ex.: marca preferida" />
-        </div>
-
-        <div class="field">
-            <label for="reminder-qty">Quantidade</label>
-            <input id="reminder-qty" class="input" type="number" min="1" @bind="_quantity" />
-        </div>
-
-        @if (_error is not null)
+        @if (_formExpanded)
         {
-            <p class="text-over" role="alert">@_error</p>
-        }
+            <div id="reminder-form-panel" class="reminder-form-body">
+                <div class="field">
+                    <label for="reminder-product">Produto do catálogo</label>
+                    <ProductAutocomplete InputId="reminder-product"
+                                         Name="@_searchName"
+                                         NameChanged="OnSearchNameChanged"
+                                         OnProductSelected="SelectProductAsync"
+                                         Placeholder="Buscar no catálogo…" />
+                </div>
 
-        <IconButton Icon="@AppIcons.Reminder"
-                    Label="Adicionar lembrete"
-                    CssClass="btn btn-primary btn-block btn-icon"
-                    OnClick="AddReminderAsync" />
+                <div class="field">
+                    <label for="reminder-note-text">Ou digite uma nota rápida</label>
+                    <input id="reminder-note-text" class="input" @bind="_quickNote" placeholder="ex.: papel higiênico" />
+                </div>
+
+                <div class="field">
+                    <label for="reminder-extra-note">Observação (opcional)</label>
+                    <input id="reminder-extra-note" class="input" @bind="_extraNote" placeholder="ex.: marca preferida" />
+                </div>
+
+                <div class="field">
+                    <label for="reminder-qty">Quantidade</label>
+                    <input id="reminder-qty" class="input" type="number" min="1" @bind="_quantity" />
+                </div>
+
+                @if (_error is not null)
+                {
+                    <p class="text-over" role="alert">@_error</p>
+                }
+
+                <IconButton Icon="@AppIcons.Reminder"
+                            Label="Adicionar lembrete"
+                            CssClass="btn btn-primary btn-block btn-icon"
+                            OnClick="AddReminderAsync" />
+            </div>
+        }
     </div>
 
-    <IconLink Href="" Icon="@AppIcons.Back" Label="Voltar à compra" CssClass="btn btn-outline btn-block btn-icon icon-link icon-back" />
+    <div class="reminder-list-section">
+        @if (_lines.Count == 0)
+        {
+            <EmptyState Icon="📝" Message="Nada anotado ainda. Quando perceber que algo está acabando, registre aqui." />
+        }
+        else
+        {
+            <section class="pattern-list" aria-label="Lembretes">
+                @foreach (var line in _lines)
+                {
+                    <div class="card pattern-row" @key="line.Reminder.Id">
+                        <div class="pattern-row-info">
+                            <strong>@line.Reminder.DisplayName</strong>
+                            @if (!string.IsNullOrWhiteSpace(line.Reminder.Note))
+                            {
+                                <span class="muted">@line.Reminder.Note</span>
+                            }
+                            else if (line.Product is not null)
+                            {
+                                <span class="muted">@FormatProductDetails(line.Product)</span>
+                            }
+                        </div>
+                        <div class="pattern-row-meta">
+                            @if (line.LastPrice is { } price)
+                            {
+                                <span class="pattern-price">@MoneyFormat.Format(price)</span>
+                            }
+                            else
+                            {
+                                <span class="pattern-price muted">sem preço</span>
+                            }
+                            <label class="pattern-qty">
+                                Qtd
+                                <input type="number"
+                                       class="input input-compact"
+                                       min="1"
+                                       value="@line.Reminder.Quantity"
+                                       @onchange="e => UpdateQtyAsync(line.Reminder.Id, e)" />
+                            </label>
+                            <button type="button"
+                                    class="btn btn-outline btn-compact"
+                                    aria-label="Remover @line.Reminder.DisplayName"
+                                    @onclick="() => RemoveAsync(line.Reminder.Id)">
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                }
+            </section>
+        }
+    </div>
 }
 </PageLayout>
 
 @code {
     private bool _loaded;
+    private bool _formExpanded = true;
     private string _searchName = string.Empty;
     private string _quickNote = string.Empty;
     private string _extraNote = string.Empty;
@@ -124,7 +138,22 @@ else
         _loaded = true;
     }
 
-    private async Task RefreshAsync() => _lines = await Reminders.GetLinesAsync();
+    private async Task RefreshAsync()
+    {
+        var previousCount = _lines.Count;
+        _lines = await Reminders.GetLinesAsync();
+
+        if (_lines.Count == 0)
+        {
+            _formExpanded = true;
+        }
+        else if (previousCount == 0)
+        {
+            _formExpanded = false;
+        }
+    }
+
+    private void ToggleFormExpanded() => _formExpanded = !_formExpanded;
 
     private static string FormatProductDetails(Product product)
     {
