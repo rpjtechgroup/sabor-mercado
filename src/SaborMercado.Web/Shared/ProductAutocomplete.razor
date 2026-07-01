@@ -10,20 +10,25 @@
                value="@Name"
                @oninput="OnInputAsync"
                @onfocus="ShowSuggestions"
+               @onblur="OnInputBlurAsync"
+               @onkeydown="OnInputKeyDown"
                aria-autocomplete="list"
                aria-controls="@ListboxId"
-               aria-expanded="@_showList" />
+               aria-expanded="@IsListVisible" />
         <VoiceInputButton CssClass="btn btn-outline btn-icon voice-input-btn"
                           OnTranscript="OnVoiceTranscriptAsync" />
     </div>
 
-    @if (_showList && _suggestions.Count > 0)
+    @if (IsListVisible)
     {
         <ul id="@ListboxId" class="autocomplete-list" role="listbox">
             @foreach (var product in _suggestions)
             {
                 <li role="option">
-                    <button type="button" class="autocomplete-item" @onclick="() => SelectAsync(product)">
+                    <button type="button"
+                            class="autocomplete-item"
+                            @onmousedown:preventDefault="true"
+                            @onclick="() => SelectAsync(product)">
                         <strong>@product.Name</strong>
                         @if (!string.IsNullOrWhiteSpace(product.Brand))
                         {
@@ -44,6 +49,7 @@
     private readonly List<Product> _suggestions = [];
     private readonly Dictionary<Guid, decimal> _lastPrices = [];
     private bool _showList;
+    private CancellationTokenSource? _blurCloseCts;
 
     [Parameter]
     public string InputId { get; set; } = "product-autocomplete";
@@ -65,6 +71,8 @@
 
     private string ListboxId => $"{InputId}-list";
 
+    private bool IsListVisible => _showList && _suggestions.Count > 0;
+
     protected override async Task OnInitializedAsync()
     {
         Catalog.StateChanged += OnCatalogChanged;
@@ -73,6 +81,7 @@
 
     private async Task OnInputAsync(ChangeEventArgs e)
     {
+        CancelBlurClose();
         Name = e.Value?.ToString() ?? string.Empty;
         await NameChanged.InvokeAsync(Name);
         await RefreshSuggestionsAsync();
@@ -81,6 +90,7 @@
 
     private async Task OnVoiceTranscriptAsync(string transcript)
     {
+        CancelBlurClose();
         Name = transcript;
         await NameChanged.InvokeAsync(Name);
         await RefreshSuggestionsAsync();
@@ -105,12 +115,56 @@
 
     private void ShowSuggestions()
     {
+        CancelBlurClose();
         _showList = true;
         _ = RefreshSuggestionsAsync();
     }
 
+    private async Task OnInputBlurAsync()
+    {
+        CancelBlurClose();
+        _blurCloseCts = new CancellationTokenSource();
+        var token = _blurCloseCts.Token;
+
+        try
+        {
+            await Task.Delay(150, token);
+            CloseSuggestions();
+            await InvokeAsync(StateHasChanged);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private void OnInputKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key != "Escape")
+        {
+            return;
+        }
+
+        CancelBlurClose();
+        CloseSuggestions();
+    }
+
+    private void CloseSuggestions() => _showList = false;
+
+    private void CancelBlurClose()
+    {
+        if (_blurCloseCts is null)
+        {
+            return;
+        }
+
+        _blurCloseCts.Cancel();
+        _blurCloseCts.Dispose();
+        _blurCloseCts = null;
+    }
+
     private async Task SelectAsync(Product product)
     {
+        CancelBlurClose();
         Name = product.Name;
         await NameChanged.InvokeAsync(Name);
         await OnProductSelected.InvokeAsync(product);
@@ -120,5 +174,9 @@
 
     private void OnCatalogChanged() => InvokeAsync(StateHasChanged);
 
-    public void Dispose() => Catalog.StateChanged -= OnCatalogChanged;
+    public void Dispose()
+    {
+        CancelBlurClose();
+        Catalog.StateChanged -= OnCatalogChanged;
+    }
 }
