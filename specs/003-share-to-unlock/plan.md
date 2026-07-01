@@ -31,7 +31,6 @@ Regras canônicas: `docs/business/share-to-unlock.md`
 - `/catalogo-colaborativo` — busca premium (requer desbloqueio)
 - `/configuracoes` — link para conta + Gemini key
 - `ProductDetail` — compartilhar preço (opt-in, enfileira se offline)
-- `ShoppingPage` — export CSV quando `export-csv` desbloqueado
 
 ## Fase 2 (hardening)
 

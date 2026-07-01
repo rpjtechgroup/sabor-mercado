@@ -16,7 +16,6 @@ Usuário cria conta, compartilha preço anonimizado e vê créditos acumulados.
 
 **Acceptance**:
 - Given usuário logado, When compartilha preço válido, Then recebe créditos conforme tabela canônica.
-- Given saldo suficiente, When desbloqueia `export-csv`, Then exportação CSV fica disponível na compra.
 
 ### US2 — Compartilhamento offline (P2)
 
@@ -57,7 +56,7 @@ Usuário com desbloqueios ativos acessa comparação de mercados, estatísticas 
 - **FR-002**: Observações anonimizadas com `contributorPseudonymId` (não e-mail).
 - **FR-003**: Créditos determinísticos no Rewards (ledger append-only).
 - **FR-004**: Desbloqueios premium conforme `share-to-unlock.md`.
-- **FR-005**: PWA `/conta`, compartilhar em produto, export CSV premium.
+- **FR-005**: PWA `/conta`, compartilhar em produto.
 - **FR-006**: Fila `pendingShares` para envio offline.
 - **FR-007**: Fluxo principal (F1–F5) permanece gratuito e offline.
 - **FR-008**: Anti-fraude z-score e `Idempotency-Key` em contribuições.

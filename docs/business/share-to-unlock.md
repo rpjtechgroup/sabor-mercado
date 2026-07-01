@@ -51,7 +51,6 @@ deduplicação por (EAN|produto normalizado + mercado + dia).
 |----------------------------------------------|------------------|-----------|
 | Histórico de preços do catálogo colaborativo | 10               | 30 dias   |
 | Comparação de preços entre mercados          | 20               | 30 dias   |
-| Exportação (CSV/planilha) de compras         | 15               | permanente|
 | Listas inteligentes (sugestão por histórico) | 30               | 30 dias   |
 | Estatísticas avançadas de gastos             | 25               | 30 dias   |
 

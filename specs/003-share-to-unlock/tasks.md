@@ -4,7 +4,7 @@
 
 - [X] T001 Módulos Identity, SharedCatalog, Rewards + Api JWT
 - [X] T002 Endpoints auth, price-observations, credits, unlocks
-- [X] T003 PWA /conta, compartilhar, export CSV
+- [X] T003 PWA /conta, compartilhar
 - [X] T004 Testes integração share-to-unlock
 
 ## Fase 2 — Hardening (concluída)

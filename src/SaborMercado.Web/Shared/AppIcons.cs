@@ -15,7 +15,6 @@ public static class AppIcons
     public const string Confirm = "✅";
     public const string Warning = "⚠️";
     public const string Finish = "🏁";
-    public const string Export = "📄";
     public const string History = "📋";
     public const string Calendar = "📅";
     public const string Keyboard = "⌨️";

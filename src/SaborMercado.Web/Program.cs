@@ -47,8 +47,6 @@ builder.Services.AddScoped<ILocalStorageInterop>(sp => sp.GetRequiredService<Loc
 
 builder.Services.AddScoped<ImageCompressInterop>();
 
-builder.Services.AddScoped<DownloadInterop>();
-
 builder.Services.AddScoped<GeolocationInterop>();
 
 builder.Services.AddScoped<ISpeechRecognitionService, SpeechRecognitionInterop>();

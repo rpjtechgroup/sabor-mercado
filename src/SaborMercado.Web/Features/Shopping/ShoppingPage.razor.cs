@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using SaborMercado.Web.Domain.Shopping;
 using SaborMercado.Web.Features.Account;
-using SaborMercado.Web.Interop;
 using SaborMercado.Web.Shared;
 
 namespace SaborMercado.Web.Features.Shopping;
@@ -11,7 +10,6 @@ public partial class ShoppingPage : IDisposable
     private bool _loaded;
     private bool _showSummary;
     private bool _confirmingAbandon;
-    private bool _canExportCsv = true;
     private int _reminderCount;
     private CartItemFormModel? _itemForm;
     private Guid? _editingItemId;
@@ -22,9 +20,6 @@ public partial class ShoppingPage : IDisposable
 
     [Inject]
     public AccountService Account { get; set; } = default!;
-
-    [Inject]
-    public DownloadInterop Download { get; set; } = default!;
 
     [Inject]
     public ToastService Toast { get; set; } = default!;
@@ -133,22 +128,6 @@ public partial class ShoppingPage : IDisposable
     }
 
     private void StartNew() => _showSummary = false;
-
-    private async Task ExportCsvAsync()
-    {
-        if (Shopping.CurrentSession is null || Shopping.Items.Count == 0)
-        {
-            return;
-        }
-
-        var csv = CartCsvExporter.Build(
-            Shopping.Items,
-            Shopping.CurrentSession.MarketName,
-            Shopping.Total);
-
-        var fileName = $"compra-{DateTime.Now:yyyyMMdd-HHmm}.csv";
-        await Download.DownloadTextAsync(fileName, csv);
-    }
 
     private async Task RefreshReminderCountAsync() =>
         _reminderCount = await Reminders.GetCountAsync();

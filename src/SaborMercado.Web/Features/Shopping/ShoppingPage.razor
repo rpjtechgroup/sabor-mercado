@@ -88,11 +88,6 @@ else
             </section>
         }
 
-        @if (_canExportCsv && Shopping.Items.Count > 0)
-        {
-            <IconButton Icon="@AppIcons.Export" Label="Exportar carrinho (CSV)" CssClass="btn btn-secondary btn-block btn-icon" OnClick="ExportCsvAsync" />
-        }
-
         <div class="session-actions">
             <IconButton Icon="@AppIcons.Finish" Label="Encerrar compra" CssClass="btn btn-primary btn-block btn-icon" OnClick="FinishAsync" />
             @if (_confirmingAbandon)
