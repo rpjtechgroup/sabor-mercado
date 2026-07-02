@@ -1,10 +1,5 @@
-
-@using SaborMercado.Web.Features.Voice
-
 <div class="card">
     <SectionIcon Icon="@(IsEdit ? AppIcons.Edit : AppIcons.Catalog)" Title="@(IsEdit ? "Editar produto" : "Novo produto")" />
-
-    <VoiceLiteralPanel Target="VoiceExtractionTarget.ProductCatalog" OnExtracted="ApplyVoiceExtractionAsync" />
 
     <div class="field">
         <label for="product-name">Nome *</label>
@@ -76,12 +71,6 @@
 
     [Parameter]
     public EventCallback OnCancel { get; set; }
-
-    private Task ApplyVoiceExtractionAsync(VoiceFieldExtractionResult result)
-    {
-        VoiceParsedFieldsApplicator.ApplyToProductForm(result.Fields, Model);
-        return Task.CompletedTask;
-    }
 
     private async Task SaveAsync()
     {
