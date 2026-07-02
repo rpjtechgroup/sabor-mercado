@@ -10,8 +10,7 @@
 <PageTitle>Sabor Mercado — Minha conta</PageTitle>
 
 <PageLayout Icon="@AppIcons.Account"
-            Title="Minha conta"
-            Subtitle="Acompanhe conquistas e rankings com base no uso do app. Seus dados de compra permanecem no dispositivo.">
+            Title="Minha conta">
     @if (!_loaded)
     {
         <p class="muted">Carregando…</p>
@@ -56,47 +55,40 @@
     }
     else
     {
-        <SettingsSection Id="profile-heading" Icon="@AppIcons.Account" Title="Perfil">
-            <p class="muted">Logado como @Account.Email</p>
-            @if (Account.PendingShareCount > 0)
-            {
-                <p class="muted" role="status">@Account.PendingShareCount compartilhamento(s) aguardando envio.</p>
-                <IconButton Icon="@AppIcons.Refresh" Label="Tentar enviar agora" CssClass="btn btn-secondary btn-block btn-icon" OnClick="FlushPendingAsync" />
-            }
-            <IconLink Href="catalogo-colaborativo" Icon="@AppIcons.Catalog" Label="Catálogo colaborativo" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-            <IconLink Href="estatisticas" Icon="@AppIcons.Chart" Label="Estatísticas de gastos" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-            <IconLink Href="rankings" Icon="@AppIcons.Trophy" Label="Rankings" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
-            <IconButton Icon="@AppIcons.Logout" Label="Sair" CssClass="btn btn-outline btn-block btn-icon" OnClick="LogoutAsync" />
-        </SettingsSection>
+        @if (Account.PendingShareCount > 0)
+        {
+            <p class="muted" role="status">@Account.PendingShareCount compartilhamento(s) aguardando envio.</p>
+            <IconButton Icon="@AppIcons.Refresh" Label="Tentar enviar agora" CssClass="btn btn-secondary btn-block btn-icon" OnClick="FlushPendingAsync" />
+        }
+        <IconLink Href="catalogo-colaborativo" Icon="@AppIcons.Catalog" Label="Catálogo colaborativo" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
+        <IconLink Href="estatisticas" Icon="@AppIcons.Chart" Label="Estatísticas de gastos" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
+        <IconLink Href="rankings" Icon="@AppIcons.Trophy" Label="Rankings" CssClass="btn btn-secondary btn-block btn-icon icon-link" />
+        <IconButton Icon="@AppIcons.Logout" Label="Sair" CssClass="btn btn-outline btn-block btn-icon" OnClick="LogoutAsync" />
 
-        <SettingsSection Id="metrics-heading" Icon="@AppIcons.Chart" Title="Seu progresso">
-            @if (GamificationMetrics.Current is { } metrics)
-            {
-                <div class="metrics-grid">
-                    <div class="metric-card"><span class="metric-value">@metrics.TotalProductsRegistered</span><span class="metric-label">Produtos</span></div>
-                    <div class="metric-card"><span class="metric-value">@metrics.TotalStoresRegistered</span><span class="metric-label">Comércios</span></div>
-                    <div class="metric-card"><span class="metric-value">@metrics.TotalPurchasesCompleted</span><span class="metric-label">Compras</span></div>
-                    <div class="metric-card"><span class="metric-value">@metrics.CurrentLoginStreakDays</span><span class="metric-label">Dias seguidos</span></div>
-                </div>
-            }
-        </SettingsSection>
-
-        <SettingsSection Id="achievements-heading" Icon="@AppIcons.Trophy" Title="Conquistas">
-            <p class="muted">@_unlockedCount de @_totalCount conquistas desbloqueadas.</p>
-            <div class="achievement-grid">
-                @foreach (var badge in _achievementViews)
-                {
-                    var unlocked = _unlockedCodes.Contains(badge.Code);
-                    var unlockedAt = _achievements.FirstOrDefault(a => a.Code == badge.Code)?.UnlockedAt;
-                    <AchievementBadge Title="@badge.Title"
-                                      Description="@badge.Description"
-                                      IsUnlocked="@unlocked"
-                                      UnlockedAt="@unlockedAt"
-                                      CurrentProgress="@badge.CurrentProgress"
-                                      TargetProgress="@badge.TargetProgress" />
-                }
+        @if (GamificationMetrics.Current is { } metrics)
+        {
+            <div class="metrics-grid account-section">
+                <div class="metric-card"><span class="metric-value">@metrics.TotalProductsRegistered</span><span class="metric-label">Produtos</span></div>
+                <div class="metric-card"><span class="metric-value">@metrics.TotalStoresRegistered</span><span class="metric-label">Comércios</span></div>
+                <div class="metric-card"><span class="metric-value">@metrics.TotalPurchasesCompleted</span><span class="metric-label">Compras</span></div>
+                <div class="metric-card"><span class="metric-value">@metrics.CurrentLoginStreakDays</span><span class="metric-label">Dias seguidos</span></div>
             </div>
-        </SettingsSection>
+        }
+
+        <p class="muted account-section">@_unlockedCount de @_totalCount conquistas desbloqueadas.</p>
+        <div class="achievement-grid">
+            @foreach (var badge in _achievementViews)
+            {
+                var unlocked = _unlockedCodes.Contains(badge.Code);
+                var unlockedAt = _achievements.FirstOrDefault(a => a.Code == badge.Code)?.UnlockedAt;
+                <AchievementBadge Title="@badge.Title"
+                                  Description="@badge.Description"
+                                  IsUnlocked="@unlocked"
+                                  UnlockedAt="@unlockedAt"
+                                  CurrentProgress="@badge.CurrentProgress"
+                                  TargetProgress="@badge.TargetProgress" />
+            }
+        </div>
 
         <SettingsSection Id="danger-heading" Icon="@AppIcons.Warning" Title="Zona de perigo">
             <p class="muted">Exclui sua conta. Compartilhamentos já anonimizados permanecem no catálogo colaborativo.</p>

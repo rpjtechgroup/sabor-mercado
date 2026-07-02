@@ -10,3 +10,7 @@
 .account-page .unlock-row:last-child {
     border-bottom: none;
 }
+
+.account-section {
+    margin-top: 1rem;
+}
