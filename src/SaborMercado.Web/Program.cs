@@ -120,7 +120,6 @@ builder.Services.AddScoped<CollaborativeCatalogService>();
 builder.Services.AddScoped<CommunityService>();
 builder.Services.AddScoped<MarketComparisonClient>();
 builder.Services.AddScoped<PremiumStatsService>();
-builder.Services.AddScoped<SmartListService>();
 
 builder.Services.AddScoped<SupportDialogState>();
 builder.Services.AddScoped<SupportDiagnosticsCollector>();
