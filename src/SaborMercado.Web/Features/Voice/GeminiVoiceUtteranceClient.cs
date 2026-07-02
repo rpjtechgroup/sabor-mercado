@@ -18,7 +18,7 @@ public sealed class GeminiVoiceUtteranceClient(HttpClient httpClient, IConfigura
     public async Task<string> ExtractProductFieldsAsync(
         string apiKey,
         string transcript,
-        VoiceExtractionTarget target = VoiceExtractionTarget.ProductCatalog,
+        VoiceExtractionTarget target = VoiceExtractionTarget.CartItem,
         CancellationToken cancellationToken = default)
     {
         var models = ResolveModels();

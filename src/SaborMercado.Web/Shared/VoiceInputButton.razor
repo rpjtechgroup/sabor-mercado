@@ -36,12 +36,6 @@
     [Parameter]
     public EventCallback<string> OnTranscript { get; set; }
 
-    [Parameter]
-    public EventCallback<VoiceParsedFields> OnParsed { get; set; }
-
-    [Parameter]
-    public bool ParseUtterance { get; set; }
-
     [Inject]
     public ISpeechRecognitionService Speech { get; set; } = default!;
 
@@ -91,12 +85,6 @@
 
         _error = null;
         await OnTranscript.InvokeAsync(transcript.Trim());
-
-        if (ParseUtterance && OnParsed.HasDelegate)
-        {
-            var parsed = VoiceUtteranceParser.Parse(transcript);
-            await OnParsed.InvokeAsync(parsed);
-        }
     }
 
     [JSInvokable]

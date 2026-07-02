@@ -15,8 +15,11 @@
                aria-autocomplete="list"
                aria-controls="@ListboxId"
                aria-expanded="@IsListVisible" />
-        <VoiceInputButton CssClass="btn btn-outline btn-icon voice-input-btn"
-                          OnTranscript="OnVoiceTranscriptAsync" />
+        @if (EnableVoiceInput)
+        {
+            <VoiceInputButton CssClass="btn btn-outline btn-icon voice-input-btn"
+                              OnTranscript="OnVoiceTranscriptAsync" />
+        }
     </div>
 
     @if (IsListVisible)
@@ -56,6 +59,9 @@
 
     [Parameter]
     public string Placeholder { get; set; } = "ex.: Óleo de Soja Liza";
+
+    [Parameter]
+    public bool EnableVoiceInput { get; set; }
 
     [Parameter]
     public string Name { get; set; } = string.Empty;

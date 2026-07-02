@@ -8,7 +8,7 @@ public sealed class VoiceFieldExtractorService(
 {
     public async Task<VoiceFieldExtractionResult> ExtractAsync(
         string transcript,
-        VoiceExtractionTarget target = VoiceExtractionTarget.ProductCatalog,
+        VoiceExtractionTarget target = VoiceExtractionTarget.CartItem,
         CancellationToken cancellationToken = default)
     {
         var rules = VoiceUtteranceParser.Parse(transcript);

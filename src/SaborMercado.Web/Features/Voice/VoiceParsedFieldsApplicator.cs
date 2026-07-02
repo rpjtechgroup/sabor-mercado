@@ -1,4 +1,3 @@
-using SaborMercado.Web.Features.Catalog;
 using SaborMercado.Web.Features.Shopping;
 
 namespace SaborMercado.Web.Features.Voice;
@@ -35,44 +34,6 @@ public static class VoiceParsedFieldsApplicator
         if (parsed.Quantity is > 0)
         {
             model.Quantity = parsed.Quantity.Value;
-        }
-    }
-
-    public static void ApplyToProductForm(VoiceParsedFields parsed, ProductFormModel model)
-    {
-        if (!string.IsNullOrWhiteSpace(parsed.Name))
-        {
-            model.Name = parsed.Name;
-        }
-
-        if (!string.IsNullOrWhiteSpace(parsed.Brand))
-        {
-            model.Brand = parsed.Brand;
-        }
-
-        if (parsed.QuantityValue is > 0m)
-        {
-            model.QuantityValue = parsed.QuantityValue;
-        }
-
-        if (parsed.QuantityUnit is not null)
-        {
-            model.QuantityUnit = parsed.QuantityUnit;
-        }
-
-        if (!string.IsNullOrWhiteSpace(parsed.Ean))
-        {
-            model.Ean = parsed.Ean;
-        }
-
-        if (!string.IsNullOrWhiteSpace(parsed.Category))
-        {
-            model.Category = parsed.Category;
-        }
-
-        if (!string.IsNullOrWhiteSpace(parsed.Notes))
-        {
-            model.Notes = parsed.Notes;
         }
     }
 }

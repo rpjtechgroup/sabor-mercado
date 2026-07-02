@@ -57,13 +57,13 @@
     private string? _error;
 
     [Parameter]
-    public VoiceExtractionTarget Target { get; set; } = VoiceExtractionTarget.ProductCatalog;
+    public VoiceExtractionTarget Target { get; set; } = VoiceExtractionTarget.CartItem;
 
     [Parameter]
     public string Label { get; set; } = "Texto da fala";
 
     [Parameter]
-    public string Placeholder { get; set; } = "Fale ou digite o produto (ex.: óleo de soja Liza novecentos ml mercearia)";
+    public string Placeholder { get; set; } = "Fale ou digite o item (ex.: óleo de soja Liza novecentos ml nove e noventa dois pacotes)";
 
     [Parameter]
     public string Hint { get; set; } =
