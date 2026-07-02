@@ -16,6 +16,38 @@ public sealed class StarterCatalogTests
     }
 
     [Fact]
+    public void GetCatalog_HasAtLeast50Stores()
+    {
+        var catalog = new StarterCatalogProvider().GetCatalog();
+
+        Assert.True(catalog.Stores.Count >= 50,
+            $"Expected at least 50 stores, got {catalog.Stores.Count}");
+    }
+
+    [Fact]
+    public void GetCatalog_AllStoreKeysAreUnique()
+    {
+        var catalog = new StarterCatalogProvider().GetCatalog();
+        var keys = catalog.Stores.Select(s => s.Key).ToList();
+        var duplicates = keys.GroupBy(k => k).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+
+        Assert.Empty(duplicates);
+    }
+
+    [Fact]
+    public void GetCatalog_AllStoreKeysAreKebabCase()
+    {
+        var catalog = new StarterCatalogProvider().GetCatalog();
+
+        var invalid = catalog.Stores
+            .Where(s => !System.Text.RegularExpressions.Regex.IsMatch(s.Key, @"^[a-z0-9]+(-[a-z0-9]+)*$"))
+            .Select(s => s.Key)
+            .ToList();
+
+        Assert.Empty(invalid);
+    }
+
+    [Fact]
     public void GetCatalog_HasVersion2OrHigher()
     {
         var catalog = new StarterCatalogProvider().GetCatalog();

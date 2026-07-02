@@ -41,6 +41,28 @@ public sealed class StarterCatalogBootstrapService(
         return await ImportAsync(showToast: true, cancellationToken);
     }
 
+    public async Task<StarterImportResult?> TryMergeNewStarterStoresAsync(CancellationToken cancellationToken = default)
+    {
+        await stores.InitializeAsync();
+        await catalog.InitializeAsync();
+
+        if (IsCatalogEmpty())
+        {
+            return await ImportAsync(showToast: true, cancellationToken);
+        }
+
+        return await ImportAsync(showToast: false, cancellationToken);
+    }
+
+    public async Task<StarterImportResult> ImportFromDtoAsync(
+        StarterCatalogDto dto,
+        CancellationToken cancellationToken = default)
+    {
+        await stores.InitializeAsync();
+        await catalog.InitializeAsync();
+        return await MergeCatalogAsync(dto, cancellationToken);
+    }
+
     public async Task<StarterImportResult> ImportAsync(
         bool showToast = true,
         CancellationToken cancellationToken = default)

@@ -13,8 +13,10 @@ const catalogPath = join(__dirname, '..', 'data', 'starter-catalog.pt-BR.json');
 
 const VALID_UNITS = new Set(['g', 'kg', 'ml', 'l', 'un']);
 const MIN_PRODUCTS = 300;
+const MIN_STORES = 50;
 const MIN_PRODUCTS_PER_SUBCATEGORY = 3;
 const CATEGORY_SEPARATOR = ' > ';
+const KEY_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 
 /** @type {{ errors: string[], warnings: string[] }} */
 const result = { errors: [], warnings: [] };
@@ -51,7 +53,8 @@ if (!Array.isArray(catalog.products) || catalog.products.length === 0) {
   error('products must be a non-empty array');
 }
 
-const storeKeys = new Set(catalog.stores?.map((s) => s.key) ?? []);
+const storeKeys = new Set();
+const storeNames = new Map();
 const productKeys = new Set();
 /** @type {Map<string, number>} */
 const subcategoryCounts = new Map();
@@ -61,7 +64,28 @@ const departments = new Set();
 for (const store of catalog.stores ?? []) {
   if (!store.key || !store.name) {
     error(`Store missing key or name: ${JSON.stringify(store)}`);
+    continue;
   }
+
+  if (storeKeys.has(store.key)) {
+    error(`Duplicate store key: ${store.key}`);
+  }
+  storeKeys.add(store.key);
+
+  if (!KEY_PATTERN.test(store.key)) {
+    warn(`Store ${store.key} key is not kebab-case`);
+  }
+
+  const nameKey = store.name.toLowerCase();
+  if (storeNames.has(nameKey)) {
+    warn(`Duplicate store name: ${store.name} (keys: ${storeNames.get(nameKey)}, ${store.key})`);
+  } else {
+    storeNames.set(nameKey, store.key);
+  }
+}
+
+if ((catalog.stores?.length ?? 0) < MIN_STORES) {
+  error(`Expected at least ${MIN_STORES} stores, got ${catalog.stores?.length ?? 0}`);
 }
 
 for (const product of catalog.products ?? []) {

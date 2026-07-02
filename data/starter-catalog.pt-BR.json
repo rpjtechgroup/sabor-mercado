@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "locale": "pt-BR",
   "stores": [
     {
@@ -25,6 +25,198 @@
     {
       "key": "sams-club",
       "name": "Sam's Club"
+    },
+    {
+      "key": "big",
+      "name": "Big"
+    },
+    {
+      "key": "dia",
+      "name": "Dia"
+    },
+    {
+      "key": "tenda-atacado",
+      "name": "Tenda Atacado"
+    },
+    {
+      "key": "total-atacado",
+      "name": "Total Atacado"
+    },
+    {
+      "key": "makro",
+      "name": "Makro"
+    },
+    {
+      "key": "minuto-pao-de-acucar",
+      "name": "Minuto Pão de Açúcar"
+    },
+    {
+      "key": "mercado-extra",
+      "name": "Mercado Extra"
+    },
+    {
+      "key": "carrefour-express",
+      "name": "Carrefour Express"
+    },
+    {
+      "key": "bom-preco",
+      "name": "Bom Preço"
+    },
+    {
+      "key": "nacional",
+      "name": "Nacional"
+    },
+    {
+      "key": "hiperideal",
+      "name": "Hiper Ideal"
+    },
+    {
+      "key": "gbarbosa",
+      "name": "GBarbosa"
+    },
+    {
+      "key": "savegnago",
+      "name": "Savegnago"
+    },
+    {
+      "key": "sonda",
+      "name": "Sonda"
+    },
+    {
+      "key": "mambo",
+      "name": "Mambo"
+    },
+    {
+      "key": "st-marche",
+      "name": "St. Marche"
+    },
+    {
+      "key": "guanabara",
+      "name": "Guanabara"
+    },
+    {
+      "key": "prezunic",
+      "name": "Prezunic"
+    },
+    {
+      "key": "covabra",
+      "name": "Covabra"
+    },
+    {
+      "key": "oxxo",
+      "name": "Oxxo"
+    },
+    {
+      "key": "zaffari",
+      "name": "Zaffari"
+    },
+    {
+      "key": "angeloni",
+      "name": "Angeloni"
+    },
+    {
+      "key": "condor",
+      "name": "Condor"
+    },
+    {
+      "key": "rissul",
+      "name": "Rissul"
+    },
+    {
+      "key": "koerich",
+      "name": "Koerich"
+    },
+    {
+      "key": "superpao",
+      "name": "Superpão"
+    },
+    {
+      "key": "peruzzo",
+      "name": "Peruzzo"
+    },
+    {
+      "key": "perini",
+      "name": "Perini"
+    },
+    {
+      "key": "veran",
+      "name": "Veran"
+    },
+    {
+      "key": "bh-supermercados",
+      "name": "Supermercados BH"
+    },
+    {
+      "key": "supernosso",
+      "name": "Supernosso"
+    },
+    {
+      "key": "bretas",
+      "name": "Bretas"
+    },
+    {
+      "key": "mercantil",
+      "name": "Mercantil"
+    },
+    {
+      "key": "comper",
+      "name": "Comper"
+    },
+    {
+      "key": "andorinha",
+      "name": "Andorinha"
+    },
+    {
+      "key": "supermercado-mundial",
+      "name": "Supermercado Mundial"
+    },
+    {
+      "key": "fortatacadista",
+      "name": "Fort Atacadista"
+    },
+    {
+      "key": "mateus-supermercados",
+      "name": "Mateus Supermercados"
+    },
+    {
+      "key": "arasuper",
+      "name": "Arasuper"
+    },
+    {
+      "key": "rede-economia",
+      "name": "Rede Economia"
+    },
+    {
+      "key": "ampm",
+      "name": "ampm"
+    },
+    {
+      "key": "armazem-mateus",
+      "name": "Armazém Mateus"
+    },
+    {
+      "key": "mix-mateus",
+      "name": "Mix Mateus"
+    },
+    {
+      "key": "atacadao-dia-a-dia",
+      "name": "Atacadão Dia a Dia"
+    },
+    {
+      "key": "supermercado-sao-luiz",
+      "name": "Supermercado São Luiz"
+    },
+    {
+      "key": "unissul",
+      "name": "Unissul"
+    },
+    {
+      "key": "perim",
+      "name": "Perim"
+    },
+    {
+      "key": "spani",
+      "name": "Spani"
     }
   ],
   "products": [

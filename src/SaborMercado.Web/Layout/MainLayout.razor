@@ -21,7 +21,7 @@
     {
         await UiPrefs.InitializeAsync(Preferences);
         UiPrefs.Changed += OnUiPrefsChanged;
-        await StarterCatalog.TryImportIfNeededAsync();
+        await StarterCatalog.TryMergeNewStarterStoresAsync();
     }
 
     private void OnUiPrefsChanged() => InvokeAsync(StateHasChanged);

@@ -4,22 +4,22 @@
  * Run: node scripts/build-starter-catalog.mjs
  */
 
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
 const outputPath = join(root, 'data', 'starter-catalog.pt-BR.json');
+const storesPath = join(root, 'data', 'starter-stores.pt-BR.json');
 
-const stores = [
-  { key: 'carrefour', name: 'Carrefour' },
-  { key: 'atacadao', name: 'Atacadão' },
-  { key: 'pao-de-acucar', name: 'Pão de Açúcar' },
-  { key: 'assai', name: 'Assaí' },
-  { key: 'extra', name: 'Extra' },
-  { key: 'sams-club', name: "Sam's Club" },
-];
+const storesSource = JSON.parse(readFileSync(storesPath, 'utf8'));
+const stores = storesSource.stores.map(({ key, name, city, state }) => ({
+  key,
+  name,
+  ...(city ? { city } : {}),
+  ...(state ? { state } : {}),
+}));
 
 /** @type {Array<{key:string,name:string,category:string,quantityValue:number,quantityUnit:string,defaultStoreKey:string}>} */
 const products = [];
@@ -459,7 +459,7 @@ for (const p of products) {
 }
 
 const catalog = {
-  version: 2,
+  version: 3,
   locale: 'pt-BR',
   stores,
   products,
