@@ -10,8 +10,6 @@ public sealed class ShoppingReminder
 
     public required string DisplayName { get; set; }
 
-    public string? Note { get; set; }
-
     public int Quantity { get; set; } = 1;
 
     public DateTimeOffset CreatedAt { get; set; }

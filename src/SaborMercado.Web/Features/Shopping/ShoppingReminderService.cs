@@ -15,15 +15,20 @@ public sealed class ShoppingReminderService(
 
     public async Task<IReadOnlyList<ShoppingReminder>> GetAllAsync()
     {
+        await PurgeLegacyRemindersAsync();
         var reminders = await store.GetAllAsync();
         return reminders
             .OrderBy(r => r.CreatedAt)
             .ToList();
     }
 
-    public async Task<int> GetCountAsync() => (await store.GetAllAsync()).Count;
+    public async Task<int> GetCountAsync()
+    {
+        await PurgeLegacyRemindersAsync();
+        return (await store.GetAllAsync()).Count;
+    }
 
-    public async Task AddFromProductAsync(Guid productId, int quantity = 1, string? note = null)
+    public async Task AddFromProductAsync(Guid productId, int quantity = 1)
     {
         if (quantity < 1)
         {
@@ -39,11 +44,6 @@ public sealed class ShoppingReminderService(
         if (existing is not null)
         {
             existing.Quantity += quantity;
-            if (!string.IsNullOrWhiteSpace(note))
-            {
-                existing.Note = note.Trim();
-            }
-
             await store.SaveAsync(existing);
             NotifyStateChanged();
             return;
@@ -53,50 +53,6 @@ public sealed class ShoppingReminderService(
         {
             ProductId = productId,
             DisplayName = product.Name,
-            Note = string.IsNullOrWhiteSpace(note) ? null : note.Trim(),
-            Quantity = quantity,
-            CreatedAt = clock.GetUtcNow(),
-        };
-
-        await store.SaveAsync(reminder);
-        NotifyStateChanged();
-    }
-
-    public async Task AddFromNoteAsync(string displayName, int quantity = 1, string? note = null)
-    {
-        if (string.IsNullOrWhiteSpace(displayName))
-        {
-            throw new ArgumentException("Informe o nome do item.", nameof(displayName));
-        }
-
-        if (quantity < 1)
-        {
-            throw new ArgumentOutOfRangeException(nameof(quantity));
-        }
-
-        var normalized = displayName.Trim();
-        var reminders = await store.GetAllAsync();
-        var existing = reminders.FirstOrDefault(r =>
-            r.ProductId is null &&
-            string.Equals(r.DisplayName, normalized, StringComparison.CurrentCultureIgnoreCase));
-
-        if (existing is not null)
-        {
-            existing.Quantity += quantity;
-            if (!string.IsNullOrWhiteSpace(note))
-            {
-                existing.Note = note.Trim();
-            }
-
-            await store.SaveAsync(existing);
-            NotifyStateChanged();
-            return;
-        }
-
-        var reminder = new ShoppingReminder
-        {
-            DisplayName = normalized,
-            Note = string.IsNullOrWhiteSpace(note) ? null : note.Trim(),
             Quantity = quantity,
             CreatedAt = clock.GetUtcNow(),
         };
@@ -129,6 +85,7 @@ public sealed class ShoppingReminderService(
 
     public async Task<IReadOnlyList<ShoppingReminder>> ConsumeAllAsync()
     {
+        await PurgeLegacyRemindersAsync();
         var reminders = await store.GetAllAsync();
         if (reminders.Count == 0)
         {
@@ -157,23 +114,31 @@ public sealed class ShoppingReminderService(
 
         foreach (var reminder in await GetAllAsync())
         {
-            if (reminder.ProductId is { } productId)
+            if (reminder.ProductId is not { } productId)
             {
-                var product = catalog.GetProduct(productId);
-                if (product is null)
-                {
-                    continue;
-                }
-
-                var lastPrice = await catalog.GetLastKnownPriceAsync(productId);
-                lines.Add(new ReminderLineView(reminder, product, lastPrice?.Price));
                 continue;
             }
 
-            lines.Add(new ReminderLineView(reminder, null, null));
+            var product = catalog.GetProduct(productId);
+            if (product is null)
+            {
+                continue;
+            }
+
+            var lastPrice = await catalog.GetLastKnownPriceAsync(productId);
+            lines.Add(new ReminderLineView(reminder, product, lastPrice?.Price));
         }
 
         return lines;
+    }
+
+    private async Task PurgeLegacyRemindersAsync()
+    {
+        var reminders = await store.GetAllAsync();
+        foreach (var reminder in reminders.Where(r => r.ProductId is null))
+        {
+            await store.DeleteAsync(reminder.Id);
+        }
     }
 
     private void NotifyStateChanged() => StateChanged?.Invoke();

@@ -4,17 +4,17 @@
 **Created**: 2026-06-16  
 **Status**: Implemented
 
-**Input**: Lembretes offline criados a qualquer momento (catálogo ou nota livre) que pré-preenchem o carrinho ao iniciar compra esporádica.
+**Input**: Lembretes offline criados a qualquer momento (produtos do catálogo) que pré-preenchem o carrinho ao iniciar compra esporádica.
 
 ## User Scenarios
 
 ### US1 — Registrar falta em casa (P1)
 
-Usuário anota produto do catálogo ou nota rápida quando percebe que algo está acabando.
+Usuário adiciona produto do catálogo com quantidade quando percebe que algo está acabando.
 
 ### US2 — Prefill na compra esporádica (P1)
 
-Ao iniciar compra esporádica, lembretes entram no carrinho com último preço conhecido (ou zero para notas livres).
+Ao iniciar compra esporádica, lembretes entram no carrinho com último preço conhecido (ou zero se sem histórico).
 
 ### US3 — Abandonar restaura lembretes (P2)
 

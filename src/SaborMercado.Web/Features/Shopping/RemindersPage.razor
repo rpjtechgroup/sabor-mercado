@@ -36,16 +36,6 @@ else
                 </div>
 
                 <div class="field">
-                    <label for="reminder-note-text">Ou digite uma nota rápida</label>
-                    <input id="reminder-note-text" class="input" @bind="_quickNote" placeholder="ex.: papel higiênico" />
-                </div>
-
-                <div class="field">
-                    <label for="reminder-extra-note">Observação (opcional)</label>
-                    <input id="reminder-extra-note" class="input" @bind="_extraNote" placeholder="ex.: marca preferida" />
-                </div>
-
-                <div class="field">
                     <label for="reminder-qty">Quantidade</label>
                     <input id="reminder-qty" class="input" type="number" min="1" @bind="_quantity" />
                 </div>
@@ -76,11 +66,7 @@ else
                     <div class="card pattern-row" @key="line.Reminder.Id">
                         <div class="pattern-row-info">
                             <strong>@line.Reminder.DisplayName</strong>
-                            @if (!string.IsNullOrWhiteSpace(line.Reminder.Note))
-                            {
-                                <span class="muted">@line.Reminder.Note</span>
-                            }
-                            else if (line.Product is not null)
+                            @if (line.Product is not null)
                             {
                                 <span class="muted">@FormatProductDetails(line.Product)</span>
                             }
@@ -121,8 +107,6 @@ else
     private bool _loaded;
     private bool _formExpanded = true;
     private string _searchName = string.Empty;
-    private string _quickNote = string.Empty;
-    private string _extraNote = string.Empty;
     private int _quantity = 1;
     private string? _error;
     private Guid? _selectedProductId;
@@ -182,7 +166,6 @@ else
     {
         _selectedProductId = product.Id;
         _searchName = product.Name;
-        _quickNote = string.Empty;
         return Task.CompletedTask;
     }
 
@@ -191,27 +174,15 @@ else
         _error = null;
         try
         {
-            if (_selectedProductId is { } productId)
+            if (_selectedProductId is not { } productId)
             {
-                await Reminders.AddFromProductAsync(productId, _quantity, _extraNote);
-            }
-            else if (!string.IsNullOrWhiteSpace(_quickNote))
-            {
-                await Reminders.AddFromNoteAsync(_quickNote, _quantity, _extraNote);
-            }
-            else if (!string.IsNullOrWhiteSpace(_searchName))
-            {
-                await Reminders.AddFromNoteAsync(_searchName, _quantity, _extraNote);
-            }
-            else
-            {
-                _error = "Selecione um produto do catálogo ou digite uma nota rápida.";
+                _error = "Selecione um produto do catálogo.";
                 return;
             }
 
+            await Reminders.AddFromProductAsync(productId, _quantity);
+
             _searchName = string.Empty;
-            _quickNote = string.Empty;
-            _extraNote = string.Empty;
             _quantity = 1;
             _selectedProductId = null;
             await RefreshAsync();

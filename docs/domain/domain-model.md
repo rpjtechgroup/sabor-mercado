@@ -45,9 +45,9 @@ outro módulo.
   `startedAt`, `finishedAt?`, `status (Active|Finished|Abandoned)`.
 - **CartItem**: `id`, `sessionId`, `productSnapshot` (nome, marca, volume,
   unidade), `unitPrice`, `quantity`, `source (Ocr|Manual|Catalog)`, `addedAt`.
-- **ShoppingReminder**: `id`, `productId?`, `displayName`, `note?`, `quantity`,
-  `createdAt`. Notas para a próxima compra esporádica; consumidas ao iniciar a
-  sessão e restauradas se a compra for abandonada.
+- **ShoppingReminder**: `id`, `productId`, `displayName`, `quantity`,
+  `createdAt`. Produtos do catálogo para a próxima compra esporádica;
+  consumidos ao iniciar a sessão e restaurados se a compra for abandonada.
 - **BudgetAlertState**: último alerta emitido por sessão (evita repetição).
 
 Invariantes:

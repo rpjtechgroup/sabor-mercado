@@ -197,25 +197,21 @@ public sealed class ShoppingService(
             decimal unitPrice;
             CartItemSource source;
 
-            if (reminder.ProductId is { } productId)
+            if (reminder.ProductId is not { } productId)
             {
-                var product = catalog.GetProduct(productId);
-                if (product is null)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                snapshot = ProductSnapshot.FromProduct(product);
-                var lastPrice = await catalog.GetLastKnownPriceAsync(productId);
-                unitPrice = lastPrice?.Price ?? 0m;
-                source = CartItemSource.Catalog;
-            }
-            else
+            var product = catalog.GetProduct(productId);
+            if (product is null)
             {
-                snapshot = new ProductSnapshot(reminder.DisplayName, null, null, null);
-                unitPrice = 0m;
-                source = CartItemSource.Manual;
+                continue;
             }
+
+            snapshot = ProductSnapshot.FromProduct(product);
+            var lastPrice = await catalog.GetLastKnownPriceAsync(productId);
+            unitPrice = lastPrice?.Price ?? 0m;
+            source = CartItemSource.Catalog;
 
             var item = await CreateCartItemAsync(
                 session,
